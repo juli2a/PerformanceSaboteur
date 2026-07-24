@@ -10,10 +10,7 @@ interface Props {
   kpi: KpiData;
 }
 
-// Presentational — takes already-fetched data as a prop. KpiGrid (the async
-// fetch wrapper below it in the good path) and WaterfallSections
-// (app/(shell)/dashboard/page.tsx, Case 5 bad path) both render this same
-// component; only how the data reaches it differs.
+// Presentational, takes already-fetched data as a prop. KpiGrid (the async fetch wrapper below it in the good path) and WaterfallSections (app/(shell)/dashboard/page.tsx, Case 5 bad path) both render this same component; only how the data reaches it differs.
 export function KpiGridView({ kpi }: Props) {
   const cards = [
     {

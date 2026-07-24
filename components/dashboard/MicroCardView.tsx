@@ -20,13 +20,7 @@ interface Props {
   lowMargin: boolean;
 }
 
-// Shared visual markup for the KPI micro-card. Both MicroCard (Case 8 good
-// path) and MicroCardUnoptimized (Case 8 bad path) render through this and are
-// both wrapped in React.memo, so the two are pixel-identical and only differ
-// in the one thing Case 8 demonstrates: MicroCard gets reference-stable
-// props so memo's comparison actually skips work, while MicroCardUnoptimized
-// gets a freshly-spread object and callback every render so the same
-// comparison never skips anything — pure overhead on top of the re-render.
+// Shared visual markup for the KPI micro-card: both MicroCard (Case 8 good path) and MicroCardUnoptimized (Case 8 bad path) render through this component.
 export default function MicroCardView({
   title,
   sku,

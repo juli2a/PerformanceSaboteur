@@ -50,9 +50,7 @@ interface DummyUser {
 }
 
 // ─── Simulation params (stable within a calendar day) ─────────────────────────
-// ordersCount: orders to fetch (130–150); usersCount: unique user pool (90–120, always < ordersCount).
-// Both derived from today's date so all Suspense streams stay consistent
-// without coupling getCarts ↔ getUsers at runtime.
+// ordersCount and usersCount are both derived from today's date (via seed) so all Suspense streams stay consistent without coupling getCarts and getUsers at runtime; usersCount is always kept smaller than ordersCount.
 
 function getDailySimConfig(): {
   seed: number;
@@ -68,10 +66,7 @@ function getDailySimConfig(): {
   };
 }
 
-// Biases order timestamps toward later hours (peak ~16–18h).
-// Math.max(r1, r2) skews the uniform distribution rightward.
-// index must be unique per cart so each order gets its own pseudo-random
-// draw; seed keeps the whole set stable across requests within a day.
+// Biases order timestamps toward later hours (peak ~16–18h); Math.max(r1, r2) skews the uniform distribution rightward. index must be unique per cart so each order gets its own pseudo-random draw, seed keeps the whole set stable across requests within a day.
 function setRealisticTime(d: Date, seed: number, index: number): Date {
   const r1 = deriveScatterFloat(seed, index * 3);
   const r2 = deriveScatterFloat(seed, index * 3 + 1);
@@ -83,15 +78,9 @@ function setRealisticTime(d: Date, seed: number, index: number): Date {
 }
 
 // ─── Memoised per-request fetchers ────────────────────────────────────────────
-// React.cache deduplicates within a single render pass:
-// KpiGrid and SalesChart both call getCarts() but trigger only one fetch.
+// React.cache deduplicates within a single render pass: KpiGrid and SalesChart both call getCarts() but trigger only one fetch.
 //
-// The four delays below are a deliberate pedagogical device (docs/case5.md),
-// not real DB latency — exported by name (rather than inlined into each
-// setTimeout) so anything that reasons about their magnitude, e.g.
-// e2e/case5-waterfall.spec.ts's streaming-vs-blocking timing thresholds, can
-// derive from the current values instead of duplicating separate hardcoded
-// numbers that would silently drift out of sync if these are ever retuned.
+// The four delays below are a deliberate pedagogical device (docs/case5.md), not real DB latency, exported by name (rather than inlined into each setTimeout) so anything that reasons about their magnitude, e.g. e2e/case5-waterfall.spec.ts's streaming-vs-blocking timing thresholds, can derive from the current values instead of duplicating separate hardcoded numbers that would silently drift out of sync if these are ever retuned.
 export const CARTS_DELAY_MS = 700;
 export const PRODUCTS_DELAY_MS = 800;
 export const USERS_DELAY_MS = 600;
@@ -108,10 +97,7 @@ export const getCarts = cache(
     );
     const actualOrdersCount = carts.length; // actual count in case API returns fewer than requested
 
-    // Build dayCounts: 30 slots, one per calendar day (oldest → newest), ending
-    // yesterday — yesterday is the last complete day, today's is still partial.
-    // Every day is guaranteed at least 1 order; remaining actualOrdersCount-30 are scattered
-    // randomly so the chart has natural variance.
+    // Build dayCounts: 30 slots, one per calendar day (oldest → newest), ending yesterday, since yesterday is the last complete day and today's is still partial. Every day is guaranteed at least 1 order; the remaining orders are scattered randomly across the 30 slots so the chart has natural variance.
     const lastDay = getLastDay();
 
     const dayCounts: Array<{ date: Date; count: number }> = Array.from(
@@ -127,8 +113,7 @@ export const getCarts = cache(
       dayCounts[deriveScatterIndex(seed, i, 30)].count++;
     }
 
-    // Drain: assign each cart a concrete timestamp.
-    // daySlotIdx advances when a day-slot is exhausted — no array mutation.
+    // Drain: assign each cart a concrete timestamp; daySlotIdx advances when a day-slot is exhausted, no array mutation.
     let daySlotIdx = 0;
     const orders: CartEntry[] = carts.map((cart, i) => {
       const d = setRealisticTime(new Date(dayCounts[daySlotIdx].date), seed, i);
@@ -144,16 +129,14 @@ export const getCarts = cache(
     );
     const avgCheck = Math.round(totalRevenue / actualOrdersCount);
 
-    // 10 segments of 3 days each, oldest → newest — real KPI sparklines built
-    // from the same orders the chart uses, instead of a synthetic curve.
+    // 10 segments of 3 days each, oldest → newest: real KPI sparklines built from the same orders the chart uses, instead of a synthetic curve.
     const segments = buildOrderSegments(orders, lastDay, 10, 3);
     const revenueSpark = segments.map((s) => Math.round(s.revenue));
     const ordersSpark = segments.map((s) => s.count);
     const avgCheckSpark = segments.map((s) =>
       s.count > 0 ? Math.round(s.revenue / s.count) : 0,
     );
-    // First 15 days vs last 15 days — sums over each half, not single endpoint
-    // segments, so one noisy day can't flip the trend's sign.
+    // Compares the first half of the segments against the second half: sums over each half, not single endpoint segments, so one noisy day can't flip the trend's sign.
     const halfDelta = compareOrderHalves(segments);
 
     return {
@@ -168,7 +151,7 @@ export const getCarts = cache(
           deltaPercent: halfDelta.orders,
           spark: ordersSpark,
         },
-        // No order-level signal for unique clients — stays synthetic.
+        // No order-level signal for unique clients, stays synthetic.
         activeClients: {
           value: usersCount,
           ...deriveKpiTrend(usersCount, seed + 3),
@@ -206,8 +189,7 @@ export const getProducts = cache(async (): Promise<AnalyticCardData[]> => {
 export const getUsers = cache(async (): Promise<CustomerData[]> => {
   await new Promise((r) => setTimeout(r, USERS_DELAY_MS));
 
-  // usersCount is the same user-pool size that getCarts uses for activeClients,
-  // derived from the same daily seed — no runtime dependency between the two.
+  // usersCount is the same user-pool size that getCarts uses for activeClients, derived from the same daily seed; no runtime dependency between the two.
   const { usersCount } = getDailySimConfig();
 
   const { users } = await apiFetch<{ users: DummyUser[] }>(
@@ -269,13 +251,11 @@ export interface BannerProduct {
   title: string;
   sku: string;
   images: string[];
-  // discountPercentage used as GM% proxy — same convention as getProducts().
+  // discountPercentage used as GM% proxy, same convention as getProducts().
   marginality: number;
 }
 
-// Draws from a 100-product pool and keeps the 5 with the best GM%, so the
-// hero banner leads with the most profitable products instead of an
-// arbitrary API-order slice.
+// Draws from a 100-product pool and keeps the 5 with the best GM%, so the hero banner leads with the most profitable products instead of an arbitrary API-order slice.
 export const getBannerProducts = cache(async (): Promise<BannerProduct[]> => {
   const { products } = await apiFetch<{ products: BannerDummyProduct[] }>(
     "/products?limit=100&select=id,title,sku,images,discountPercentage",

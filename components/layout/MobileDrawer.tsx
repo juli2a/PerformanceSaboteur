@@ -10,11 +10,7 @@ interface Props {
 }
 
 export default function MobileDrawer({ open, onClose }: Props) {
-  // The mobile Performance Panel floats fixed at the bottom of the viewport
-  // (above this drawer, z-60 vs z-41) — stopping the drawer's own bottom
-  // edge at the panel's current height (collapsed or expanded, via the same
-  // store MobileControlDrawer reads for its bottomOffset) keeps AboutButton
-  // reachable instead of hidden behind it.
+  // The mobile Performance Panel floats fixed at the bottom of the viewport (above this drawer, z-60 vs z-41); stopping the drawer's own bottom edge at the panel's current height (collapsed or expanded, via the same store MobileControlDrawer reads for its bottomOffset) keeps AboutButton reachable instead of hidden behind it.
   const mobilePanelHeight = useSimPerformanceStore(
     (state) => state.mobilePanelHeight,
   );
@@ -29,8 +25,7 @@ export default function MobileDrawer({ open, onClose }: Props) {
         style={{ opacity: open ? 1 : 0, pointerEvents: open ? "auto" : "none" }}
       />
 
-      {/* Drawer — starts below the header (h-[60px] on mobile/tablet), not
-          at the very top, so it doesn't duplicate the header's own logo. */}
+      {/* Drawer starts below the header (h-[60px] on mobile/tablet), not at the very top, so it doesn't duplicate the header's own logo. */}
       <aside
         className="fixed left-0 top-[60px] z-41 flex w-71.5 flex-col overflow-x-hidden border-r border-border bg-surface-2 p-heading-gap shadow-[10px_0_44px_rgba(0,0,0,0.5)] transition-transform duration-280 ease-[cubic-bezier(0.2,0.7,0.3,1)]"
         style={{

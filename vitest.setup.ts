@@ -7,11 +7,7 @@ afterEach(() => {
   cleanup();
 });
 
-// jsdom has no ResizeObserver. @tanstack/react-virtual guards its absence
-// (falls back to a no-op), but components/ui/edge-scroller.tsx calls
-// `new ResizeObserver(...)` unconditionally — any component test that
-// mounts real UI chrome using it (e.g. ControlPanelTogglers) needs this
-// stub, so it's global rather than per-test-file.
+// jsdom has no ResizeObserver. @tanstack/react-virtual guards its absence (falls back to a no-op), but components/ui/edge-scroller.tsx calls `new ResizeObserver(...)` unconditionally; any component test that mounts real UI chrome using it (e.g. ControlPanelTogglers) needs this stub, so it's global rather than per-test-file.
 class ResizeObserverStub {
   observe() {}
   unobserve() {}

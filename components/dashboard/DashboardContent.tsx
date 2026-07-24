@@ -13,17 +13,7 @@ import {
   MicroCardsSkeleton,
 } from "@/components/dashboard/skeletons";
 
-// Good path (toggle off): every section streams independently in its own
-// Suspense boundary — see lib/server/dashboard.ts for how React.cache dedupes
-// getCarts() between KpiGrid and SalesChart so they resolve together without
-// a double fetch.
-//
-// Streaming order:
-//   ~250ms  TopProductsBanner resolves  (getBannerProducts)
-//   ~400ms  CategoryAnalytics resolves  (getCategories)
-//   ~600ms  TopCustomers resolves       (getUsers)     → AnalyticsPair streams
-//   ~700ms  KpiGrid + SalesChart        (getCarts)     → two boundaries stream together
-//   ~800ms  MicroCardsGrid              (getProducts)
+// Good path (toggle off): every section streams independently in its own Suspense boundary, see lib/server/dashboard.ts for how React.cache dedupes getCarts() between KpiGrid and SalesChart so they resolve together without a double fetch.
 export function DashboardContent() {
   return (
     <>

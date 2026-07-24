@@ -13,21 +13,9 @@ interface ProductTableRowUnoptimizedProps {
   gridTemplateColumns: string;
 }
 
-// Case 7 (Context Overhead) bad path — the only difference from
-// ProductTableRow is *how* it reads/writes selection: a monolithic Context
-// instead of an atomic Zustand selector. Every row consuming
-// TableSelectionContext re-renders on any row's toggle, since the Provider
-// hands out a brand-new object every time (see
-// context/TableSelectionContext.tsx). Everything else — markup, status
-// subscription — is shared with ProductTableRow via ProductTableRowView on
-// purpose, so the contrast is isolated to the one thing this case
-// demonstrates.
+// Case 7 (Context Overhead) bad path: the only difference from ProductTableRow is *how* it reads/writes selection, a monolithic Context instead of an atomic Zustand selector. Every row consuming TableSelectionContext re-renders on any row's toggle, since the Provider hands out a brand-new object every time (see context/TableSelectionContext.tsx). Everything else, markup, status subscription, is shared with ProductTableRow via ProductTableRowView on purpose, so the contrast is isolated to the one thing this case demonstrates.
 //
-// Also wrapped in memo() like ProductTableRow, for the same reason (so
-// ProductTable's own re-renders don't add unrelated noise) — memo doesn't
-// block the re-render this case actually demonstrates, since that comes
-// from useContext detecting a changed Provider value, not from a parent
-// re-render with unchanged props.
+// Also wrapped in memo() like ProductTableRow, for the same reason (so ProductTable's own re-renders don't add unrelated noise): memo doesn't block the re-render this case actually demonstrates, since that comes from useContext detecting a changed Provider value, not from a parent re-render with unchanged props.
 function ProductTableRowUnoptimized({
   product,
   gridTemplateColumns,

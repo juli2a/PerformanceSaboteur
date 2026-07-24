@@ -19,18 +19,9 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-// hooks/useRerenderNodesReporter.ts:10-15 — watches a case's render-counter
-// entry while it's tracking, restarting a 100ms (SETTLE_DELAY_MS) timer on
-// every increment. Only once the burst settles (100ms without a new
-// increment) does it publish the total via setRerenderedNodes and decide
-// triggerAlert vs closeAlert based on whether the final count clears
-// alertThreshold — strictly greater than, not greater-or-equal.
+// hooks/useRerenderNodesReporter.ts: watches a case's render-counter entry while it's tracking, restarting a SETTLE_DELAY_MS timer on every increment. Only once the burst settles (SETTLE_DELAY_MS without a new increment) does it publish the total via setRerenderedNodes and decide triggerAlert vs closeAlert based on whether the final count clears alertThreshold, strictly greater than, not greater-or-equal.
 //
-// Asserted via useSimPerformanceStore.getState().rerenderedNodes and
-// useSimControlStore.getState().caseAlerts rather than spying on the
-// actions: vi.spyOn on a Zustand action leaks across `it` blocks in this
-// file the same way it did in useSyncControlsAcrossBreakpoint.test.ts (see
-// that file's comment) — a test-construction issue, not a hook bug.
+// Asserted via useSimPerformanceStore.getState().rerenderedNodes and useSimControlStore.getState().caseAlerts rather than spying on the actions: vi.spyOn on a Zustand action leaks across `it` blocks in this file the same way it did in useSyncControlsAcrossBreakpoint.test.ts (see that file's comment), a test-construction issue, not a hook bug.
 describe("useRerenderNodesReporter", () => {
   it("does not publish before the burst settles, then publishes the final count once it does — not per intermediate increment", () => {
     useRenderCounterStore.getState().startTracking("contextOverhead");

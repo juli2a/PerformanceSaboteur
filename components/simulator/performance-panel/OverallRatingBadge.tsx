@@ -7,8 +7,7 @@ interface OverallRatingBadgeProps {
   className?: string;
 }
 
-// Worst-of-LCP/CLS/INP pill — shared by the desktop panel's header and the
-// mobile panel's expanded header, so both surfaces present it identically.
+// Worst-of-LCP/CLS/INP pill, shared by the desktop panel's header and the mobile panel's expanded header, so both surfaces present it identically.
 export default function OverallRatingBadge({
   rating,
   className,

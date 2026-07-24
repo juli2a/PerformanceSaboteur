@@ -13,10 +13,7 @@ export default async function TopProductsBanner() {
     id: p.id,
     title: p.title,
     sku: p.sku,
-    // Good path: direct DummyJSON URL — Next.js <Image> optimises to WebP,
-    // resizes to container width, and adds a fetchpriority="high" preload.
-    // Bad  path: route through /api/img — 2 500 ms simulated origin delay +
-    // no priority hint → reliably poor LCP.
+    // Good path: direct DummyJSON URL, Next.js <Image> optimises to WebP, resizes to container width, and adds a fetchpriority="high" preload. Bad path: route through /api/img, which adds the artificial delay from app/api/img/route.ts plus no priority hint, reliably poor LCP.
     imageUrl: isUnoptimized
       ? `/api/img?url=${encodeURIComponent(p.images[0])}`
       : p.images[0],

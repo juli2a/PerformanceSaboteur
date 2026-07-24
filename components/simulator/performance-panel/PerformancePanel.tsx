@@ -17,15 +17,7 @@ import PerformancePanelMobile from "@/components/simulator/performance-panel/Per
 import SimulatorAlert from "@/components/simulator/performance-panel/SimulatorAlert";
 import type { CaseKey } from "@/types/simulator";
 
-// Computes the metrics shared by both surfaces — PerformancePanelDesktop
-// (floating corner widget) and PerformancePanelMobile (bottom panel, per
-// docs/ui.md "Floating Performance Panel" → Mobile) — and picks which one
-// to render. Neither child re-reads these stores itself, so there's a
-// single source of truth for what's "Good"/"Degraded"/"Poor" everywhere.
-// domNodes/blockingTime/interactionLatency are written elsewhere (the
-// useDomNodesReporter/useBlockingTimeReporter/useInteractionLatencyReporter
-// hooks, all called from SimulatorEffects in the root layout) — this
-// component only reads the store, it doesn't measure anything itself.
+// Computes the metrics shared by both surfaces, PerformancePanelDesktop (floating corner widget) and PerformancePanelMobile (bottom panel, per docs/ui.md "Floating Performance Panel" → Mobile), and picks which one to render. Neither child re-reads these stores itself, so there's a single source of truth for what's "Good"/"Degraded"/"Poor" everywhere. domNodes/blockingTime/interactionLatency are written elsewhere (the useDomNodesReporter/useBlockingTimeReporter/useInteractionLatencyReporter hooks, all called from SimulatorEffects in the root layout); this component only reads the store, it doesn't measure anything itself.
 interface Props {
   isLayoutShiftOn: boolean;
   initialExpanded: boolean;
@@ -37,9 +29,7 @@ export default function PerformancePanel({
   initialExpanded,
   initialIsMobile,
 }: Props) {
-  // Falls back to the cookie-seeded server guess until MediaContext's own
-  // matchMedia resolves — see context/MediaContext.tsx for why, and
-  // docs/case2.md for what this unblocks (SSR for this component).
+  // Falls back to the cookie-seeded server guess until MediaContext's own matchMedia resolves, see context/MediaContext.tsx for why, and docs/case2.md for what this unblocks (SSR for this component).
   const isMobile = useContext(MediaContext) ?? initialIsMobile;
   const caseAlerts = useSimControlStore((state) => state.caseAlerts);
   const dismissAlert = useSimControlStore((state) => state.dismissAlert);
@@ -75,11 +65,7 @@ export default function PerformancePanel({
 
   const alerts = shownAlertKeys.map((key) => {
     const { title, body } = getSimulatorCase(key).alert;
-    // Case 7's and Case 8's alert.body are static prefixes — the live
-    // settle-window count (see hooks/useRerenderNodesReporter.ts) is
-    // appended here at render time rather than baked into the case
-    // definition. rerenderedNodes is keyed by case so one case's stale count
-    // never leaks into the other's alert body.
+    // Case 7's and Case 8's alert.body are static prefixes; the live settle-window count (see hooks/useRerenderNodesReporter.ts) is appended here at render time rather than baked into the case definition. rerenderedNodes is keyed by case so one case's stale count never leaks into the other's alert body.
     const displayBody =
       (key === "contextOverhead" || key === "brokenMemoization") &&
       rerenderedNodes[key] != null

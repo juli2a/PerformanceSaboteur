@@ -2,9 +2,7 @@ import { useEffect } from "react";
 
 import { useSimPerformanceStore } from "@/store/simulator-performance";
 
-// Called once from SimulatorEffects — observes Long Tasks (main-thread
-// blocks over 50ms) via PerformanceObserver and reports each one's duration
-// as "Blocking Time" in the floating Performance Panel.
+// Called once from SimulatorEffects, observes Long Tasks (main-thread blocks over 50ms) via PerformanceObserver and reports each one's duration as "Blocking Time" in the floating Performance Panel.
 export function useBlockingTimeReporter() {
   const setBlockingTime = useSimPerformanceStore(
     (state) => state.setBlockingTime,

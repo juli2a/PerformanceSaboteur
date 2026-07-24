@@ -34,9 +34,7 @@ interface ToggleRowProps {
   onCheckedChange: (checked: boolean) => void;
 }
 
-// Shares activeGuideKey with the desktop guide panel's GuideButton — only
-// one case's info can be open at a time, here or there, so opening a row's
-// info here closes any other row already expanded (and vice versa).
+// Shares activeGuideKey with the desktop guide panel's GuideButton: only one case's info can be open at a time, here or there, so opening a row's info here closes any other row already expanded (and vice versa).
 function ToggleRow({
   caseKey,
   label,
@@ -99,10 +97,7 @@ export default function MobileControlDrawer({
   const toggleCase = useToggleCase();
   const resetAllToggles = useResetAllToggles();
   const allOff = Object.values(toggles).every((value) => !value);
-  // The mobile Performance Panel is always forced open (and thus at its
-  // tallest) while this drawer is open, and sits on top of this drawer's own
-  // bottom edge — reserving the same height as bottom padding keeps the
-  // last toggle rows reachable by scrolling instead of stuck behind it.
+  // The mobile Performance Panel is always forced open (and thus at its tallest) while this drawer is open, and sits on top of this drawer's own bottom edge; reserving the same height as bottom padding keeps the last toggle rows reachable by scrolling instead of stuck behind it.
   const mobilePanelHeight = useSimPerformanceStore(
     (state) => state.mobilePanelHeight,
   );

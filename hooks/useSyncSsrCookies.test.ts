@@ -15,11 +15,7 @@ beforeEach(() => {
   useSimControlStore.getState().resetToggles();
 });
 
-// hooks/useSyncSsrCookies.ts:9-13 — the store always seeds SSR_COOKIE_CASES
-// toggles to `false` (a safe server default). On mount, this hook realigns
-// each one from its actual cookie, since the Server Component already
-// rendered the right variant straight from the cookie and the toggle UI
-// needs to agree with what's actually on screen.
+// hooks/useSyncSsrCookies.ts: the store always seeds SSR_COOKIE_CASES toggles to `false` (a safe server default). On mount, this hook realigns each one from its actual cookie, since the Server Component already rendered the right variant straight from the cookie and the toggle UI needs to agree with what's actually on screen.
 describe("useSyncSsrCookies", () => {
   it("aligns a toggle from the cookie when the cookie and the store disagree (cookie=on, store default false)", () => {
     setCookie("waterfall", "on");

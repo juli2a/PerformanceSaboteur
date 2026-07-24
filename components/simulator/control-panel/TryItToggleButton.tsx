@@ -9,9 +9,7 @@ interface TryItToggleButtonProps {
   caseKey: CaseKey;
 }
 
-// Lets a reader flip this case's own toggle on right from its guide, instead
-// of hunting for it back in the control panel. Renders nothing once the
-// toggle is already on — turning it on is this button's only job.
+// Lets a reader flip this case's own toggle on right from its guide, instead of hunting for it back in the control panel. Renders nothing once the toggle is already on: turning it on is this button's only job.
 export default function TryItToggleButton({ caseKey }: TryItToggleButtonProps) {
   const isOn = useSimControlStore((state) => state.toggles[caseKey]);
   const toggleCase = useToggleCase();

@@ -5,14 +5,10 @@ import type { VitalRating } from "@/types/simulator";
 interface MetricStatProps {
   label: string;
   value: string;
-  // Omit for ungraded stats (e.g. DOM nodes — there's no absolute "good"
-  // node count, it depends entirely on the dataset).
+  // Omit for ungraded stats (e.g. DOM nodes, there's no absolute "good" node count, it depends entirely on the dataset).
   rating?: VitalRating;
 }
 
-// One non-CWV stat in the Performance Panel's gauges row — label on top,
-// value colored by rating tier below, same good/degraded/poor palette
-// MetricGauge uses for its ring fill.
 export default function MetricStat({ label, value, rating }: MetricStatProps) {
   return (
     <div>

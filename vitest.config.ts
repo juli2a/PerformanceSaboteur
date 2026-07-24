@@ -9,9 +9,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
-    // e2e/*.spec.ts files use @playwright/test's own test() — without this,
-    // Vitest's default include glob (**/*.spec.ts) picks them up too and
-    // crashes on the global `test` conflict.
+    // e2e/*.spec.ts files use @playwright/test's own test() — without this, Vitest's default include glob (**/*.spec.ts) picks them up too and crashes on the global `test` conflict.
     exclude: ["**/node_modules/**", "e2e/**"],
   },
 });

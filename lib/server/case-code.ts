@@ -5,16 +5,9 @@ import type { CaseKey } from "@/types/simulator";
 
 const SNIPPETS_DIR = path.join(process.cwd(), "lib", "case-code");
 
-// Reads a case's real source excerpt straight from lib/case-code/ — kept
-// as plain .txt files (not string literals in lib/simulator-cases.ts, a
-// module shared with client components) so they stay easy to read and edit
-// on their own. Returns null when a case has no snippet yet.
+// Reads a case's real source excerpt straight from lib/case-code/, kept as plain .txt files (not string literals in lib/simulator-cases.ts, a module shared with client components) so they stay easy to read and edit on their own. Returns null when a case has no snippet yet.
 //
-// `device: "mobile"` looks for a `<key>.mobile.<variant>.txt` override first
-// (only a couple of cases whose bad/good code genuinely differs by platform
-// need one — see contextOverhead) and falls back to the shared
-// `<key>.<variant>.txt` file when no mobile-specific snippet exists, so most
-// cases never need a second file at all.
+// `device: "mobile"` looks for a `<key>.mobile.<variant>.txt` override first (only a couple of cases whose bad/good code genuinely differs by platform need one - see contextOverhead) and falls back to the shared `<key>.<variant>.txt` file when no mobile-specific snippet exists, so most cases never need a second file at all.
 function readSnippet(
   key: CaseKey,
   variant: "bad" | "good",

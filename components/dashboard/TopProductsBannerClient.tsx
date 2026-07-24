@@ -6,7 +6,7 @@ import BannerCarousel from "@/components/dashboard/BannerCarousel";
 
 // imageUrl is pre-computed server-side by TopProductsBanner:
 //   Good path → direct DummyJSON URL (Next.js <Image> optimises it)
-//   Bad  path → /api/img proxy URL   (JPEG, our server, no CDN)
+//   Bad path  → /api/img proxy URL   (JPEG, our server, no CDN)
 export interface BannerSlide {
   id: number;
   title: string;

@@ -26,20 +26,9 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-// hooks/usePanelExpanded.ts:7-32, 34-56, 58-85 — the stable path (mirrors
-// useSidebarCollapsed.ts) seeds store/panel-expanded.ts with initialExpanded
-// once on mount so later re-renders never fall back to the store's
-// hardcoded `false` default. The unstable path additionally carries a
-// second, unrelated 150ms setTimeout — a guessed fix for a restore
-// animation that wasn't playing, stacked on top of the original Case 2 bug
-// rather than tracing its real cause. setExpanded always writes both stores
-// plus the cookie, regardless of which mode currently drives display.
+// hooks/usePanelExpanded.ts: the stable path (mirrors useSidebarCollapsed.ts) seeds store/panel-expanded.ts with initialExpanded once on mount so later re-renders never fall back to the store's hardcoded `false` default. The unstable path additionally carries a second, unrelated RESTORE_ANIMATION_DELAY_MS setTimeout, a guessed fix for a restore animation that wasn't playing, stacked on top of the original Case 2 bug rather than addressing its real cause. setExpanded always writes both stores plus the cookie, regardless of which mode currently drives display.
 //
-// As in useSidebarCollapsed.test.ts, the pure SSR-hydration snapshot race
-// isn't reproducible through RTL's plain client renderHook (no
-// hydrateRoot), so this only asserts the seeding effect's observable
-// result, not the getServerSnapshot mechanism itself — that's covered by
-// the planned Case 2 E2E scenario.
+// As in useSidebarCollapsed.test.ts, the pure SSR-hydration snapshot race isn't reproducible through RTL's plain client renderHook (no hydrateRoot), so this only asserts the seeding effect's observable result, not the getServerSnapshot mechanism itself; that's covered by the planned Case 2 E2E scenario.
 describe("usePanelExpanded", () => {
   it("isUnstable=false: settles on initialExpanded and seeds store/panel-expanded.ts with it, not the store's hardcoded false default", () => {
     const { result } = renderHook(() => usePanelExpanded(false, true));

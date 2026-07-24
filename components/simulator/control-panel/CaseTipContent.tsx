@@ -8,8 +8,7 @@ import type { CaseKey } from "@/types/simulator";
 interface CaseTipContentProps {
   caseKey: CaseKey;
   tip: CaseTip;
-  // Already server-rendered by CaseCodeBlock (see lib/server/case-info.tsx)
-  // — undefined means that case has no snippet on disk yet.
+  // Already server-rendered by CaseCodeBlock (see lib/server/case-info.tsx); undefined means that case has no snippet on disk yet.
   badCodeBlock?: React.ReactNode;
   goodCodeBlock?: React.ReactNode;
 }
@@ -35,10 +34,7 @@ function TipSection({ title, body, action }: TipSectionProps) {
   );
 }
 
-// Renders a case's tip (problem / reproduction / effect / anti-pattern /
-// best practice / summary) — shared between the desktop right-hand guide
-// panel (CaseDetailPanel) and the mobile Drawer's info panel
-// (MobileControlDrawer) so both surfaces show identical content.
+// Renders a case's tip (problem / reproduction / effect / anti-pattern / best practice / summary), shared between the desktop right-hand guide panel (CaseDetailPanel) and the mobile Drawer's info panel (MobileControlDrawer) so both surfaces show identical content.
 export default function CaseTipContent({
   caseKey,
   tip,

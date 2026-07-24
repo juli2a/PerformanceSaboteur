@@ -8,8 +8,7 @@ function subscribe(query: string, callback: () => void) {
   return () => mq.removeEventListener("change", callback);
 }
 
-// undefined on the server / before hydration — lets SSR-safe consumers
-// (e.g. MediaContext) tell "not yet known" apart from a real false match.
+// undefined on the server / before hydration, lets SSR-safe consumers (e.g. MediaContext) tell "not yet known" apart from a real false match.
 export function useMediaQuery(query: string) {
   return useSyncExternalStore(
     (callback) => subscribe(query, callback),

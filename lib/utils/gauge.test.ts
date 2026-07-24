@@ -1,10 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { getGaugePercent } from "@/lib/utils/gauge";
 
-// docs/ui.md:39 — the ring fill is not linear: 0 → poorThreshold maps to
-// 0-75%, beyond the threshold it asymptotically approaches 100% without
-// ever reaching it, so the ring keeps showing forward motion even at very
-// poor values.
+// docs/ui.md "Floating Performance Panel": the ring fill is not linear. 0 → poorThreshold maps to 0-75%, beyond the threshold it asymptotically approaches 100% without ever reaching it, so the ring keeps showing forward motion even at very poor values.
 describe("getGaugePercent", () => {
   it("returns 0 at value 0", () => {
     expect(getGaugePercent(0, 100)).toBe(0);
@@ -20,8 +17,7 @@ describe("getGaugePercent", () => {
   });
 
   it("returns exactly 75% right at the threshold boundary", () => {
-    // value === poorThreshold still uses the <= branch (linear), not the
-    // asymptotic one — the boundary where an off-by-one would first show up.
+    // value === poorThreshold still uses the <= branch (linear), not the asymptotic one; the boundary where an off-by-one would first show up.
     expect(getGaugePercent(100, 100)).toBe(75);
   });
 

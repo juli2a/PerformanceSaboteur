@@ -14,23 +14,9 @@ const FLASH_CLASS = cn(
   "border-brand-alert shadow-[0_0_10px_4px_rgba(255,129,144,0.45)]",
 );
 
-// Highlights component boundaries on every re-render — skips the initial
-// mount (a flash on first paint would just be noise), unconditionally on
-// every render after that. Whether this is one row (good path) or two
-// hundred at once (Case 7's Context Overhead bad path) is entirely a
-// function of how many wrapped components actually re-executed — this
-// component itself doesn't know or care which case is active, only which
-// case's counter to feed (`caseKey`). It feeds that case's slot in the
-// render-counter store, which its own settle-window reporter watches (see
-// hooks/useRerenderNodesReporter.ts); the store itself gates whether an
-// increment counts, so calling it here unconditionally is safe.
+// Highlights component boundaries on every re-render: skips the initial mount (a flash on first paint would just be noise), unconditionally on every render after that. Whether this is one row (good path) or two hundred at once (Case 7's Context Overhead bad path) is entirely a function of how many wrapped components actually re-executed; this component itself doesn't know or care which case is active, only which case's counter to feed (`caseKey`). It feeds that case's slot in the render-counter store, which its own settle-window reporter watches (see hooks/useRerenderNodesReporter.ts); the store itself gates whether an increment counts, so calling it here unconditionally is safe.
 //
-// The flash itself is applied by mutating the DOM node directly (not React
-// state): a state-driven flash would need its own "turn off" state update,
-// which would re-trigger this same deps-less effect and increment() again
-// for what's really the same episode — an infinite loop. Mutating the ref
-// imperatively never causes a re-render of this component, so the effect
-// only ever runs once per *actual* re-render of the wrapped children.
+// The component flashes a border on every re-render of its children via a deps-less useEffect (it fires on every render of this component). The flash is applied by mutating ref.current.className directly, not via useState, because a setState call would itself trigger a re-render, and this effect would fire again on that re-render, incrementing the counter again and restarting the flash, looping forever. A direct DOM mutation causes no re-render, so the effect fires exactly as many times as the children actually re-rendered.
 export default function FlashOnUpdate({
   caseKey,
   children,

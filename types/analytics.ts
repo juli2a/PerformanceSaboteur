@@ -25,8 +25,7 @@ export interface SalesChartData {
   month: ChartPoint[];
 }
 
-// One entry per order. Server-only — aggregated into ChartPoint[] / KpiMetric
-// spark series before being sent to the client.
+// One entry per order. Server-only, aggregated into ChartPoint[] / KpiMetric spark series before being sent to the client.
 export interface CartEntry {
   timestamp: string; // ISO 8601
   value: number;
@@ -40,9 +39,7 @@ export interface AnalyticCardData {
     rating: number;
   };
   marginality: number; // discountPercentage used as GM% proxy
-  // A year of raw daily readings — the client-side sparkline pipeline
-  // (lib/utils/sparkline-processing.ts) cleans, smooths and downsamples
-  // this to the 7 points the mini sparkline actually displays.
+  // A year of raw daily readings; the client-side sparkline pipeline (lib/utils/sparkline-processing.ts) cleans, smooths and downsamples this to the 7 points the mini sparkline actually displays.
   rawHistory: number[];
 }
 

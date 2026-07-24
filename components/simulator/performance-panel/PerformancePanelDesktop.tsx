@@ -10,9 +10,7 @@ import MetricStat from "@/components/simulator/performance-panel/MetricStat";
 import OverallRatingBadge from "@/components/simulator/performance-panel/OverallRatingBadge";
 import type { PerformancePanelMetrics } from "@/components/simulator/performance-panel/panel-metrics";
 
-// Floating corner widget — desktop counterpart to PerformancePanelMobile's
-// bottom panel. Receives the metrics PerformancePanel computed once for
-// both branches; renders them as gauge rings instead of chart-free numbers.
+// Floating corner widget, desktop counterpart to PerformancePanelMobile's bottom panel. Receives the metrics PerformancePanel computed once for both branches; renders them as gauge rings instead of chart-free numbers.
 export default function PerformancePanelDesktop({
   alerts,
   vitals,

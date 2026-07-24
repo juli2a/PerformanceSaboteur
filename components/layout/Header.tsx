@@ -29,11 +29,7 @@ export default function Header({
   useSyncControlsAcrossBreakpoint();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  // The nav drawer is a mobile-only surface (its trigger is lg:hidden), but
-  // its own open state doesn't know that — left open while crossing into
-  // desktop, it stays visually open at its mobile top offset (h-[60px],
-  // vs the desktop header's h-24), same class of bug
-  // useSyncControlsAcrossBreakpoint already handles for the controls sheet.
+  // The nav drawer is a mobile-only surface (its trigger is lg:hidden), but its own open state doesn't know that; left open while crossing into desktop, it stays visually open at its mobile top offset (h-[60px], vs the desktop header's h-24), same class of bug useSyncControlsAcrossBreakpoint already handles for the controls sheet.
   const isMobile = useContext(MediaContext);
   const [prevIsMobile, setPrevIsMobile] = useState(isMobile);
   if (isMobile !== undefined && prevIsMobile !== isMobile) {
@@ -53,12 +49,7 @@ export default function Header({
   return (
     <>
       <header className="sticky top-0 z-50 flex h-[60px] items-center border-b border-border bg-surface-2 lg:h-24">
-        {/* ── Desktop (lg+): logo zone (width tracks the sidebar) ──
-            pl-heading-gap is constant (not toggled) so the badge stays
-            left-anchored — toggling justify-center here would snap it to
-            the middle of the still-wide box instantly (justify-content
-            can't transition), then it'd visibly drift left as the width
-            shrinks. */}
+        {/* ── Desktop (lg+): logo zone (width tracks the sidebar) ── pl-heading-gap is constant (not toggled) so the badge stays left-anchored; toggling justify-center here would snap it to the middle of the still-wide box instantly (justify-content can't transition), then it'd visibly drift left as the width shrinks. */}
         <Link
           href="/dashboard"
           className={cn(
@@ -69,8 +60,7 @@ export default function Header({
           <Logo size="md" iconOnly={sidebarCollapsed} animated />
         </Link>
 
-        {/* ── Mobile: hamburger (toggles the drawer; the drawer itself owns
-            the X close button) ── */}
+        {/* ── Mobile: hamburger (toggles the drawer; the drawer itself owns the X close button) ── */}
         <Button
           variant="outline"
           size="icon"

@@ -16,22 +16,9 @@ beforeEach(() => {
   useSimControlStore.getState().setControlsOpen(false);
 });
 
-// hooks/useSyncControlsAcrossBreakpoint.ts:8-15 — entering mobile with an
-// already-active guide must force the controls sheet open (otherwise the
-// guide has nowhere to show); entering desktop always closes it (no desktop
-// equivalent to stay open in). Guarded by wasMobileRef (only real breakpoint
-// changes act, not every render) and an explicit no-op while isMobile is
-// still undefined (SSR "not yet known" state).
+// hooks/useSyncControlsAcrossBreakpoint.ts: entering mobile with an already-active guide must force the controls sheet open (otherwise the guide has nowhere to show); entering desktop always closes it (no desktop equivalent to stay open in). Guarded by wasMobileRef (only real breakpoint changes act, not every render) and an explicit no-op while isMobile is still undefined (SSR "not yet known" state).
 //
-// Asserted via useSimControlStore.getState().controlsOpen rather than
-// spying on setControlsOpen: vi.spyOn on a Zustand action leaks across `it`
-// blocks in this file (Zustand copies the function reference into every new
-// state object on `set()`, so vi.restoreAllMocks() can't reach the copy
-// already propagated into the store's current state) — a test-construction
-// problem, not a bug in the hook. Where a test needs to prove "no call
-// happened" (not just "the end value happens to match"), it presets
-// controlsOpen to a sentinel value the real branch would never produce, so
-// an unchanged sentinel after the transition proves the hook took no action.
+// Asserted via useSimControlStore.getState().controlsOpen rather than spying on setControlsOpen: vi.spyOn on a Zustand action leaks across `it` blocks in this file (Zustand copies the function reference into every new state object on `set()`, so vi.restoreAllMocks() can't reach the copy already propagated into the store's current state), a test-construction problem, not a bug in the hook. Where a test needs to prove "no call happened" (not just "the end value happens to match"), it presets controlsOpen to a sentinel value the real branch would never produce, so an unchanged sentinel after the transition proves the hook took no action.
 describe("useSyncControlsAcrossBreakpoint", () => {
   it("desktop -> mobile with an active guide: opens the controls sheet", () => {
     useSimControlStore.getState().setActiveGuide("waterfall");
@@ -96,10 +83,7 @@ describe("useSyncControlsAcrossBreakpoint", () => {
     rerender();
     expect(useSimControlStore.getState().controlsOpen).toBe(true);
 
-    // Simulate the user manually closing the sheet, independent of the
-    // breakpoint hook. If the guard is broken, the next no-op re-render
-    // (isMobile still true) would re-run the mobile+guide branch and force
-    // it back open.
+    // Simulate the user manually closing the sheet, independent of the breakpoint hook. If the guard is broken, the next no-op re-render (isMobile still true) would re-run the mobile+guide branch and force it back open.
     useSimControlStore.getState().setControlsOpen(false);
     rerender();
 

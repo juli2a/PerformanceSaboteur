@@ -5,10 +5,7 @@ import type { VitalRating } from "@/types/simulator";
 
 const POOR_BREAKPOINT_PERCENT = 75;
 
-// 0 → poorThreshold maps linearly to 0–75% of the ring. Beyond the threshold
-// the fill asymptotically approaches 100% but never reaches it, so the ring
-// keeps showing forward motion no matter how bad the value gets — see
-// docs/ui.md "Floating Performance Panel".
+// 0 → poorThreshold maps linearly to 0–75% of the ring. Beyond the threshold the fill asymptotically approaches 100% but never reaches it, so the ring keeps showing forward motion no matter how bad the value gets; see docs/ui.md "Floating Performance Panel".
 export function getGaugePercent(value: number, poorThreshold: number): number {
   if (value <= 0) return 0;
   if (value <= poorThreshold) {
@@ -17,8 +14,7 @@ export function getGaugePercent(value: number, poorThreshold: number): number {
   return POOR_BREAKPOINT_PERCENT + 25 * (1 - poorThreshold / value);
 }
 
-// Worst rating among whatever metrics have reported so far; null only when
-// none have (e.g. before first paint, or before any interaction for INP).
+// Worst rating among whatever metrics have reported so far; null only when none have (e.g. before first paint, or before any interaction for INP).
 export function getOverallRating(
   ratings: (VitalRating | null)[],
 ): VitalRating | null {
@@ -31,11 +27,7 @@ export function getOverallRating(
   return "good";
 }
 
-// Classifies a plain non-CWV stat (Blocking Time, Interaction Latency) onto
-// the same three-tier scale the gauges use, given its own good/poor cutoffs —
-// e.g. Interaction Latency reuses INP's own official thresholds since it's a
-// per-sample version of the same thing; Blocking Time has no official
-// equivalent, so PerformancePanel picks its own.
+// Classifies a plain non-CWV stat (Blocking Time, Interaction Latency) onto the same three-tier scale the gauges use, given its own good/poor cutoffs. Interaction Latency reuses INP's own official thresholds since it's a per-sample version of the same thing; Blocking Time has no official equivalent, so PerformancePanel picks its own.
 export function getValueRating(
   value: number,
   good: number,

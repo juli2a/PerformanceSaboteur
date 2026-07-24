@@ -4,22 +4,9 @@ import type { CaseKey } from "@/types/simulator";
 import CaseTipContent from "@/components/simulator/control-panel/CaseTipContent";
 import CaseCodeBlock from "@/components/simulator/control-panel/CaseCodeBlock";
 
-// Pre-renders every case's tip — including server-highlighted code blocks —
-// once per device, server-side. Must be called from a Server Component (e.g.
-// app/(shell)/layout.tsx) and the result passed down as a prop through
-// Header into ControlPanelTogglers / MobileControlDrawer, both of which are
-// "use client" and so can never import CaseCodeBlock (a Server Component)
-// directly themselves.
+// Pre-renders every case's tip (including server-highlighted code blocks) once per device, server-side. Must be called from a Server Component (e.g. app/(shell)/layout.tsx) and the result passed down as a prop through Header into ControlPanelTogglers / MobileControlDrawer, both of which are "use client" and so can never import CaseCodeBlock (a Server Component) directly themselves.
 //
-// `device` picks which of a case's two content sets to render: a case whose
-// bad/good code is identical on both platforms only defines `tip`, so
-// `device: "mobile"` falls back to that same `tip`/snippet — only a case
-// like contextOverhead, whose global-store role genuinely differs by
-// platform (see docs/case7.md), defines `mobileTip` and a
-// `<key>.mobile.{bad,good}.txt` pair to override it. Called twice from the
-// layout (once per device) rather than branching on isMobile inside
-// CaseTipContent itself, so neither surface ever needs client-side
-// media-query state to pick its own guide content.
+// `device` picks which of a case's two content sets to render: a case whose bad/good code is identical on both platforms only defines `tip`, so `device: "mobile"` falls back to that same `tip`/snippet. Only a case like contextOverhead, whose global-store role genuinely differs by platform (see docs/case7.md), defines `mobileTip` and a `<key>.mobile.{bad,good}.txt` pair to override it. Called twice from the layout (once per device) rather than branching on isMobile inside CaseTipContent itself, so neither surface ever needs client-side media-query state to pick its own guide content.
 export function getCaseTipContent(
   device: "desktop" | "mobile",
 ): Partial<Record<CaseKey, React.ReactNode>> {

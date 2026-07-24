@@ -11,14 +11,9 @@ interface ProductCardProps {
   product: AmplifiedProduct;
 }
 
-// Mobile card variant of a product row — the good path (Case 7's contrast
-// to ProductCardUnoptimized). Subscribes to its own id only via
-// useInventoryStatusStore, so changing one card's status re-renders just
-// this component.
+// Mobile card variant of a product row, the good path (Case 7's contrast to ProductCardUnoptimized). Subscribes to its own id only via useInventoryStatusStore, so changing one card's status re-renders just this component.
 //
-// Wrapped in memo() so ProductTable's own re-renders (filters, search,
-// isMobile/isContextOverheadOn flips) don't cascade into every currently-
-// mounted card re-executing — mirrors ProductTableRow's reasoning.
+// Wrapped in memo() so ProductTable's own re-renders (filters, search, isMobile/isContextOverheadOn flips) don't cascade into every currently-mounted card re-executing; mirrors ProductTableRow's reasoning.
 function ProductCard({ product }: ProductCardProps) {
   const logisticStatus = useInventoryStatusStore(
     (state) => state.statuses.get(product.id) ?? product.logisticStatus,

@@ -20,9 +20,6 @@ interface AboutSectionProps {
   children: React.ReactNode;
 }
 
-// Mirrors the section layout CaseTipContent's TipSection uses in the case
-// guide panel (title + muted body), so the About popup reads consistently
-// with the rest of the app's typography.
 function AboutSection({ title, children }: AboutSectionProps) {
   return (
     <div>

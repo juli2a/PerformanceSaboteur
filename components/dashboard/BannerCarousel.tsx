@@ -17,13 +17,9 @@ interface BannerCarouselProps {
   slides: BannerCarouselSlide[];
 }
 
-// Embla-powered slider for the dashboard's hero banner — owns the scroll
-// mechanics (autoplay, arrows, dot navigation) so the caller only supplies
-// each slide's already-rendered content.
+// Owns the scroll mechanics (autoplay, arrows, dot navigation) so the caller only supplies each slide's already-rendered content.
 export default function BannerCarousel({ slides }: BannerCarouselProps) {
-  // Lazy-initialized once so the plugin instance stays stable across renders
-  // — passing a fresh Autoplay() every render would re-init the carousel and
-  // keep resetting its delay timer.
+  // Lazy-initialized once so the plugin instance stays stable across renders, passing a fresh Autoplay() every render would re-init the carousel and keep resetting its delay timer.
   const [plugins] = useState(() => [
     Autoplay({ delay: 4000, stopOnInteraction: false }),
   ]);
@@ -56,10 +52,7 @@ export default function BannerCarousel({ slides }: BannerCarouselProps) {
           {slides.map((slide) => (
             <div
               key={slide.id}
-              // position set inline (not just via the "relative" class) so the
-              // fill-positioned <Image> inside always has a positioned
-              // ancestor to size against, even on the first paint before
-              // Tailwind's stylesheet has been applied.
+              // position set inline (not just via the "relative" class) so the fill-positioned <Image> inside always has a positioned ancestor to size against, even on the first paint before Tailwind's stylesheet has been applied.
               style={{ position: "relative" }}
               className="h-75 min-w-full shrink-0 overflow-hidden bg-surface-2"
             >

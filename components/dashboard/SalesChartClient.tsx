@@ -13,9 +13,7 @@ interface Props {
   data: SalesChartData;
 }
 
-// recharts measures the DOM to size itself, so it's client-only regardless;
-// ssr:false additionally keeps it out of the very first paint entirely — the
-// fixed h-48 wrapper below reserves its space so nothing shifts when it mounts.
+// recharts measures the DOM to size itself, so it's client-only regardless; ssr:false additionally keeps it out of the very first paint entirely, the fixed h-48 wrapper below reserves its space so nothing shifts when it mounts.
 const SalesChartCanvas = dynamic(() => import("./SalesChartCanvas"), {
   ssr: false,
   loading: () => (

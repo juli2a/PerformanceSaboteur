@@ -47,21 +47,13 @@ function renderTable() {
   );
 }
 
-// role="row" also appears on the sticky header (outside role="rowgroup"),
-// so counting has to scope to the rowgroup to get just the data rows.
+// role="row" also appears on the sticky header (outside role="rowgroup"), so counting has to scope to the rowgroup to get just the data rows.
 function countMountedRows(container: HTMLElement): number {
   const rowgroup = container.querySelector('[role="rowgroup"]');
   return rowgroup ? rowgroup.querySelectorAll('[role="row"]').length : 0;
 }
 
-// Case 3 (heavyMounting): components/inventory/ProductTable.tsx:63-91,169-172.
-// `flatRowLimit` is the whole row list's length when heavyMounting is on
-// (no cap at all) vs the fixed FLAT_ROW_LIMIT=200 otherwise. Both branches
-// tested here render the flat (non-virtualized) path, deliberately avoiding
-// the default all-toggles-off virtualized branch: @tanstack/react-virtual
-// decides visible-row count from real container layout, which jsdom always
-// reports as zero-sized — see docs/local-notes/step5-component-plan.md for
-// why that branch isn't tested here.
+// Case 3 (heavyMounting): components/inventory/ProductTable.tsx. `flatRowLimit` is the whole row list's length when heavyMounting is on (no cap at all) vs the fixed FLAT_ROW_LIMIT otherwise. Both branches tested here render the flat (non-virtualized) path, deliberately avoiding the default all-toggles-off virtualized branch: @tanstack/react-virtual decides visible-row count from real container layout, which jsdom always reports as zero-sized, so that branch isn't tested here.
 describe("ProductTable row mounting (Case 3 vs Case 7)", () => {
   it("Case 7 alone: flat list caps at FLAT_ROW_LIMIT (200) regardless of dataset size", () => {
     useSimControlStore.getState().setToggle("contextOverhead", true);
@@ -89,13 +81,7 @@ describe("ProductTable row mounting (Case 3 vs Case 7)", () => {
   });
 });
 
-// Category filter effect (5.2, not tied to a simulator case) —
-// components/inventory/ProductTable.tsx:127-133: selecting a category in
-// useInventoryFiltersStore feeds react-table's controlled `columnFilters`,
-// which should narrow the mounted rows down to just that category. The
-// filter checkbox UI itself (CategoryFilterList) is a thin Set.add/delete
-// wrapper with no branching logic and isn't tested — this is the actual
-// integration point: does the store value really narrow what's rendered.
+// Category filter effect (5.2, not tied to a simulator case), components/inventory/ProductTable.tsx: selecting a category in useInventoryFiltersStore feeds react-table's controlled `columnFilters`, which should narrow the mounted rows down to just that category. The filter checkbox UI itself (CategoryFilterList) is a thin Set.add/delete wrapper with no branching logic and isn't tested, this is the actual integration point: does the store value really narrow what's rendered.
 describe("ProductTable category filter effect", () => {
   const mixedCategoryProducts: AmplifiedProduct[] = [
     { ...makeProduct(1), category: "Beauty" },
@@ -104,10 +90,7 @@ describe("ProductTable category filter effect", () => {
   ];
 
   function renderMixedTable() {
-    // heavyMounting forces the flat, unwindowed render path so the row
-    // count reflects the filter alone, not @tanstack/react-virtual's
-    // unpredictable-in-jsdom viewport-based windowing (same reasoning as
-    // the Case 3/7 tests above).
+    // heavyMounting forces the flat, unwindowed render path so the row count reflects the filter alone, not @tanstack/react-virtual's unpredictable-in-jsdom viewport-based windowing (same reasoning as the Case 3/7 tests above).
     useSimControlStore.getState().setToggle("heavyMounting", true);
     return render(
       <MediaContext.Provider value={false}>

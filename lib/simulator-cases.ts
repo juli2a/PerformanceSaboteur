@@ -1,7 +1,6 @@
 import type { CaseKey } from "@/types/simulator";
 
-// Mirrors the 4-part tip structure from
-// .claude/skills/content-maker/SKILL.md.
+// Mirrors the 4-part tip structure from .claude/skills/content-maker/SKILL.md.
 export interface CaseTip {
   problem: string;
   reproduction: string;
@@ -11,8 +10,7 @@ export interface CaseTip {
   summary: string;
 }
 
-// Split title/body so PerformancePanel can render them as a SimulatorAlert
-// card directly — title is the short uppercase label, body the explanation.
+// Split title/body so PerformancePanel can render them as a SimulatorAlert card directly: title is the short uppercase label, body the explanation.
 export interface CaseAlert {
   title: string;
   body: string;
@@ -22,21 +20,12 @@ export interface ToggleItem {
   label: string;
   key: CaseKey;
   tip: CaseTip;
-  // Override shown on mobile instead of `tip` — only set for a case whose
-  // bad/good code (and the story behind why state is shared at all) genuinely
-  // differs by platform, not just its trigger (see contextOverhead / Case 7,
-  // docs/case7.md "Мобільна версія"). Absent for every other case, which
-  // renders the same `tip` on both surfaces.
+  // Override shown on mobile instead of `tip`, only set for a case whose bad/good code (and the story behind why state is shared at all) genuinely differs by platform, not just its trigger (see contextOverhead / Case 7, docs/case7.md "Мобільна версія"). Absent for every other case, which renders the same `tip` on both surfaces.
   mobileTip?: CaseTip;
   alert: CaseAlert;
 }
 
-// Shared case definitions for the simulator control panel — consumed by both
-// the desktop ControlPanelTogglers and the mobile MobileControlDrawer.
-// `key` matches `CaseKey` exactly so both can read/write `useSimControlStore`
-// without a separate name-mapping table.
-// `tip`/`alert` are filled in by the content-maker skill
-// (.claude/skills/content-maker/SKILL.md).
+// Shared case definitions for the simulator control panel, consumed by both the desktop ControlPanelTogglers and the mobile MobileControlDrawer. `key` matches `CaseKey` exactly so both can read/write `useSimControlStore` without a separate name-mapping table. `tip`/`alert` are filled in by the content-maker skill (.claude/skills/content-maker/SKILL.md).
 export const SIMULATOR_CASES: { title: string; items: ToggleItem[] }[] = [
   {
     title: "Network",
@@ -197,9 +186,7 @@ export const SIMULATOR_CASES: { title: string; items: ToggleItem[] }[] = [
         },
         alert: {
           title: "Context Re-render Storm",
-          // Static prefix only — the live count comes from the
-          // FlashOnUpdate settle-window counter (see docs/case7.md) and is
-          // appended at render time, e.g. `${body}: ${count}`.
+          // Static prefix only, the live count comes from the FlashOnUpdate settle-window counter (see docs/case7.md) and is appended at render time, e.g. `${body}: ${count}`.
           body: "Rerendered Nodes on Action",
         },
       },
@@ -246,10 +233,7 @@ export const SIMULATOR_CASES: { title: string; items: ToggleItem[] }[] = [
         },
         alert: {
           title: "Memo Overhead",
-          // Static prefix only — the live count comes from the
-          // FlashOnUpdate settle-window counter (see
-          // hooks/useRerenderNodesReporter.ts) and is appended at render
-          // time, e.g. `${body}: ${count}`.
+          // Static prefix only, the live count comes from the FlashOnUpdate settle-window counter (see hooks/useRerenderNodesReporter.ts) and is appended at render time, e.g. `${body}: ${count}`.
           body: "Rerendered Nodes on Action",
         },
       },
@@ -257,10 +241,7 @@ export const SIMULATOR_CASES: { title: string; items: ToggleItem[] }[] = [
   },
 ];
 
-// Looks up a single case's definition by key, plus the zone (Network /
-// Rendering / Computing) it belongs to — e.g. so PerformancePanel can show a
-// case's authored `alert` text, and the right-hand guide panel can show its
-// zone as a subtitle, without scanning SIMULATOR_CASES twice.
+// Looks up a single case's definition by key, plus the zone (Network / Rendering / Computing) it belongs to, e.g. so PerformancePanel can show a case's authored `alert` text, and the right-hand guide panel can show its zone as a subtitle, without scanning SIMULATOR_CASES twice.
 export function getSimulatorCase(
   key: CaseKey,
 ): ToggleItem & { zoneTitle: string } {

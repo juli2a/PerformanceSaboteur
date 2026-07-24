@@ -18,8 +18,7 @@ interface GuideButtonProps {
   label: string;
 }
 
-// Opens this case's guide in the right-hand slide-out panel (CaseDetailPanel)
-// — replaces the old info popover so the guide gets room for code snippets.
+// Opens this case's guide in the right-hand slide-out panel (CaseDetailPanel).
 function GuideButton({ caseKey, label }: GuideButtonProps) {
   const isActive = useSimControlStore(
     (state) => state.activeGuideKey === caseKey,
@@ -58,11 +57,6 @@ export default function ControlPanelTogglers() {
       >
         {SIMULATOR_CASES.map((zone, index) => (
           <Fragment key={zone.title}>
-            {/* No divider before the first zone — it sits right after
-                ControlPanel's own SimulatorKicker border. Between zones, a
-                flexible spacer (not a uniform gap) absorbs the panel's extra
-                width, and a trailing one does the same after the last zone —
-                matches the design's spacer-based distribution. */}
             {index > 0 && (
               <>
                 <span className="min-w-5 flex-1 shrink-0" />
@@ -100,8 +94,6 @@ export default function ControlPanelTogglers() {
         ))}
         <span className="min-w-5 flex-1 shrink-0" />
       </EdgeScroller>
-      {/* Sibling of EdgeScroller, not inside it — stays pinned outside the
-          scrollable zones so it's always reachable without scrolling. */}
       <span className="mx-4 w-px shrink-0 self-stretch bg-brand-border" />
       <Button
         variant="outline"

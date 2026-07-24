@@ -32,7 +32,7 @@ interface CategoryFilterProps {
 
 // Desktop: dropdown with a "Filter by Category" trigger.
 // Mobile: same multi-select list, collapsed into a funnel-icon bottom sheet.
-// Both branches render the same CategoryFilterList — see that file for why.
+// Both branches render the same CategoryFilterList, see that file for why.
 export default function CategoryFilter({ categories }: CategoryFilterProps) {
   const isMobile = useContext(MediaContext);
   const panelHeight = useSimPerformanceStore(

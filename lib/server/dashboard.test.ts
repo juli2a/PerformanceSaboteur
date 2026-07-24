@@ -1,23 +1,15 @@
 import { describe, it, expect, vi, beforeAll } from "vitest";
 import { getCarts, getUsers, getCategories } from "@/lib/server/dashboard";
 
-// Real network calls are mocked at the fetcher boundary, same approach as
-// lib/server/inventory.test.ts.
+// Real network calls are mocked at the fetcher boundary, same approach as lib/server/inventory.test.ts.
 vi.mock("@/lib/server/fetcher", () => ({
   apiFetch: vi.fn(),
 }));
 import { apiFetch } from "@/lib/server/fetcher";
 
-// getCarts/getUsers/getCategories are each wrapped in React's cache(), so
-// each is fetched exactly once (via beforeAll) and reused across that
-// describe block's assertions — calling the same cached function twice with
-// different mocks in one test file would return the first call's stale
-// result.
+// getCarts/getUsers/getCategories are each wrapped in React's cache(), so each is fetched exactly once (via beforeAll) and reused across that describe block's assertions; calling the same cached function twice with different mocks in one test file would return the first call's stale result.
 
-// totalRevenue = round(sum of discountedTotal); avgCheck = round(totalRevenue
-// / actual cart count); totalOrders.value is the *actual* count returned,
-// not the requested limit (comment in dashboard.ts: "actual count in case
-// API returns fewer than requested").
+// totalRevenue = round(sum of discountedTotal); avgCheck = round(totalRevenue / actual cart count); totalOrders.value is the actual count returned, not the requested limit (see dashboard.ts).
 describe("getCarts", () => {
   let kpi: Awaited<ReturnType<typeof getCarts>>["kpi"];
 
@@ -51,8 +43,7 @@ describe("getUsers", () => {
   let result: Awaited<ReturnType<typeof getUsers>>;
 
   beforeAll(async () => {
-    // API order deliberately does not match LTV order — id=10 (lowest LTV)
-    // is first in the API response but must be dropped from the top 5.
+    // API order deliberately does not match LTV order: id=10 (lowest LTV) is first in the API response but must be dropped from the top 5.
     vi.mocked(apiFetch).mockResolvedValue({
       users: [
         { id: 10, firstName: "A", lastName: "A", age: 20, company: { name: "Co" } }, // ltv 18500
@@ -85,9 +76,7 @@ describe("getUsers", () => {
   });
 });
 
-// stockValue = price*stock summed per category; share = round(stockValue /
-// grandTotal * 100); only the top 8 categories by stockValue are kept
-// (comment in dashboard.ts).
+// stockValue = price*stock summed per category; share = round(stockValue / grandTotal * 100); only the top 8 categories by stockValue are kept (see dashboard.ts).
 describe("getCategories", () => {
   let result: Awaited<ReturnType<typeof getCategories>>;
 

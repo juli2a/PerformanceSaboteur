@@ -7,9 +7,7 @@ import {
 } from "@/lib/utils/chart";
 import type { CartEntry } from "@/types/analytics";
 
-// Builds an ISO timestamp from local-time fields (month is 0-indexed, like
-// the native Date constructor) so fixtures stay in the same local calendar
-// as the faked system clock — avoids any UTC-vs-local drift.
+// Builds an ISO timestamp from local-time fields (month is 0-indexed, like the native Date constructor) so fixtures stay in the same local calendar as the faked system clock, avoiding any UTC-vs-local drift.
 const iso = (
   year: number,
   month: number,
@@ -18,7 +16,7 @@ const iso = (
   minute = 0,
 ) => new Date(year, month, day, hour, minute).toISOString();
 
-// "Yesterday is the last complete day — today's data is still partial."
+// See chart.ts: yesterday is the last complete day.
 describe("getLastDay", () => {
   afterEach(() => vi.useRealTimers());
 
@@ -30,9 +28,7 @@ describe("getLastDay", () => {
   });
 });
 
-// aggregateByHour/aggregateByDay are internal to chart.ts (not exported) —
-// exercised here through the public buildSalesChartData, which is how the
-// rest of the app actually calls them (docs/data.md:31).
+// aggregateByHour/aggregateByDay are internal to chart.ts (not exported), exercised here through the public buildSalesChartData, which is how the rest of the app actually calls them (see docs/data.md).
 describe("buildSalesChartData", () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -45,7 +41,7 @@ describe("buildSalesChartData", () => {
       const orders: CartEntry[] = [
         { timestamp: iso(2026, 6, 16, 5, 10), value: 100 }, // lastDay, hour 5
         { timestamp: iso(2026, 6, 16, 5, 45), value: 50 }, // lastDay, hour 5 too
-        { timestamp: iso(2026, 6, 15, 5, 0), value: 999 }, // day before — same hour, must be dropped
+        { timestamp: iso(2026, 6, 15, 5, 0), value: 999 }, // day before, same hour, must be dropped
       ];
       const { day } = buildSalesChartData(orders);
       // If the date filter were broken, this slot would read 1149, not 150.
@@ -63,12 +59,8 @@ describe("buildSalesChartData", () => {
   });
 
   describe(".week / .month (day buckets, label format depends on days<=7)", () => {
-    // D + F: two orders on lastDay itself (different hours) — lands in the
-    // newest slot of both .week and .month, and doubles as the "two orders
-    // on the same day get summed" case.
-    // E: one day before the .week window (window is July10-16) but still
-    // inside the .month window (June17-July16) — proves the same order is
-    // dropped by one window and kept by the other, driven purely by `days`.
+    // D + F: two orders on lastDay itself (different hours), landing in the newest slot of both .week and .month, and doubling as the "two orders on the same day get summed" case.
+    // E: one day before the .week window (window is July10-16) but still inside the .month window (June17-July16), proving the same order is dropped by one window and kept by the other, driven purely by `days`.
     const orders: CartEntry[] = [
       { timestamp: iso(2026, 6, 16, 9, 0), value: 200 }, // D
       { timestamp: iso(2026, 6, 16, 18, 0), value: 50 }, // F
@@ -95,8 +87,8 @@ describe("buildSalesChartData", () => {
       const { week, month } = buildSalesChartData(orders);
       const weekTotal = week.reduce((sum, p) => sum + p.value, 0);
       const monthTotal = month.reduce((sum, p) => sum + p.value, 0);
-      expect(weekTotal).toBe(250); // D + F only — E (9999) is outside .week's window
-      expect(monthTotal).toBe(10249); // D + F + E — all three fit .month's wider window
+      expect(weekTotal).toBe(250); // D + F only, E (9999) is outside .week's window
+      expect(monthTotal).toBe(10249); // D + F + E, all three fit .month's wider window
     });
 
     it("sums two orders that land on the same day into one slot", () => {
@@ -106,8 +98,7 @@ describe("buildSalesChartData", () => {
   });
 });
 
-// Exported directly — window of segmentCount*segmentDays days ending at
-// lastDay, split into segmentCount equal buckets via floor(dayIndex/segmentDays).
+// Exported directly: window of segmentCount*segmentDays days ending at lastDay, split into segmentCount equal buckets via floor(dayIndex/segmentDays).
 describe("buildOrderSegments", () => {
   const lastDay = new Date(2026, 6, 16); // window (segmentCount=3, segmentDays=2): July11-16
   const segmentCount = 3;
@@ -145,9 +136,7 @@ describe("buildOrderSegments", () => {
   });
 });
 
-// Exported directly — splits segments in half, compares older vs newer sums.
-// percentChange (internal) is only reachable through this function, so its
-// first===0 branches are exercised here rather than imported separately.
+// Exported directly: splits segments in half, compares older vs newer sums. percentChange (internal) is only reachable through this function, so its first===0 branches are exercised here rather than imported separately.
 describe("compareOrderHalves", () => {
   it("computes % change for revenue, orders and avgCheck from real growth", () => {
     // older = seg0+seg1 = {revenue:200, count:4}; newer = seg2+seg3 = {revenue:300, count:4}

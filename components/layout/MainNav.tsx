@@ -23,17 +23,11 @@ const NAV_ITEMS = [
 interface MainNavProps {
   onNavigate?: () => void;
   linkClassName?: string;
-  // Only the desktop Sidebar (which can collapse) sets this, along with
-  // `collapsed`/`setCollapsed` (computed once in Sidebar via
-  // useSidebarCollapsed) — renders the collapse toggle on the "WORKSPACE"
-  // row. MobileDrawer leaves all three unset and always renders the full,
-  // uncollapsed nav.
+  // Only the desktop Sidebar (which can collapse) sets this, along with `collapsed`/`setCollapsed` (computed once in Sidebar via useSidebarCollapsed): renders the collapse toggle on the "WORKSPACE" row. MobileDrawer leaves all three unset and always renders the full, uncollapsed nav.
   collapsible?: boolean;
   collapsed?: boolean;
   setCollapsed?: (collapsed: boolean) => void;
-  // Only MobileDrawer sets this — renders an X button, absolutely
-  // positioned in the top-right corner of the nearest positioned ancestor
-  // (the drawer's fixed <aside>), to close it.
+  // Only MobileDrawer sets this: renders an X button, absolutely positioned in the top-right corner of the nearest positioned ancestor (the drawer's fixed <aside>), to close it.
   onClose?: () => void;
 }
 
@@ -48,10 +42,7 @@ export default function MainNav({
   const pathname = usePathname();
   const collapsed = collapsible && collapsedProp;
 
-  // Nudge to collapse: only makes sense once the sidebar is actually the
-  // thing worth collapsing — both it and the guide panel (CaseDetailPanel)
-  // open, on a shell too narrow for that (screen width is a simpler proxy
-  // for `main` getting squeezed than measuring `main` itself).
+  // Nudge to collapse: only makes sense once the sidebar is actually the thing worth collapsing, both it and the guide panel (CaseDetailPanel) open, on a shell too narrow for that (screen width is a simpler proxy for `main` getting squeezed than measuring `main` itself).
   const isGuideOpen = useSimControlStore(
     (state) => state.activeGuideKey !== null,
   );
@@ -75,10 +66,7 @@ export default function MainNav({
       {(!collapsed || collapsible) && (
         <div
           className={cn(
-            // h-13 = py-2.5 (20px) + the collapse button's own height
-            // (size-8 = 32px) — fixed, not just a min, so this row is
-            // exactly as tall on mobile (no button, just text) as on
-            // desktop, where gap-1.5 alone wouldn't otherwise look the same.
+            // h-13 = py-2.5 (20px) + the collapse button's own height (size-8 = 32px), fixed, not just a min, so this row is exactly as tall on mobile (no button, just text) as on desktop, where gap-1.5 alone wouldn't otherwise look the same.
             "flex h-13 items-center py-2.5",
             collapsed ? "justify-center" : "justify-between px-3.5",
           )}
@@ -115,11 +103,7 @@ export default function MainNav({
             onClick={onNavigate}
             title={collapsed ? label : undefined}
             className={cn(
-              // leading-[18px] keeps the label's line box the same height as
-              // the icon slot below (size-4.5 = 18px) — without it, the
-              // label's default text-sm line-height (20px) makes the row
-              // taller than the icon-only collapsed row, shifting every item
-              // below it down a couple px when the sidebar expands.
+              // leading-[18px] keeps the label's line box the same height as the icon slot below (size-4.5 = 18px); without it, the label's default text-sm line-height (20px) makes the row taller than the icon-only collapsed row, shifting every item below it down a couple px when the sidebar expands.
               "flex items-center gap-3.25 rounded px-3.5 py-3 text-sm font-medium leading-[18px] transition-colors whitespace-nowrap",
               linkClassName,
               active
@@ -127,10 +111,7 @@ export default function MainNav({
                 : "text-text-2 hover:bg-raise hover:text-foreground",
             )}
           >
-            {/* Fixed-size slot, always left-anchored — so the icon's position
-                never depends on justify-content (which can't transition and
-                would otherwise snap instantly while the sidebar's width is
-                still animating). */}
+            {/* Fixed-size slot, always left-anchored, so the icon's position never depends on justify-content (which can't transition and would otherwise snap instantly while the sidebar's width is still animating). */}
             <span className="grid size-4.5 shrink-0 place-items-center">
               <Icon
                 size={18}

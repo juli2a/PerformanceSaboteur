@@ -1,8 +1,6 @@
 // Shared data types for Inventory Control page
 
-// Single source of truth for the 5 logistic statuses — Bulk Actions' status
-// picker and the mobile status-change sheet both iterate this array instead
-// of repeating the literal list.
+// Single source of truth for the logistic statuses: Bulk Actions' status picker and the mobile status-change sheet both iterate this array instead of repeating the literal list.
 export const LOGISTIC_STATUSES = [
   "In Stock",
   "To Order",

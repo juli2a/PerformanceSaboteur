@@ -13,15 +13,9 @@ interface ProductTableRowProps {
   gridTemplateColumns: string;
 }
 
-// Subscribes to its own id only — toggling one row's checkbox re-renders
-// just this component, not the rest of the (virtualized) row list. This is
-// the atomic-selector baseline Case 7 contrasts against Context later.
+// Subscribes to its own id only, toggling one row's checkbox re-renders just this component, not the rest of the (virtualized) row list. This is the atomic-selector baseline Case 7 contrasts against Context later.
 //
-// Wrapped in memo() so ProductTable's own re-renders (e.g. from
-// useVirtualizer tracking scroll position) don't cascade into every
-// currently-mounted row re-executing — this component should only actually
-// re-render when its own props change or one of its own subscriptions
-// (the selector above) reports a change, not just because its parent did.
+// Wrapped in memo() so ProductTable's own re-renders (e.g. from useVirtualizer tracking scroll position) don't cascade into every currently-mounted row re-executing; this component should only actually re-render when its own props change or one of its own subscriptions (the selector above) reports a change, not just because its parent did.
 function ProductTableRow({
   product,
   gridTemplateColumns,

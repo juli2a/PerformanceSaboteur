@@ -1,9 +1,8 @@
-// Server-side order aggregation — same input always produces same output.
-// Feeds both the sales chart (ChartPoint[]) and the KPI sparklines (OrderSegment[]).
+// Server-side order aggregation, same input always produces same output. Feeds both the sales chart (ChartPoint[]) and the KPI sparklines (OrderSegment[]).
 
 import type { CartEntry, ChartPoint, SalesChartData } from "@/types/analytics";
 
-// Yesterday is the last complete day — today's data is still partial.
+// Yesterday is the last complete day; today's data is still partial.
 export function getLastDay(): Date {
   const d = new Date();
   d.setDate(d.getDate() - 1);
@@ -78,8 +77,7 @@ export interface OrderSegment {
   count: number;
 }
 
-// Splits the segmentCount * segmentDays window ending lastDay into equal-size
-// buckets (oldest → newest) — e.g. 10 buckets of 3 days for a KPI sparkline.
+// Splits the segmentCount * segmentDays window ending lastDay into equal-size buckets (oldest → newest), e.g. 10 buckets of 3 days for a KPI sparkline.
 export function buildOrderSegments(
   orders: CartEntry[],
   lastDay: Date,
@@ -126,10 +124,7 @@ function percentChange(first: number, last: number): number {
   return Math.round(((last - first) / first) * 100);
 }
 
-// % change from the older half of the window to the newer half (e.g. last 15
-// days vs the 15 before that) — comparing two multi-day sums is more stable
-// than comparing two single endpoint segments, which a single noisy day can
-// flip the sign of.
+// % change from the older half of the window to the newer half; comparing two multi-day sums is more stable than comparing two single endpoint segments, which a single noisy day can flip the sign of.
 export function compareOrderHalves(segments: OrderSegment[]): {
   revenue: number;
   orders: number;

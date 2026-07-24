@@ -20,13 +20,9 @@ const SIZES = {
 
 interface LogoProps {
   size?: "sm" | "md";
-  // Renders only the badge, no wordmark — used in the header's logo zone
-  // when the sidebar is collapsed and there's no room for "PerfSaboteur".
+  // Used in the header's logo zone when the sidebar is collapsed and there's no room for "PerfSaboteur".
   iconOnly?: boolean;
-  // Fades the wordmark in after a delay instead of popping in instantly —
-  // only meaningful where iconOnly toggles at runtime (the header's
-  // collapsible logo zone), so it doesn't appear before the sidebar's width
-  // transition has made room for it and overlap the simulator panel.
+  // Only meaningful where iconOnly toggles at runtime (the header's collapsible logo zone), so the wordmark doesn't appear before the sidebar's width transition has made room for it and overlap the simulator panel.
   animated?: boolean;
 }
 
