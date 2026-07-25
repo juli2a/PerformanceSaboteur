@@ -9,7 +9,9 @@ export async function DashboardContent() {
       <TopProductsBanner />
       <KpiGridView kpi={kpi} />
       <SalesChartClient data={salesChart} />
-      <CategoryAnalyticsView categories={categories} />
+      <CategoryAnalyticsView
+        categories={categories}
+      />
       <TopCustomersView customers={users} />
       <MicroCardsGridClient products={products} />
     </>

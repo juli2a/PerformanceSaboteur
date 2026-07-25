@@ -10,7 +10,7 @@ export default async function CaseCodeBlock({ code }: CaseCodeBlockProps) {
 
   return (
     <div
-      className="mt-3 overflow-x-auto rounded border border-brand-border text-xs [&_pre]:w-max [&_pre]:min-w-full [&_pre]:p-2"
+      className="mt-3 overflow-x-auto rounded border border-brand-border text-sm [&_pre]:w-max [&_pre]:min-w-full [&_pre]:p-2"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

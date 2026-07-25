@@ -11,19 +11,26 @@ const toggleRow = (product) => {
 };
 
 return (
-  <TableSelectionContext.Provider value={{ selected, toggleRow }}>
+  <TableSelectionContext.Provider
+    value={{ selected, toggleRow }}
+  >
     {children}
   </TableSelectionContext.Provider>
 );
 
 // components/inventory/ProductTableRow.tsx
-const { selected, toggleRow } = useContext(TableSelectionContext);
+const { selected, toggleRow } = useContext(
+  TableSelectionContext,
+);
 const isSelected = selected.has(product.id);
 
-// Every time toggleRow runs, the Provider re-renders (its own `selected`
-// state changed) and builds a brand-new `value` object for its Provider —
-// a fresh object reference, every time, whether or not it's memoized.
-// React re-renders *every* component that calls useContext on that
-// Provider whenever `value`'s reference changes, regardless of which field
-// a given row actually reads. So one row's checkbox click re-renders all
-// 200+ rows, not just the one whose selection changed.
+// Every time toggleRow runs, the Provider re-renders
+// (its own `selected` state changed) and builds a
+// brand-new `value` object for its Provider — a fresh
+// object reference, every time, whether or not it's
+// memoized. React re-renders *every* component that
+// calls useContext on that Provider whenever
+// `value`'s reference changes, regardless of which
+// field a given row actually reads. So one row's
+// checkbox click re-renders all 200+ rows, not just
+// the one whose selection changed.

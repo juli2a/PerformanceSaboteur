@@ -14,8 +14,10 @@ const virtualizer = useVirtualizer({
   />
 ))}
 
-// @tanstack/react-virtual only mounts the rows currently in (or near) the
-// visible scroll window — ~15-20 at a time out of 2000+ — no matter how
-// long the underlying dataset is. Scrolling swaps which rows are mounted
-// instead of growing how many are mounted, so DOM Elements and mount cost
-// both stay flat regardless of dataset size.
+// @tanstack/react-virtual only mounts the rows
+// currently in (or near) the visible scroll window —
+// ~15-20 at a time out of 2000+ — no matter how long
+// the underlying dataset is. Scrolling swaps which
+// rows are mounted instead of growing how many are
+// mounted, so DOM Elements and mount cost both stay
+// flat regardless of dataset size.

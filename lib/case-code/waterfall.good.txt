@@ -25,6 +25,7 @@ export default async function SalesChart() {
   return <SalesChartClient data={salesChart} />;
 }
 
-// CategoryAnalytics, TopCustomers, MicroCardsGrid fetch the same way —
-// their own async wrapper, awaited only inside its own Suspense boundary.
+// CategoryAnalytics, TopCustomers, MicroCardsGrid
+// fetch the same way, their own async wrapper,
+// awaited only inside its own Suspense boundary.
 

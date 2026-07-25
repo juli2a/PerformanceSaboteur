@@ -1,26 +1,31 @@
-// store/inventory-selection.ts — plain Zustand, atomic per-row reads
-export const useInventorySelectionStore = create<InventorySelectionState>(
-  (set) => ({
+// store/inventory-selection.ts — plain Zustand,
+// atomic per-row reads
+export const useInventorySelectionStore =
+  create<InventorySelectionState>((set) => ({
     selected: new Map(),
     toggleRow: (product) =>
       set((state) => {
         const next = new Map(state.selected);
-        if (next.has(product.id)) next.delete(product.id);
+        if (next.has(product.id))
+          next.delete(product.id);
         else next.set(product.id, product);
         return { selected: next };
       }),
-  }),
-);
+  }));
 
 // components/inventory/ProductTableRow.tsx
-const isSelected = useInventorySelectionStore((state) =>
-  state.selected.has(product.id),
+const isSelected = useInventorySelectionStore(
+  (state) => state.selected.has(product.id),
 );
-const toggleRow = useInventorySelectionStore((state) => state.toggleRow);
+const toggleRow = useInventorySelectionStore(
+  (state) => state.toggleRow,
+);
 
-// Each row subscribes only to `state.selected.has(product.id)` — Zustand
-// re-renders a component only when the *value its own selector returns*
-// changes. Toggling one row flips that boolean for one id, so only the
-// matching row's selector re-evaluates to a different value; every other
-// row's selector still returns the same boolean it had before and skips
-// re-rendering entirely.
+// Each row subscribes only to
+// `state.selected.has(product.id)` — Zustand
+// re-renders a component only when the *value its own
+// selector returns* changes. Toggling one row flips
+// that boolean for one id, so only the matching row's
+// selector re-evaluates to a different value; every
+// other row's selector still returns the same boolean
+// it had before and skips re-rendering entirely.

@@ -1,8 +1,12 @@
 // components/dashboard/MicroCardsGridClient.tsx
-// `products` never changes while the threshold slider moves, so this
-// pipeline runs exactly once instead of on every tick.
+// `products` never changes while the threshold slider
+// moves, so this pipeline runs exactly once instead
+// of on every tick.
 const sparklines = useMemo(
-  () => products.map((p) => processSparklineHistory(p.rawHistory)),
+  () =>
+    products.map((p) =>
+      processSparklineHistory(p.rawHistory),
+    ),
   [products],
 );
 
@@ -12,32 +16,43 @@ const sparklines = useMemo(
     title={product.meta.title}
     sku={product.meta.sku}
     marginality={product.marginality}
-    value={formatCurrency(product.metrics.currentValue)}
+    value={formatCurrency(
+      product.metrics.currentValue,
+    )}
     rating={product.metrics.rating}
-    sparklineData={sparklines[i]}   // same array reference every render
+    // same array reference every render
+    sparklineData={sparklines[i]}
     lowMargin={product.marginality < threshold}
   />
 ))}
 
 // components/dashboard/MicroCard.tsx
-// title/sku/marginality/rating are primitives off an unchanging record;
-// value is freshly formatted but always identical content; sparklineData is
-// the same array reference every render. lowMargin is the only prop that
-// actually changes, and only for the handful of cards whose marginality
-// sits at the current threshold — so memo's comparison skips re-rendering
-// everything else.
+// title/sku/marginality/rating are primitives off an
+// unchanging record; value is freshly formatted but
+// always identical content; sparklineData is the same
+// array reference every render. lowMargin is the only
+// prop that actually changes, and only for the
+// handful of cards whose marginality sits at the
+// current threshold — so memo's comparison skips
+// re-rendering everything else.
 export default memo(function MicroCard(props: Props) {
   return <MicroCardView {...props} />;
 });
 
 // lib/utils/sparkline-processing.ts
-export function processSparklineHistory(raw: number[]): number[] {
-  const cleaned = removeOutliersIterative(raw);   // IQR trim, up to 5 passes
-  const smoothed = movingAverage(cleaned, 7);      // 7-day trailing average
-  return downsampleTo(smoothed, 7);                // → the 7 points the sparkline shows
+export function processSparklineHistory(
+  raw: number[],
+): number[] {
+  // IQR trim, up to 5 passes
+  const cleaned = removeOutliersIterative(raw);
+  // 7-day trailing average
+  const smoothed = movingAverage(cleaned, 7);
+  // → the 7 points the sparkline shows
+  return downsampleTo(smoothed, 7);
 }
 
-// Cleaning + smoothing + downsampling a year of daily readings is real work
-// (~24ms across all 100 cards) — but it only needs to happen once, since the
-// 365 raw points behind each card never change while the user drags the
-// threshold slider.
+// Cleaning + smoothing + downsampling a year of daily
+// readings is real work (~24ms across all 100 cards)
+// — but it only needs to happen once, since the 365
+// raw points behind each card never change while the
+// user drags the threshold slider.
