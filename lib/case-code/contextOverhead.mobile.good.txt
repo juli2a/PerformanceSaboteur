@@ -1,23 +1,32 @@
-// store/inventory-status.ts — plain Zustand, atomic per-product reads
-export const useInventoryStatusStore = create<InventoryStatusState>((set) => ({
-  statuses: new Map(),
-  setStatuses: (ids, status) =>
-    set((state) => {
-      const next = new Map(state.statuses);
-      for (const id of ids) next.set(id, status);
-      return { statuses: next };
-    }),
-}));
+// store/inventory-status.ts — plain Zustand, atomic
+// per-product reads
+export const useInventoryStatusStore =
+  create<InventoryStatusState>((set) => ({
+    statuses: new Map(),
+    setStatuses: (ids, status) =>
+      set((state) => {
+        const next = new Map(state.statuses);
+        for (const id of ids) next.set(id, status);
+        return { statuses: next };
+      }),
+  }));
 
 // components/inventory/ProductCard.tsx
 const logisticStatus = useInventoryStatusStore(
-  (state) => state.statuses.get(product.id) ?? product.logisticStatus,
+  (state) =>
+    state.statuses.get(product.id) ??
+    product.logisticStatus,
 );
-const setStatuses = useInventoryStatusStore((state) => state.setStatuses);
+const setStatuses = useInventoryStatusStore(
+  (state) => state.setStatuses,
+);
 
-// Each card subscribes only to `state.statuses.get(product.id)` — Zustand
-// re-renders a component only when the *value its own selector returns*
-// changes. Changing one product's status updates that one map entry, so
-// only the matching card's selector re-evaluates to a different value;
-// every other card's selector still returns the same status it had before
-// and skips re-rendering entirely.
+// Each card subscribes only to
+// `state.statuses.get(product.id)` — Zustand
+// re-renders a component only when the *value its own
+// selector returns* changes. Changing one product's
+// status updates that one map entry, so only the
+// matching card's selector re-evaluates to a
+// different value; every other card's selector still
+// returns the same status it had before and skips
+// re-rendering entirely.

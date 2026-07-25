@@ -1,33 +1,49 @@
 // app/(shell)/layout.tsx (Server Component)
 const cookieStore = await cookies();
-const initialCollapsed = cookieStore.get("sidebarCollapsed")?.value === "on";
+const initialCollapsed =
+  cookieStore.get("sidebarCollapsed")?.value === "on";
 // ...passed down as a prop to <Header> and <Sidebar>
 
 // store/sidebar.ts — plain state, no side effects
-export const useSidebarStore = create<SidebarState>()((set) => ({
-  collapsed: false,
-  setCollapsed: (collapsed) => set({ collapsed }),
-}));
+export const useSidebarStore = create<SidebarState>()(
+  (set) => ({
+    collapsed: false,
+    setCollapsed: (collapsed) => set({ collapsed }),
+  })
+);
 
 // hooks/useSidebarCollapsed.ts
-export function useSidebarCollapsed(initialCollapsed: boolean) {
+export function useSidebarCollapsed(
+  initialCollapsed: boolean,
+) {
   const collapsed = useSyncExternalStore(
-    useSidebarStore.subscribe, // re-renders the component only when the store notifies a change
-    () => useSidebarStore.getState().collapsed, // client value, read when that happens
-    () => initialCollapsed, // server, and the client's first hydration pass
+    // re-renders the component only when the store
+    // notifies a change
+    useSidebarStore.subscribe,
+    // client value, read when that happens
+    () => useSidebarStore.getState().collapsed,
+    // server, and the client's first hydration pass
+    () => initialCollapsed,
   );
 
   useEffect(() => {
-    useSidebarStore.setState({ collapsed: initialCollapsed });
+    useSidebarStore.setState({
+      collapsed: initialCollapsed,
+    });
   }, [initialCollapsed]);
 
   const setCollapsed = (collapsed: boolean) => {
-    useSidebarStore.getState().setCollapsed(collapsed);
-    document.cookie = `sidebarCollapsed=${collapsed ? "on" : "off"}; path=/; max-age=31536000`;
+    useSidebarStore
+      .getState()
+      .setCollapsed(collapsed);
+    document.cookie = `sidebarCollapsed=${
+      collapsed ? "on" : "off"
+    }; path=/; max-age=31536000`;
   };
 
   return { collapsed, setCollapsed };
 }
 
-// The server reads the same cookie the client writes, so the very first
-// render already agrees — nothing to correct after mount.
+// The server reads the same cookie the client writes,
+// so the very first render already agrees — nothing
+// to correct after mount.

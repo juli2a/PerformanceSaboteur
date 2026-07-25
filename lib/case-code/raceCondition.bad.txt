@@ -1,6 +1,13 @@
 useEffect(() => {
-  // Fires on every keystroke — no debounce, no cancellation.
-  fetch(`/api/inventory-search?q=${encodeURIComponent(query)}`)
+  // Fires on every keystroke — no debounce, no
+  // cancellation.
+  fetch(
+    `/api/inventory-search?q=${
+      encodeURIComponent(query)
+    }`,
+  )
     .then((res) => res.json())
-    .then((data) => setMatchedIds(new Set(data.ids)));
+    .then((data) =>
+      setMatchedIds(new Set(data.ids)),
+    );
 }, [query]);

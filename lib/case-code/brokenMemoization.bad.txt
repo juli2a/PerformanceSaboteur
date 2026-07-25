@@ -8,18 +8,31 @@
 ))}
 
 // components/dashboard/MicroCard.tsx
-const MicroCard = memo(function MicroCard({ card, threshold, onCardClick }: Props) {
+const MicroCard = memo(function MicroCard({
+  card,
+  threshold,
+  onCardClick,
+}: Props) {
   const sparklineData = useMemo(
     () => processSparklineHistory(card.rawHistory),
-    [card], // card is a new object every render — this cache never hits
+    // card is a new object every render — this cache
+    // never hits
+    [card],
   );
-  return <MicroCardView sparklineData={sparklineData} /* ... */ onClick={onCardClick} />;
+  return (
+    <MicroCardView
+      sparklineData={sparklineData} /* ... */
+      onClick={onCardClick}
+    />
+  );
 });
 export default MicroCard;
 
-// `card` being rebuilt fresh every render means this useMemo's dependency
-// never matches the previous one, so the factory always reruns: the same
-// clean → smooth → downsample pass over 365 raw points reruns for all 100
-// cards on every single slider tick (~24ms of otherwise-avoidable work per
-// tick) — on top of a memo comparison that never actually skips a render,
-// for the same reason.
+// `card` being rebuilt fresh every render means this
+// useMemo's dependency never matches the previous
+// one, so the factory always reruns: the same clean →
+// smooth → downsample pass over 365 raw points reruns
+// for all 100 cards on every single slider tick
+// (~24ms of otherwise-avoidable work per tick) — on
+// top of a memo comparison that never actually skips
+// a render, for the same reason.

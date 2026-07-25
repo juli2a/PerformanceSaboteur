@@ -1,5 +1,7 @@
 // context/RowStatusContext.tsx
-const [statuses, setStatusesState] = useState(new Map());
+const [statuses, setStatusesState] = useState(
+  new Map(),
+);
 
 const setStatuses = (ids, status) => {
   setStatusesState((prev) => {
@@ -10,19 +12,27 @@ const setStatuses = (ids, status) => {
 };
 
 return (
-  <RowStatusContext.Provider value={{ statuses, setStatuses }}>
+  <RowStatusContext.Provider
+    value={{ statuses, setStatuses }}
+  >
     {children}
   </RowStatusContext.Provider>
 );
 
 // components/inventory/ProductCard.tsx
-const { statuses, setStatuses } = useContext(RowStatusContext);
-const logisticStatus = statuses.get(product.id) ?? product.logisticStatus;
+const { statuses, setStatuses } = useContext(
+  RowStatusContext,
+);
+const logisticStatus =
+  statuses.get(product.id) ?? product.logisticStatus;
 
-// Every time setStatuses runs, the Provider re-renders (its own `statuses`
-// state changed) and builds a brand-new `value` object for its Provider —
-// a fresh object reference, every time. React re-renders *every* component
-// that calls useContext on that Provider whenever `value`'s reference
-// changes, regardless of which product a given card actually reads. So
-// changing one card's status re-renders every visible card, not just the
-// one whose status changed.
+// Every time setStatuses runs, the Provider
+// re-renders (its own `statuses` state changed) and
+// builds a brand-new `value` object for its Provider
+// — a fresh object reference, every time. React
+// re-renders *every* component that calls useContext
+// on that Provider whenever `value`'s reference
+// changes, regardless of which product a given card
+// actually reads. So changing one card's status
+// re-renders every visible card, not just the one
+// whose status changed.

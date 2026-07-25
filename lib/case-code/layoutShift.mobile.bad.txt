@@ -1,34 +1,52 @@
 // store/panel-expanded.ts
-export const usePanelExpandedStore = create<PanelExpandedState>()(
-  persist(
-    (set) => ({
-      expanded: false,
-      setExpanded: (expanded) => set({ expanded }),
-    }),
-    { name: "panel-expanded" },
-  ),
-);
+export const usePanelExpandedStore =
+  create<PanelExpandedState>()(
+    persist(
+      (set) => ({
+        expanded: false,
+        setExpanded: (expanded) => set({ expanded }),
+      }),
+      { name: "panel-expanded" },
+    ),
+  );
 
-// Server has no idea what the user picked last time — it always renders
-// expanded=false, and localStorage's real value only lands after mount.
+// Server has no idea what the user picked last time —
+// it always renders expanded=false, and
+// localStorage's real value only lands after mount.
 
 // hooks/usePanelExpanded.ts
-export function usePanelExpanded(initialExpanded: boolean) {
-  const persisted = usePanelExpandedStore((state) => state.expanded);
-  const [displayed, setDisplayed] = useState(initialExpanded);
+export function usePanelExpanded(
+  initialExpanded: boolean,
+) {
+  const persisted = usePanelExpandedStore(
+    (state) => state.expanded,
+  );
+  const [displayed, setDisplayed] = useState(
+    initialExpanded,
+  );
 
   useEffect(() => {
-    // Give styles/DOM a moment to settle, otherwise the CSS transition
-    // doesn't play on first render.
-    const timer = setTimeout(() => setDisplayed(persisted), 150);
+    // Give styles/DOM a moment to settle, otherwise
+    // the CSS transition doesn't play on first
+    // render.
+    const timer = setTimeout(
+      () => setDisplayed(persisted),
+      150,
+    );
     return () => clearTimeout(timer);
   }, [persisted]);
 
-  return { expanded: displayed, setExpanded: usePanelExpandedStore.getState().setExpanded };
+  return {
+    expanded: displayed,
+    setExpanded:
+      usePanelExpandedStore.getState().setExpanded,
+  };
 }
 
-// The restore animation looked a bit off on reload — sometimes it'd start
-// a beat late, or stutter instead of running smoothly from the collapsed
-// state. Giving things a moment before applying the restored value seems to
-// clean that up. 150ms felt like enough headroom to be safe on slower
-// devices too.
+// The restore animation looked a bit off on reload —
+// sometimes it'd start a beat late, or stutter
+// instead of running smoothly from the collapsed
+// state. Giving things a moment before applying the
+// restored value seems to clean that up. 150ms felt
+// like enough headroom to be safe on slower devices
+// too.

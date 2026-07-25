@@ -1,37 +1,54 @@
 // app/(shell)/layout.tsx (Server Component)
 const cookieStore = await cookies();
-const initialExpanded = cookieStore.get("panelExpanded")?.value === "on";
+const initialExpanded =
+  cookieStore.get("panelExpanded")?.value === "on";
 // ...passed down as a prop to <PerformancePanel>
 
-// store/panel-expanded.ts — plain state, no side effects
-export const usePanelExpandedStore = create<PanelExpandedState>()((set) => ({
-  expanded: false,
-  setExpanded: (expanded) => set({ expanded }),
-}));
+// store/panel-expanded.ts — plain state, no side
+// effects
+export const usePanelExpandedStore =
+  create<PanelExpandedState>()((set) => ({
+    expanded: false,
+    setExpanded: (expanded) => set({ expanded }),
+  }));
 
-// hooks/usePanelExpanded.ts — reads through useSyncExternalStore, passing
-// initialExpanded (from the cookie) as the server snapshot, so the first
-// client render always agrees with what the server already sent
+// hooks/usePanelExpanded.ts — reads through
+// useSyncExternalStore, passing initialExpanded (from
+// the cookie) as the server snapshot, so the first
+// client render always agrees with what the server
+// already sent
 function useStableExpanded(initialExpanded: boolean) {
   const expanded = useSyncExternalStore(
-    usePanelExpandedStore.subscribe, // re-renders the component only when the store notifies a change
-    () => usePanelExpandedStore.getState().expanded, // client value, read when that happens
-    () => initialExpanded, // server, and the client's first hydration pass
+    // re-renders the component only when the store
+    // notifies a change
+    usePanelExpandedStore.subscribe,
+    // client value, read when that happens
+    () => usePanelExpandedStore.getState().expanded,
+    // server, and the client's first hydration pass
+    () => initialExpanded,
   );
 
   useEffect(() => {
-    usePanelExpandedStore.setState({ expanded: initialExpanded });
+    usePanelExpandedStore.setState({
+      expanded: initialExpanded,
+    });
   }, [initialExpanded]);
 
   return expanded;
 }
 
-// hooks/usePanelExpanded.ts — the cookie write lives here, not in the store
+// hooks/usePanelExpanded.ts — the cookie write lives
+// here, not in the store
 const setExpanded = (expanded: boolean) => {
-  usePanelExpandedStore.getState().setExpanded(expanded);
-  document.cookie = `panelExpanded=${expanded ? "on" : "off"}; path=/; max-age=31536000`;
+  usePanelExpandedStore
+    .getState()
+    .setExpanded(expanded);
+  document.cookie = `panelExpanded=${
+    expanded ? "on" : "off"
+  }; path=/; max-age=31536000`;
 };
 
-// The server reads the same cookie the client writes, so the very first
-// render already agrees — nothing to correct after mount, no delay needed
-// anywhere to make the restore animation play correctly.
+// The server reads the same cookie the client writes,
+// so the very first render already agrees — nothing
+// to correct after mount, no delay needed anywhere to
+// make the restore animation play correctly.

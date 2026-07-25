@@ -1,5 +1,6 @@
 // components/inventory/ProductTable.tsx
-const rows = table.getRowModel().rows; // all 2000+ rows, not a windowed slice
+// all 2000+ rows, not a windowed slice
+const rows = table.getRowModel().rows;
 
 {rows.map((row) => (
   <ProductTableRow
@@ -9,10 +10,13 @@ const rows = table.getRowModel().rows; // all 2000+ rows, not a windowed slice
   />
 ))}
 
-// No windowing at all — every one of the 2000+ rows in the dataset mounts
-// at once, each one a full shadcn row (checkbox, image, badge). React's own
-// concurrent scheduler keeps a single click from freezing the tab outright,
-// but it can't make 2000 real DOM subtrees free to build: DOM Elements
-// balloons past 30000, and any click that lands mid-mount waits behind the
-// backlog instead of painting on the next frame — that wait is exactly what
-// INP measures.
+// No windowing at all — every one of the 2000+ rows
+// in the dataset mounts at once, each one a full
+// shadcn row (checkbox, image, badge). React's own
+// concurrent scheduler keeps a single click from
+// freezing the tab outright, but it can't make 2000
+// real DOM subtrees free to build: DOM Elements
+// balloons past 30000, and any click that lands
+// mid-mount waits behind the backlog instead of
+// painting on the next frame — that wait is exactly
+// what INP measures.

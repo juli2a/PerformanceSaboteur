@@ -9,5 +9,6 @@ export const useSidebarStore = create<SidebarState>()(
   ),
 );
 
-// Server has no idea what the user picked last time — it always renders
-// collapsed=false, and localStorage's real value only lands after mount.
+// Server has no idea what the user picked last time,
+// it always renders collapsed=false, and
+// localStorage's real value only lands after mount.

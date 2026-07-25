@@ -15,7 +15,7 @@ interface CaseDetailPanelProps {
 }
 
 // Single source for the panel's width, referenced by both the outer (width-animated) and inner (always full-size) wrapper below, so the panel reveals/hides via clipping instead of squishing its own content.
-const PANEL_WIDTH_CLASS = "w-[510px]";
+const PANEL_WIDTH_CLASS = "w-[520px]";
 
 // Right-hand slide-out guide, gives a case's guide (incl. code snippets) real room. Lives in the shell's content flex row (app/(shell)/layout.tsx) as a sibling of <main>, so opening it shrinks main instead of overlapping it.
 export default function CaseDetailPanel({
