@@ -1,6 +1,6 @@
 "use client";
 
-import AboutButton from "@/components/layout/AboutButton";
+import About from "@/components/layout/About";
 import MainNav from "@/components/layout/MainNav";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 import { cn } from "@/lib/utils/cn";
@@ -47,7 +47,7 @@ export default function Sidebar({
           horizontalPaddingClass,
         )}
       >
-        <AboutButton collapsed={collapsed} />
+        <About collapsed={collapsed} />
       </div>
     </aside>
   );

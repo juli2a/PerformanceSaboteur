@@ -1,6 +1,6 @@
 "use client";
 
-import AboutButton from "@/components/layout/AboutButton";
+import About from "@/components/layout/About";
 import MainNav from "@/components/layout/MainNav";
 import { useSimPerformanceStore } from "@/store/simulator-performance";
 
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function MobileDrawer({ open, onClose }: Props) {
-  // The mobile Performance Panel floats fixed at the bottom of the viewport (above this drawer, z-60 vs z-41); stopping the drawer's own bottom edge at the panel's current height (collapsed or expanded, via the same store MobileControlDrawer reads for its bottomOffset) keeps AboutButton reachable instead of hidden behind it.
+  // The mobile Performance Panel floats fixed at the bottom of the viewport (above this drawer, z-60 vs z-41); stopping the drawer's own bottom edge at the panel's current height (collapsed or expanded, via the same store MobileControlDrawer reads for its bottomOffset) keeps About reachable instead of hidden behind it.
   const mobilePanelHeight = useSimPerformanceStore(
     (state) => state.mobilePanelHeight,
   );
@@ -40,7 +40,7 @@ export default function MobileDrawer({ open, onClose }: Props) {
         />
 
         <div className="mt-auto">
-          <AboutButton />
+          <About />
         </div>
       </aside>
     </>
