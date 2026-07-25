@@ -19,13 +19,7 @@ beforeEach(() => {
   });
 });
 
-// hooks/useToggleCase.ts:9-13 — every toggle click goes through this instead
-// of calling setToggle directly, so the SSR_COOKIE_CASES cookie+reload side
-// effect lives in one place. For those cases (LCP/CLS/waterfall/hydration —
-// their bug must be visible in the server-rendered HTML), flipping the
-// toggle is meaningless without a real navigation, so the cookie write and
-// reload are unconditional. Every other case is a live client-side demo and
-// needs neither.
+// hooks/useToggleCase.ts: every toggle click goes through this instead of calling setToggle directly, so the SSR_COOKIE_CASES cookie+reload side effect lives in one place. For those cases (LCP/CLS/waterfall/hydration, their bug must be visible in the server-rendered HTML), flipping the toggle is meaningless without a real navigation, so the cookie write and reload are unconditional. Every other case is a live client-side demo and needs neither.
 describe("useToggleCase", () => {
   it("for an SSR_COOKIE_CASES key: updates the store, writes the cookie, and reloads exactly once", () => {
     const { result } = renderHook(() => useToggleCase());

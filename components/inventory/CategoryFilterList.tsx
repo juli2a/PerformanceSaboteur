@@ -10,12 +10,7 @@ interface CategoryFilterListProps {
   isMobile?: boolean;
 }
 
-// Shared row markup for the category multi-select — rendered inside both
-// the desktop DropdownMenuContent and the mobile Sheet body by CategoryFilter,
-// so a tablet crossing the breakpoint never shows two divergent lists.
-// Plain Checkbox + label rows (not DropdownMenuCheckboxItem) since the Sheet
-// has no Menu context to host menu items in. `isMobile` only adjusts row
-// height/font size per design — the markup and behavior stay identical.
+// Shared row markup for the category multi-select, rendered inside both the desktop DropdownMenuContent and the mobile Sheet body by CategoryFilter, so a tablet crossing the breakpoint never shows two divergent lists. Plain Checkbox + label rows (not DropdownMenuCheckboxItem) since the Sheet has no Menu context to host menu items in. `isMobile` only adjusts row height/font size, the markup and behavior stay identical.
 export default function CategoryFilterList({
   categories,
   isMobile = false,

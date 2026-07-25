@@ -11,9 +11,7 @@ interface SearchResponse {
   ids: number[];
 }
 
-// Toggle OFF (good path): debounce the keystroke, then fire a single
-// cancellable request — any earlier in-flight request is aborted before it
-// can ever resolve, so a stale response can never reach state.
+// Toggle OFF (good path): debounce the keystroke, then fire a single cancellable request; any earlier in-flight request is aborted before it can ever resolve, so a stale response can never reach state.
 function runGoodPath(execute: (signal: AbortSignal) => void): () => void {
   const controller = new AbortController();
   const timer = setTimeout(() => execute(controller.signal), DEBOUNCE_MS);
@@ -23,18 +21,13 @@ function runGoodPath(execute: (signal: AbortSignal) => void): () => void {
   };
 }
 
-// Toggle ON (bad path): fire on every keystroke immediately, with no
-// debounce and no cancellation — responses can resolve out of order and a
-// stale one can clobber a newer one, exactly the bug being demonstrated.
+// Toggle ON (bad path): fire on every keystroke immediately, with no debounce and no cancellation; responses can resolve out of order and a stale one can clobber a newer one, exactly the bug being demonstrated.
 function runBadPath(execute: () => void): () => void {
   execute();
   return () => {};
 }
 
-// Drives the Inventory search request lifecycle (Case 4 — Network race
-// condition). The toggle only picks which path above runs — the request
-// itself, and how its response gets applied (runSearch below), is identical
-// either way.
+// Drives the Inventory search request lifecycle (Case 4, Network race condition). The toggle only picks which path above runs; the request itself, and how its response gets applied (runSearch below), is identical either way.
 export function useInventorySearch() {
   const query = useInventorySearchStore((state) => state.query);
   const setMatchedIds = useInventorySearchStore((state) => state.setMatchedIds);
@@ -70,13 +63,11 @@ export function useInventorySearch() {
         const data: SearchResponse = await res.json();
 
         if (seq < appliedSeqRef.current) {
-          // Reachable only on the bad path — the good path's AbortController
-          // guarantees a stale request's response never lands here.
+          // Reachable only on the bad path, the good path's AbortController guarantees a stale request's response never lands here.
           setIsStale(true);
           triggerAlert("raceCondition");
         } else if (seq === latestSeqRef.current) {
-          // This is the response for the most recently typed query — the
-          // display is correct again, clear any earlier race-condition alert.
+          // This is the response for the most recently typed query, the display is correct again, clear any earlier race-condition alert.
           setIsStale(false);
           closeAlert("raceCondition");
         }

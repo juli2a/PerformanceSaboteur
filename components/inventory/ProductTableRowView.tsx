@@ -18,13 +18,7 @@ interface ProductTableRowViewProps {
   onToggleSelected: () => void;
 }
 
-// Shared markup for ProductTableRow (good path, Zustand selector) and
-// ProductTableRowUnoptimized (Case 7 bad path, Context) — identical in both,
-// since the only thing that case demonstrates is *how* isSelected /
-// onToggleSelected are sourced upstream, not how the row looks. Keeping that
-// one difference in the two callers and the shared rendering (plus the
-// single FlashOnUpdate wrap) here avoids maintaining two copies of markup
-// that must stay in lockstep.
+// Shared markup for ProductTableRow (good path, Zustand selector) and ProductTableRowUnoptimized (Case 7 bad path, Context), identical in both, since the only thing that case demonstrates is *how* isSelected / onToggleSelected are sourced upstream, not how the row looks. Keeping that one difference in the two callers and the shared rendering (plus the single FlashOnUpdate wrap) here avoids maintaining two copies of markup that must stay in lockstep.
 export default function ProductTableRowView({
   product,
   gridTemplateColumns,

@@ -34,15 +34,7 @@ beforeEach(() => {
   useRenderCounterStore.setState({ counters: {} });
 });
 
-// Case 7 (contextOverhead) — ProductTableRow (Zustand selector, good path)
-// vs ProductTableRowUnoptimized (Context, bad path). Both paths share
-// ProductTableRowView, wrapped in FlashOnUpdate caseKey="contextOverhead"
-// (components/simulator/FlashOnUpdate.tsx), which already increments
-// useRenderCounterStore on every real re-render after mount — this test
-// counts that existing counter rather than inventing a new way to detect
-// re-renders. Rendered directly (not through ProductTable) to sidestep
-// @tanstack/react-virtual, whose visible-row count is not honestly
-// determinable in jsdom (see docs/local-notes/step5-component-plan.md).
+// Case 7 (contextOverhead): ProductTableRow (Zustand selector, good path) vs ProductTableRowUnoptimized (Context, bad path). Both paths share ProductTableRowView, wrapped in FlashOnUpdate caseKey="contextOverhead" (components/simulator/FlashOnUpdate.tsx), which already increments useRenderCounterStore on every real re-render after mount, this test counts that existing counter rather than inventing a new way to detect re-renders. Rendered directly (not through ProductTable) to sidestep @tanstack/react-virtual, whose visible-row count is not honestly determinable in jsdom.
 describe("ProductTableRow vs ProductTableRowUnoptimized (Case 7)", () => {
   it("good path (Zustand selector): clicking one row's checkbox re-renders only that row", async () => {
     render(

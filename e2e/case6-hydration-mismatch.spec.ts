@@ -8,13 +8,7 @@ import { getSimulatorCase } from "@/lib/simulator-cases";
 
 const alertTitle = getSimulatorCase("hydrationMismatch").alert.title;
 
-// docs/case6.md: the "bad" clock (components/dashboard/UpdatedAt.tsx) forces
-// UTC on the server and reads the browser's own timezone on the client. If
-// the machine running this test happened to already be in UTC (typical for
-// CI), server and client would agree even on the bad path and the mismatch
-// would never reproduce — so every test in this file runs in a fixed
-// non-UTC zone, the same guarantee the app's own code gets from forcing UTC
-// server-side.
+// docs/case6.md: the "bad" clock (components/dashboard/UpdatedAt.tsx) forces UTC on the server and reads the browser's own timezone on the client. If the machine running this test happened to already be in UTC (typical for CI), server and client would agree even on the bad path and the mismatch would never reproduce, so every test in this file runs in a fixed non-UTC zone, the same guarantee the app's own code gets from forcing UTC server-side.
 test.use({ timezoneId: "Europe/Kyiv" });
 
 const HYDRATION_ERROR_SIGNATURES = [

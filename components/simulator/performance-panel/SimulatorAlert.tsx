@@ -10,9 +10,7 @@ interface SimulatorAlertProps {
   className?: string;
 }
 
-// Single case-warning card — overlays page content. The stacking/positioning
-// container (Performance Panel on desktop, Web Vitals dock on mobile) owns
-// layout and gap; this component only renders one card.
+// The stacking/positioning container (Performance Panel on desktop, Web Vitals dock on mobile) owns layout and gap; this component only renders one card.
 export default function SimulatorAlert({
   title,
   body,

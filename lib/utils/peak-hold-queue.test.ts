@@ -4,9 +4,7 @@ import {
   PEAK_HOLD_MS,
 } from "@/lib/utils/peak-hold-queue";
 
-// Plan: docs/local-notes/step2e-peak-hold-queue-plan.md
-// good=100, poor=300 throughout — 50/60 are "good", 200 is "degraded",
-// 400/410/420 are "poor" (per lib/utils/gauge.ts's getValueRating).
+// good=100, poor=300 throughout: 50/60 are "good", 200 is "degraded", 400/410/420 are "poor" (per lib/utils/gauge.ts's getValueRating).
 describe("createPeakHoldQueue", () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
@@ -22,7 +20,7 @@ describe("createPeakHoldQueue", () => {
     expect(apply).toHaveBeenCalledWith(50);
   });
 
-  it("applies a single poor value immediately too — the hold only delays the NEXT value, not the first", () => {
+  it("applies a single poor value immediately too, the hold only delays the NEXT value, not the first", () => {
     const apply = vi.fn();
     const enqueue = createPeakHoldQueue(100, 300, apply);
 

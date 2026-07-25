@@ -2,15 +2,9 @@ import { create } from "zustand";
 
 import type { LogisticStatus } from "@/types/inventory";
 
-// Row-selection state for the Inventory table, kept deliberately separate
-// from @tanstack/react-table's built-in rowSelection model: rows subscribe
-// to their own id atomically (`state => state.selected.has(id)`), so
-// toggling one checkbox only re-renders that row — the baseline Case 7
-// (Context vs Zustand selector) needs this to demonstrate a real contrast.
+// Row-selection state for the Inventory table, kept deliberately separate from @tanstack/react-table's built-in rowSelection model: rows subscribe to their own id atomically (`state => state.selected.has(id)`), so toggling one checkbox only re-renders that row; the baseline Case 7 (Context vs Zustand selector) needs this to demonstrate a real contrast.
 //
-// Stores title/sku/logisticStatus alongside the id (not just the id) so
-// Bulk Actions can list the selected products without holding the full
-// 2000+ row dataset on the client just to look up a handful of entries.
+// Stores title/sku/logisticStatus alongside the id (not just the id) so Bulk Actions can list the selected products without holding the full row dataset on the client just to look up a handful of entries.
 export interface SelectedProduct {
   id: number;
   title: string;

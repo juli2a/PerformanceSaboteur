@@ -1,5 +1,4 @@
-// Deterministic derivation functions — same input always produces same output
-// Used server-side so cards/charts are stable across renders
+// Deterministic derivation functions: same input always produces same output. Used server-side so cards/charts are stable across renders.
 
 const REGIONS = ["Kyiv", "Lviv", "Kharkiv", "Odesa", "Dnipro"] as const;
 
@@ -22,17 +21,9 @@ export function deriveTrend(data: number[]): boolean {
   return false;
 }
 
-// A year of daily "raw" readings for a product's value history — the input
-// the client-side sparkline pipeline (lib/utils/sparkline-processing.ts)
-// cleans, smooths and downsamples before display. Every 14th day gets a
-// deterministic one-off spike (a promo-day sales bump, a tracking glitch —
-// the kind of single-point outlier real daily metrics actually have), so
-// the pipeline's outlier-removal step has something real to remove.
+// A year of daily "raw" readings for a product's value history, the input the client-side sparkline pipeline (lib/utils/sparkline-processing.ts) cleans, smooths and downsamples before display. Every 14th day gets a deterministic one-off spike (a promo-day sales bump, a tracking glitch, the kind of single-point outlier real daily metrics actually have), so the pipeline's outlier-removal step has something real to remove.
 //
-// The underlying wave runs exactly one cycle across the full `days` window
-// (not a short multi-cycle-per-year wave) — the sparkline pipeline
-// downsamples to just 7 points, and a higher-frequency wave aliases against
-// that bucket size into a spurious zigzag instead of a readable trend.
+// The underlying wave runs exactly one cycle across the full `days` window (not a short multi-cycle-per-year wave); the sparkline pipeline downsamples to just a handful of points, and a higher-frequency wave aliases against that bucket size into a spurious zigzag instead of a readable trend.
 export function deriveRawHistory(
   productId: number,
   basePrice: number,
@@ -52,15 +43,13 @@ export function deriveHue(userId: number): number {
   return (userId * 47) % 360;
 }
 
-// Deterministic pseudo-random float in [0, 1) from (seed, i) — classic
-// sine-hash trick. Same (seed, i) always produces the same value, so a
-// day-seeded scatter loop stays stable across requests within that day.
+// Deterministic pseudo-random float in [0, 1) from (seed, i), a classic sine-hash trick. Same (seed, i) always produces the same value, so a day-seeded scatter loop stays stable across requests within that day.
 export function deriveScatterFloat(seed: number, i: number): number {
   const x = Math.sin(seed * 12.9898 + i * 78.233) * 43758.5453;
   return x - Math.floor(x);
 }
 
-// Deterministic pseudo-random index in [0, max) — see deriveScatterFloat.
+// Deterministic pseudo-random index in [0, max); see deriveScatterFloat.
 export function deriveScatterIndex(
   seed: number,
   i: number,
@@ -69,9 +58,7 @@ export function deriveScatterIndex(
   return Math.floor(deriveScatterFloat(seed, i) * max);
 }
 
-// % change comparing the sum of the first half of a series to the sum of the
-// second half — the same first-15-days-vs-last-15-days comparison the real
-// order-based KPIs use, so a synthetic spark is scored the same way.
+// % change comparing the sum of the first half of a series to the sum of the second half, the same first-half-vs-second-half comparison the real order-based KPIs use (see compareOrderHalves in lib/utils/chart.ts), so a synthetic spark is scored the same way.
 export function deriveHalfWindowDeltaPercent(spark: number[]): number {
   const mid = Math.floor(spark.length / 2);
   const sum = (values: number[]) => values.reduce((s, v) => s + v, 0);
@@ -81,10 +68,7 @@ export function deriveHalfWindowDeltaPercent(spark: number[]): number {
   return Math.round(((newer - older) / older) * 100);
 }
 
-// Builds a deterministic 10-point upward sparkline ending at currentValue —
-// matches the 10-segment window the real KPIs use. Growth is always positive
-// — this demo never shows a declining KPI for unique clients (no real
-// per-day user signal to derive it from).
+// Builds a deterministic 10-point upward sparkline ending at currentValue, matching the segment window buildOrderSegments produces for the real KPIs. Growth is always positive; this demo never shows a declining KPI for unique clients (no real per-day user signal to derive it from).
 export function deriveKpiTrend(
   currentValue: number,
   seed: number,
@@ -98,9 +82,7 @@ export function deriveKpiTrend(
       (startValue + (currentValue - startValue) * progress) * wobble,
     );
   });
-  // The ±4% per-point wobble can outweigh the underlying trend across only
-  // 10 points, so the half-window comparison alone isn't guaranteed positive
-  // — floor it at growthPercent's own minimum to keep that guarantee.
+  // The ±4% per-point wobble can outweigh the underlying trend across only 10 points, so the half-window comparison alone isn't guaranteed positive; floor it at growthPercent's own minimum to keep that guarantee.
   return {
     deltaPercent: Math.max(2, deriveHalfWindowDeltaPercent(spark)),
     spark,

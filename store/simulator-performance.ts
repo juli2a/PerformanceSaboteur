@@ -9,9 +9,7 @@ import {
 } from "@/lib/simulator-thresholds";
 import type { SimPerformanceState } from "@/types/simulator";
 
-// Never persisted — this is live data reported by web-vitals and the other
-// PerformanceObserver-based reporters each session, and must start fresh,
-// never restored from a stale localStorage snapshot.
+// Never persisted: this is live data reported by web-vitals and the other PerformanceObserver-based reporters each session, and must start fresh, never restored from a stale localStorage snapshot.
 export const useSimPerformanceStore = create<SimPerformanceState>()((set) => {
   const enqueueBlockingTime = createPeakHoldQueue(
     BLOCKING_TIME_GOOD,

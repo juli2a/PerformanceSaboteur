@@ -30,10 +30,7 @@ function renderBulkActions() {
   );
 }
 
-// Opens the Bulk Actions popover, picks the given status in the Select
-// (which lives inside this popover, not the confirm dialog — see
-// components/inventory/BulkActions.tsx:110-155), then clicks through to the
-// confirm dialog.
+// Opens the Bulk Actions popover, picks the given status in the Select (which lives inside this popover, not the confirm dialog, see components/inventory/BulkActions.tsx), then clicks through to the confirm dialog.
 async function openConfirmDialog(status: LogisticStatus) {
   await userEvent.click(screen.getByRole("button", { name: "Bulk Actions" }));
   await userEvent.click(screen.getByRole("combobox"));

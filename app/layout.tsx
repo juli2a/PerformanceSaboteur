@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   description: "B2B Merchant Analytics — frontend anti-pattern simulator",
 };
 
-// Root layout: dark theme, fonts, web-vitals reporter
 export default function RootLayout({
   children,
 }: {

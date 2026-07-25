@@ -14,13 +14,7 @@ interface ProductCardViewProps {
   onChangeStatus: (ids: number[], status: LogisticStatus) => void;
 }
 
-// Shared markup for ProductCard (good path, Zustand selector) and
-// ProductCardUnoptimized (Case 7 mobile bad path, Context) — identical in
-// both, since the only thing that case demonstrates is *how* logisticStatus
-// / onChangeStatus are sourced upstream, not how the card looks. Keeping
-// that one difference in the two callers and the shared rendering (plus the
-// single FlashOnUpdate wrap) here avoids maintaining two copies of markup
-// that must stay in lockstep — mirrors ProductTableRowView's split.
+// Shared markup for ProductCard (good path, Zustand selector) and ProductCardUnoptimized (Case 7 mobile bad path, Context), identical in both, since the only thing that case demonstrates is *how* logisticStatus / onChangeStatus are sourced upstream, not how the card looks. Keeping that one difference in the two callers and the shared rendering (plus the single FlashOnUpdate wrap) here avoids maintaining two copies of markup that must stay in lockstep; mirrors ProductTableRowView's split.
 export default function ProductCardView({
   product,
   logisticStatus,

@@ -5,16 +5,13 @@ import {
   getAmplifiedProducts,
 } from "@/lib/server/inventory";
 
-// Real network calls are mocked at the fetcher boundary — getAmplifiedProducts
-// is the only piece under test here that touches it.
+// Real network calls are mocked at the fetcher boundary; getAmplifiedProducts is the only piece under test here that touches it.
 vi.mock("@/lib/server/fetcher", () => ({
   apiFetch: vi.fn(),
 }));
 import { apiFetch } from "@/lib/server/fetcher";
 
-// Inverse of `baseId + batchOffset*100` — recovers the real DummyJSON id
-// (1..100) so a bulk update PATCH can target an existing resource, even
-// when the user clicked an amplified row (docs: comment in inventory.ts).
+// See deriveRealProductId in inventory.ts for why this inverse mapping exists.
 describe("deriveRealProductId", () => {
   it("round-trips every real id across all 20 batch offsets the app produces", () => {
     for (let baseId = 1; baseId <= 100; baseId++) {
@@ -25,9 +22,6 @@ describe("deriveRealProductId", () => {
   });
 });
 
-// Priority rules (docs/data.md + comment in inventory.ts): stock <=3 always
-// wins ("Out of Stock"), stock <=10 always wins ("To Order"), only above
-// that does shippingInformation decide the status.
 describe("deriveLogisticStatus", () => {
   it("returns Out of Stock at the critical-stock boundary (stock=3)", () => {
     expect(deriveLogisticStatus(3, "Ships overnight")).toBe("Out of Stock");
@@ -56,13 +50,7 @@ describe("deriveLogisticStatus", () => {
   );
 });
 
-// The original product keeps its id/title untouched; every replicated copy
-// shifts id by +100 per step and gets a "(Batch N)" title suffix; sku is a
-// real DummyJSON field carried through unchanged (docs: comment above
-// getAmplifiedProducts in inventory.ts). Fetched once via a mocked
-// apiFetch and reused across assertions — getAmplifiedProducts is wrapped
-// in React's cache(), so calling it more than once per test file risks
-// returning a stale memoized result from an earlier mock.
+// See getAmplifiedProducts in inventory.ts for the amplification rules being asserted below. Fetched once via a mocked apiFetch and reused across assertions; getAmplifiedProducts is wrapped in React's cache(), so calling it more than once per test file risks returning a stale memoized result from an earlier mock.
 describe("getAmplifiedProducts", () => {
   const fixtureProducts = [
     {

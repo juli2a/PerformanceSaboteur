@@ -1,29 +1,14 @@
-@keyframes toggle-cta-border-pulse {
-  0%,
-  100% {
-    box-shadow:
-      0 0 0 1px rgba(244, 167, 60, 0.9),
-      0 0 0 0 rgba(244, 167, 60, 0.55);
-  }
-  50% {
-    box-shadow:
-      0 0 0 1.5px rgba(244, 167, 60, 0.9),
-      0 0 8px 8px rgba(244, 167, 60, 0.05);
-  }
-}
-
 @layer components {
   .switch-brand-glow[data-checked] {
     box-shadow: 0 0 10px var(--color-brand-accent);
   }
 
   .toggle-cta-border-pulse {
-    animation: toggle-cta-border-pulse 1.2s ease-in-out infinite;
+    --cta-pulse-rgb: 244 167 60;
+    animation: cta-pulse 1.2s ease-in-out infinite;
   }
 
-  /* Hides the scrollbar but keeps the element scrollable — used where
-     scrolling is driven by arrow buttons instead of a visible track
-     (e.g. the control panel's toggle zones). */
+  /* Hides the scrollbar while keeping the element scrollable, used where scrolling is driven by arrow buttons instead of a visible track (e.g. the control panel's toggle zones). */
   .scrollbar-hidden {
     scrollbar-width: none;
   }
@@ -31,9 +16,6 @@
     display: none;
   }
 
-  /* Amber control panel card — also used by the floating Performance Panel,
-     which overlaps page content (charts, tables), so the background is
-     fully opaque rather than translucent. */
   .sim-card {
     display: flex;
     align-items: center;
@@ -47,10 +29,6 @@
       0 8px 26px rgba(0, 0, 0, 0.32);
   }
 
-  /* Mobile Performance Panel — bottom bar counterpart to .sim-card,
-     full-width and flat-topped (border-top only, no radius) instead of a
-     floating rounded corner widget. Same gradient family, opaque since it
-     sits at the bottom of the page over scrollable content. */
   .sim-panel-mobile {
     background: linear-gradient(
       155deg,
@@ -63,10 +41,7 @@
       0 -10px 30px rgba(0, 0, 0, 0.4);
   }
 
-  /* Expand/collapse animation for the mobile panel body.
-     CSS grid trick: grid-template-rows 0fr→1fr animates to height:auto
-     without JavaScript height measurement. The inner row needs
-     overflow:hidden so 0fr actually clips the content to zero. */
+  /* Expand/collapse animation for the mobile panel body. CSS grid trick: grid-template-rows 0fr→1fr animates to height:auto without JavaScript height measurement. The inner row needs overflow:hidden so 0fr actually clips the content to zero. */
   .sim-panel-mobile-content {
     display: grid;
     grid-template-rows: 0fr;
@@ -84,9 +59,6 @@
     overflow: hidden;
   }
 
-  /* Red simulator alert card — case warnings that overlay page content,
-     stacked above the floating Performance Panel, desktop or mobile. Same
-     gradient/shadow family as .sim-card, red-toned. */
   .sim-alert {
     position: relative;
     border-radius: var(--radius-lg);

@@ -7,12 +7,7 @@ import type { CaseKey } from "@/types/simulator";
 
 export const SETTLE_DELAY_MS = 100;
 
-// Called from SimulatorEffects — once per case that feeds the render-counter
-// store (see store/render-counter.ts), each with its own `caseKey` and
-// `alertThreshold`. Watches that case's counter while it's tracking,
-// restarting a 100ms timer on every increment. Once the burst settles:
-// publishes the total as "Rerendered Nodes" for that case and flags its
-// alert only when the count clears `alertThreshold`.
+// Called from SimulatorEffects, once per case that feeds the render-counter store (see store/render-counter.ts), each with its own `caseKey` and `alertThreshold`. Watches that case's counter while it's tracking, restarting a SETTLE_DELAY_MS timer on every increment. Once the burst settles: publishes the total as "Rerendered Nodes" for that case and flags its alert only when the count clears `alertThreshold`.
 export function useRerenderNodesReporter(
   caseKey: CaseKey,
   alertThreshold: number,

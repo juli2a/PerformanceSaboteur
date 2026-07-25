@@ -33,10 +33,7 @@ async function openDrawer(onChangeStatus = vi.fn()) {
   return onChangeStatus;
 }
 
-// Own correctness of components/inventory/StatusChangeDrawer.tsx:41-66 —
-// not Case 7 (that's the mobile ProductCard test, which reuses this real
-// drawer as UI). `onChangeStatus` is passed as a plain vi.fn() here since
-// which store/Context it writes to isn't this component's concern.
+// Own correctness of components/inventory/StatusChangeDrawer.tsx, not Case 7 (that's the mobile ProductCard test, which reuses this real drawer as UI). `onChangeStatus` is passed as a plain vi.fn() here since which store/Context it writes to isn't this component's concern.
 describe("StatusChangeDrawer", () => {
   it("disables the option matching the product's current status", async () => {
     await openDrawer();

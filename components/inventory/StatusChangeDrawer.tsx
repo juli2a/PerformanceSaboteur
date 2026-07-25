@@ -32,12 +32,7 @@ interface StatusChangeDrawerProps {
   onChangeStatus: (ids: number[], status: LogisticStatus) => void;
 }
 
-// Mobile per-product status-change drawer, triggered from ProductCard's
-// "Change" button. Same PATCH + optimistic-overlay pattern as Bulk
-// Actions, just scoped to a single product. Where the optimistic status
-// gets applied locally is injected via onChangeStatus (Case 7's mobile
-// bad/good split — see ProductCard vs ProductCardUnoptimized — lives
-// entirely in that callback, not here).
+// Mobile per-product status-change drawer, triggered from ProductCard's "Change" button. Same PATCH + optimistic-overlay pattern as Bulk Actions, just scoped to a single product. Where the optimistic status gets applied locally is injected via onChangeStatus; Case 7's mobile bad/good split lives entirely in that callback, not here (see ProductCard vs ProductCardUnoptimized).
 export default function StatusChangeDrawer({
   product,
   currentStatus,

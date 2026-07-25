@@ -1,7 +1,6 @@
 import { create } from "zustand";
 
-// Multi-select category filter — shared between Toolbar (controls) and
-// ProductTable (consumes it as react-table's controlled columnFilters).
+// Multi-select category filter, shared between Toolbar (controls) and ProductTable (consumes it as react-table's controlled columnFilters).
 interface InventoryFiltersState {
   categories: Set<string>;
   toggleCategory: (category: string) => void;

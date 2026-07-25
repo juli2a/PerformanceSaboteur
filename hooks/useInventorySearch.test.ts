@@ -17,11 +17,7 @@ interface PendingRequest {
 
 let pending: PendingRequest[] = [];
 
-// Each GET returns a Promise that never settles on its own — the test
-// resolves the right one, in whatever order it chooses, via resolveQuery
-// below. This is how "who responds first" gets a deterministic answer
-// instead of depending on real or faked milliseconds matching the server's
-// own artificial-delay formula.
+// Each GET returns a Promise that never settles on its own; the test resolves the right one, in whatever order it chooses, via resolveQuery below. This is how "who responds first" gets a deterministic answer instead of depending on real or faked milliseconds matching the server's own artificial-delay formula.
 function registerSearchHandler() {
   pending = [];
   server.use(
@@ -59,15 +55,7 @@ beforeEach(() => {
   registerSearchHandler();
 });
 
-// hooks/useInventorySearch.ts — Case 4 (docs/case4.md). Toggle ON (bad
-// path): every keystroke fires its own request immediately, with no
-// cancellation, so a slower response for an earlier (shorter) query can
-// resolve after a faster response for a later (longer) one — and
-// setMatchedIds is called unconditionally, so the stale response really
-// does overwrite the display, not just flip a flag. Toggle OFF (good path):
-// a 300ms debounce collapses rapid typing into one request, and an
-// AbortController cancels any still-in-flight previous request before the
-// next one starts.
+// hooks/useInventorySearch.ts, Case 4 (docs/case4.md). Toggle ON (bad path): every keystroke fires its own request immediately, with no cancellation, so a slower response for an earlier (shorter) query can resolve after a faster response for a later (longer) one, and setMatchedIds is called unconditionally, so the stale response really does overwrite the display, not just flip a flag. Toggle OFF (good path): a debounce (DEBOUNCE_MS) collapses rapid typing into one request, and an AbortController cancels any still-in-flight previous request before the next one starts.
 describe("useInventorySearch — bad path (race condition toggle on)", () => {
   beforeEach(() => {
     useSimControlStore.getState().setToggle("raceCondition", true);
@@ -80,13 +68,10 @@ describe("useInventorySearch — bad path (race condition toggle on)", () => {
     act(() => useInventorySearchStore.getState().setQuery("li"));
     act(() => useInventorySearchStore.getState().setQuery("lipstick"));
 
-    // msw's interceptor reaches the handler (and pushes into `pending`)
-    // asynchronously — wait for all three in-flight requests to actually
-    // register before resolving any of them.
+    // msw's interceptor reaches the handler (and pushes into `pending`) asynchronously; wait for all three in-flight requests to actually register before resolving any of them.
     await waitFor(() => expect(pending).toHaveLength(3));
 
-    // "lipstick" (the current, correct query) resolves first — display is
-    // briefly correct.
+    // "lipstick" (the current, correct query) resolves first, display is briefly correct.
     resolveQuery("lipstick", [10, 20]);
     await waitFor(() => {
       expect(useInventorySearchStore.getState().matchedIds).toEqual(
@@ -130,10 +115,7 @@ describe("useInventorySearch — bad path (race condition toggle on)", () => {
       ),
     );
 
-    // A fresh keystroke fires a brand new request — resolving *that* one is
-    // what actually clears the alert (the still-pending "li" request never
-    // gets resolved at all, same as in the real app: a superseded request
-    // whose response never mattered).
+    // A fresh keystroke fires a brand new request; resolving *that* one is what actually clears the alert (the still-pending "li" request never gets resolved at all, same as in the real app: a superseded request whose response never mattered).
     act(() => useInventorySearchStore.getState().setQuery("lipsticks"));
     await waitFor(() =>
       expect(pending.some((p) => p.query === "lipsticks")).toBe(true),
@@ -168,8 +150,7 @@ describe("useInventorySearch — good path (race condition toggle off)", () => {
     act(() => useInventorySearchStore.getState().setQuery("li"));
     act(() => useInventorySearchStore.getState().setQuery("lipstick"));
 
-    // No 300ms of silence has passed yet for any of the three keystrokes —
-    // nothing should have fired.
+    // No DEBOUNCE_MS of silence has passed yet for any of the three keystrokes, nothing should have fired.
     expect(pending).toHaveLength(0);
 
     await act(async () => {
@@ -198,9 +179,7 @@ describe("useInventorySearch — good path (race condition toggle off)", () => {
 
     expect(firstRequest.signal.aborted).toBe(true);
 
-    // Switch back to real timers before waiting on the network response —
-    // @testing-library/react's waitFor polls with a real setTimeout, which
-    // never fires while fake timers are still active.
+    // Switch back to real timers before waiting on the network response; @testing-library/react's waitFor polls with a real setTimeout, which never fires while fake timers are still active.
     vi.useRealTimers();
     resolveQuery("lipstick", [10, 20]);
     await waitFor(() => {

@@ -26,19 +26,14 @@ import SelectAllCheckbox from "@/components/inventory/SelectAllCheckbox";
 
 const columnHelper = createColumnHelper<AmplifiedProduct>();
 
-// Exact membership check — built-in filterFns either expect the row value
-// to be an array (arrIncludes) or do substring matching (includesString),
-// neither of which is right for "is this scalar category in the selected set".
+// Exact membership check: built-in filterFns either expect the row value to be an array (arrIncludes) or do substring matching (includesString), neither of which is right for "is this scalar category in the selected set".
 const categoryFilterFn: FilterFn<AmplifiedProduct> = (
   row,
   columnId,
   filterValue: Set<string>,
 ) => filterValue.has(row.getValue(columnId));
 
-// Column order mirrors the visual columns; `size` is the single source of
-// truth for desktop column width — read by gridTemplateColumns below
-// instead of a hand-maintained CSS string, so columns and layout can't
-// drift apart. Unused on the mobile card layout.
+// Column order mirrors the visual columns; `size` is the single source of truth for desktop column width, read by gridTemplateColumns below instead of a hand-maintained CSS string, so columns and layout can't drift apart. Unused on the mobile card layout.
 const columns = [
   columnHelper.display({ id: "select", size: 44 }),
   columnHelper.display({ id: "thumbnail", size: 60 }),
@@ -60,41 +55,23 @@ const FLEX_COLUMN_ID = "name";
 const ROW_HEIGHT_PX = 58;
 const CARD_HEIGHT_PX = 122;
 
-// Cases that disable virtualization render this many rows as a flat DOM list.
-// Case 7 (contextOverhead): exposes unnecessary re-renders across the full visible set.
-// Case 3 (heavyMounting) deliberately does NOT use this cap — mounting every
-// row at once is the entire point of that case, see flatRowLimit below.
+// Cases that disable virtualization render this many rows as a flat DOM list. Case 7 (contextOverhead): exposes unnecessary re-renders across the full visible set. Case 3 (heavyMounting) deliberately does NOT use this cap, mounting every row at once is the entire point of that case, see flatRowLimit below.
 export const FLAT_ROW_LIMIT = 200;
 
 interface ProductTableProps {
   products: AmplifiedProduct[];
 }
 
-// One virtualizer + one scroll container shared by both layouts: switching
-// the rendered item template on a breakpoint change (e.g. tablet rotation)
-// keeps the same scroll offset, instead of two independent containers each
-// tracking their own (and one silently losing its position while hidden).
+// One virtualizer + one scroll container shared by both layouts: switching the rendered item template on a breakpoint change (e.g. tablet rotation) keeps the same scroll offset, instead of two independent containers each tracking their own (and one silently losing its position while hidden).
 export default function ProductTable({ products }: ProductTableProps) {
   const isMobile = useContext(MediaContext);
   const isContextOverheadOn = useSimulatorCase("contextOverhead");
   const isHeavyMountingOn = useSimulatorCase("heavyMounting");
 
-  // skipVirtualization is shared by multiple cases — each one adds its own
-  // toggle here so ProductTable doesn't need a new prop per case.
-  // contextOverhead forces the flat FLAT_ROW_LIMIT list regardless of Case
-  // 3's own state — with virtualization on, only ~15-20 rows are ever
-  // mounted, and the mass-rerender contrast this case demonstrates wouldn't
-  // be visible (see docs/case7.md). heavyMounting (Case 3) skips
-  // virtualization too, but — unlike contextOverhead — with no row cap at
-  // all (see flatRowLimit below): mounting literally every row, unwindowed,
-  // is the anti-pattern this case demonstrates.
+  // skipVirtualization is shared by multiple cases, each one adds its own toggle here so ProductTable doesn't need a new prop per case. contextOverhead forces the flat FLAT_ROW_LIMIT list regardless of Case 3's own state, with virtualization on, only a handful of rows are ever mounted, and the mass-rerender contrast this case demonstrates wouldn't be visible (see docs/case7.md). heavyMounting (Case 3) skips virtualization too, but unlike contextOverhead, with no row cap at all (see flatRowLimit below): mounting literally every row, unwindowed, is the anti-pattern this case demonstrates.
   const skipVirtualization = isContextOverheadOn || isHeavyMountingOn;
 
-  // Selection is deliberately isolated between the good (Zustand) and bad
-  // (Context — see TableSelectionProvider, mounted in the Inventory page
-  // above both Toolbar and this component) paths — clearing on every toggle
-  // flip means neither carries stale selections into the other. The
-  // Context side clears itself the same way, internally.
+  // Selection is deliberately isolated between the good (Zustand) and bad (Context, see TableSelectionProvider, mounted in the Inventory page above both Toolbar and this component) paths; clearing on every toggle flip means neither carries stale selections into the other. The Context side clears itself the same way, internally.
   const clearSelection = useInventorySelectionStore((state) => state.clear);
   useEffect(() => {
     clearSelection();
@@ -105,12 +82,7 @@ export default function ProductTable({ products }: ProductTableProps) {
   );
   const matchedIds = useInventorySearchStore((state) => state.matchedIds);
 
-  // Search matches only base DummyJSON ids (1-100, see Toolbar/Case 4) —
-  // every batch duplicate beyond the first keeps an id above that range, so
-  // this naturally surfaces just the one canonical row per match instead of
-  // 20 near-identical "(Batch N)" rows. Pre-filtered here (not via
-  // columnFilters) since it narrows the underlying dataset rather than a
-  // displayed column's value.
+  // Search matches only base DummyJSON ids (1-100, see Toolbar/Case 4); every batch duplicate beyond the first keeps an id above that range, so this naturally surfaces just the one canonical row per match instead of every near-identical "(Batch N)" duplicate (see AMPLIFICATION_BATCHES in lib/server/inventory.ts). Pre-filtered here (not via columnFilters) since it narrows the underlying dataset rather than a displayed column's value.
   const searchedProducts = useMemo(
     () =>
       matchedIds === null
@@ -119,11 +91,7 @@ export default function ProductTable({ products }: ProductTableProps) {
     [products, matchedIds],
   );
 
-  // Memoized so the reference is stable across renders when the selection
-  // hasn't changed — react-table's controlled `state.columnFilters` treats
-  // a new reference as a real change and recomputes the filtered row model
-  // every render, which (with no compiler memoization on this component —
-  // see the useReactTable() opt-out warning below) caused a render storm.
+  // Memoized so the reference is stable across renders when the selection hasn't changed: react-table's controlled `state.columnFilters` treats a new reference as a real change and recomputes the filtered row model every render, which (this component has no compiler memoization) causes a render storm without it.
   const columnFilters: ColumnFiltersState = useMemo(
     () =>
       selectedCategories.size > 0
@@ -166,9 +134,7 @@ export default function ProductTable({ products }: ProductTableProps) {
 
   if (isMobile === undefined) return null;
 
-  // heavyMounting (Case 3) removes the cap entirely — every one of the
-  // 2000+ rows mounts at once, unwindowed, instead of just the first
-  // FLAT_ROW_LIMIT of them.
+  // heavyMounting (Case 3) removes the cap entirely, every one of the 2000+ rows mounts at once, unwindowed, instead of just the first FLAT_ROW_LIMIT of them.
   const flatRowLimit = isHeavyMountingOn ? rows.length : FLAT_ROW_LIMIT;
 
   const flatRows = (
@@ -176,9 +142,7 @@ export default function ProductTable({ products }: ProductTableProps) {
       {rows.slice(0, flatRowLimit).map((row) => {
         const product = row.original;
         if (isMobile) {
-          // Case 7's mobile bad/good branch point — mirrors the desktop
-          // branch right below (ProductTableRowUnoptimized vs
-          // ProductTableRow).
+          // Case 7's mobile bad/good branch point, mirrors the desktop branch right below (ProductTableRowUnoptimized vs ProductTableRow).
           const ProductCardComponent = isContextOverheadOn
             ? ProductCardUnoptimized
             : ProductCard;
@@ -188,8 +152,7 @@ export default function ProductTable({ products }: ProductTableProps) {
             </div>
           );
         }
-        // Case 7's desktop bad/good branch point — everything else about
-        // the two row components is identical.
+        // Case 7's desktop bad/good branch point, everything else about the two row components is identical.
         const Row = isContextOverheadOn
           ? ProductTableRowUnoptimized
           : ProductTableRow;

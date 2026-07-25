@@ -34,8 +34,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-// A colored dot + plain label — the status picker's own row style, distinct
-// from the tinted Badge pill used for the status column elsewhere.
 function StatusDotLabel({ status }: { status: LogisticStatus }) {
   return (
     <span className="flex items-center gap-2.25">
@@ -50,24 +48,11 @@ function StatusDotLabel({ status }: { status: LogisticStatus }) {
   );
 }
 
-// Toolbar's "Bulk Actions" panel — a Select + a button, not a list of menu
-// actions, so it's a Popover rather than a DropdownMenu (Menu semantics
-// expect menuitem children, and nesting a Select's own listbox inside one
-// fights it for keyboard focus). The Select previously appeared to overlap
-// its own trigger instead of opening below it — that's base-ui's
-// `alignItemWithTrigger` (on by default, mimicking native <select>, which
-// overlaps the trigger so the selected item lines up with it); disabled in
-// components/ui/select.tsx so it behaves like the rest of this app's
-// dropdowns.
+// Toolbar's "Bulk Actions" panel, a Select + a button, not a list of menu actions, so it's a Popover rather than a DropdownMenu (Menu semantics expect menuitem children, and nesting a Select's own listbox inside one fights it for keyboard focus). base-ui's `alignItemWithTrigger` defaults to on, mimicking native <select> by overlapping the trigger so the selected item lines up with it; disabled in components/ui/select.tsx so it behaves like the rest of this app's dropdowns.
 //
-// Pick a status, confirm in a modal, then PATCH every selected product.
-// DummyJSON doesn't persist writes, so the new status is also applied via
-// inventory-status's optimistic overlay — otherwise the table would have
-// no way to show the result of the demo.
+// Pick a status, confirm in a modal, then PATCH every selected product. DummyJSON doesn't persist writes, so the new status is also applied via inventory-status's optimistic overlay, otherwise the table would have no way to show the result of the demo.
 //
-// Case 7 (Context Overhead): reads/writes whichever selection source is
-// currently active (Zustand or the isolated Context — see
-// context/TableSelectionContext.tsx), same reasoning as SelectAllCheckbox.
+// Case 7 (Context Overhead): reads/writes whichever selection source is currently active (Zustand or the isolated Context, see context/TableSelectionContext.tsx), same reasoning as SelectAllCheckbox.
 export default function BulkActions() {
   const isContextOverheadOn = useSimulatorCase("contextOverhead");
   const zustandSelected = useInventorySelectionStore((state) => state.selected);

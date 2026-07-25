@@ -8,16 +8,13 @@ import { cn } from "@/lib/utils/cn";
 
 interface EdgeScrollerProps {
   children: React.ReactNode;
-  // Applied to the scrollable row itself (e.g. to set its own flex/gap
-  // layout) — the component's root and arrow buttons are styled internally.
+  // Applied to the scrollable row itself (e.g. to set its own flex/gap layout); the component's root and arrow buttons are styled internally.
   className?: string;
   scrollLeftLabel?: string;
   scrollRightLabel?: string;
 }
 
-// Horizontally-scrollable row with edge-jump arrow buttons instead of a
-// visible scrollbar. Arrows only render once the content actually overflows
-// — e.g. the simulator's control panel on narrower desktop screens.
+// Horizontally-scrollable row with edge-jump arrow buttons instead of a visible scrollbar. Arrows only render once the content actually overflows, e.g. the simulator's control panel on narrower desktop screens.
 export default function EdgeScroller({
   children,
   className,
@@ -29,10 +26,7 @@ export default function EdgeScroller({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
-  // Re-checked on resize and once scrolling actually stops. Using
-  // "scrollend" instead of "scroll" avoids a setState (→ re-render) on
-  // every scroll frame, which fights the browser's smooth-scroll animation
-  // and makes it look jerky.
+  // Re-checked on resize and once scrolling actually stops. Using "scrollend" instead of "scroll" avoids a setState (→ re-render) on every scroll frame, which fights the browser's smooth-scroll animation and makes it look jerky.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -53,10 +47,7 @@ export default function EdgeScroller({
     };
   }, []);
 
-  // Lets the mouse wheel drive horizontal scrolling on desktop. Attached as a
-  // native listener (not React's onWheel) with { passive: false } — React
-  // registers wheel handlers passively at the root, so preventDefault() in a
-  // JSX onWheel prop is silently ignored and the page keeps scrolling too.
+  // Lets the mouse wheel drive horizontal scrolling on desktop. Attached as a native listener (not React's onWheel) with { passive: false }: React registers wheel handlers passively at the root, so preventDefault() in a JSX onWheel prop is silently ignored and the page keeps scrolling too.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -72,8 +63,7 @@ export default function EdgeScroller({
     return () => el.removeEventListener("wheel", handleWheel);
   }, []);
 
-  // One click jumps all the way to the edge, not just one step — there's
-  // nothing else to reveal in between.
+  // One click jumps all the way to the edge, not just one step: there's nothing else to reveal in between.
   const scrollToStart = () =>
     scrollRef.current?.scrollTo({ left: 0, behavior: "smooth" });
   const scrollToEnd = () => {

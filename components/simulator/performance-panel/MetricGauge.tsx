@@ -8,17 +8,14 @@ interface MetricGaugeProps {
   poorThreshold: number;
   rating: VitalRating | null;
   size?: number;
-  // Link to the metric's official web.dev explainer. Optional — only the
-  // three Core Web Vitals (LCP/CLS/INP) have one.
+  // Link to the metric's official web.dev explainer. Optional, only the three Core Web Vitals (LCP/CLS/INP) have one.
   href?: string;
 }
 
 const STROKE_WIDTH = 4;
 const TRACK_COLOR = "rgba(255,255,255,0.08)";
 
-// Single circular CWV gauge (LCP/CLS/INP) — fill % and color come from
-// lib/utils/gauge.ts, not a plain value/max ratio. `rating: null` (no
-// reading yet) renders an empty neutral ring instead of presupposing "good".
+// Single circular CWV gauge (LCP/CLS/INP): fill % and color come from lib/utils/gauge.ts, not a plain value/max ratio. `rating: null` (no reading yet) renders an empty neutral ring instead of presupposing "good".
 export default function MetricGauge({
   label,
   display,

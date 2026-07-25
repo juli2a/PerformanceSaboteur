@@ -12,12 +12,7 @@ function makeSelected(id: number): SelectedProduct {
   return { id, title: `Product ${id}`, sku: `SKU-${id}`, logisticStatus: "In Stock" };
 }
 
-// Not about Case 7 (contextOverhead stays off, its default) — this is the
-// plain admin behavior: components/inventory/SelectAllCheckbox.tsx:41-51.
-// `allVisibleSelected` must be true only when EVERY visible product is
-// selected (not "at least one"), and toggling must only ever add/remove the
-// *visible* products — a product selected outside of `visibleProducts` (as
-// if filtered/scrolled out of view) must never be touched by this checkbox.
+// Not about Case 7 (contextOverhead stays off, its default), this is the plain admin behavior of components/inventory/SelectAllCheckbox.tsx. `allVisibleSelected` must be true only when EVERY visible product is selected (not "at least one"), and toggling must only ever add/remove the *visible* products; a product selected outside of `visibleProducts` (as if filtered/scrolled out of view) must never be touched by this checkbox.
 const visibleProducts = [1, 2, 3].map(makeSelected);
 
 beforeEach(() => {

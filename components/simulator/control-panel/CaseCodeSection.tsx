@@ -13,9 +13,7 @@ interface CaseCodeSectionProps {
   tone: "anti" | "best";
 }
 
-// Anti-pattern / Best practice block in CaseTipContent. `codeBlock` arrives
-// already server-rendered (see CaseCodeBlock) — this component only owns
-// the show/hide interaction, never the highlighting itself.
+// Anti-pattern / Best practice block in CaseTipContent. `codeBlock` arrives already server-rendered (see CaseCodeBlock), this component only owns the show/hide interaction, never the highlighting itself.
 export default function CaseCodeSection({
   icon,
   label,

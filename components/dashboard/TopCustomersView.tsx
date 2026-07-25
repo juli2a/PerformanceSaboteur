@@ -8,10 +8,7 @@ interface Props {
   customers: CustomerData[];
 }
 
-// Presentational — takes already-fetched data as a prop. TopCustomers (the
-// async fetch wrapper below it in the good path) and WaterfallSections
-// (app/(shell)/dashboard/page.tsx, Case 5 bad path) both render this same
-// component; only how the data reaches it differs.
+// Presentational, takes already-fetched data as a prop. TopCustomers (the async fetch wrapper below it in the good path) and WaterfallSections (app/(shell)/dashboard/page.tsx, Case 5 bad path) both render this same component; only how the data reaches it differs.
 export function TopCustomersView({ customers }: Props) {
   return (
     <Card variant="global" className="@min-[1024px]:flex-1">

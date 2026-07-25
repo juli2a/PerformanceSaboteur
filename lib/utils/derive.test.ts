@@ -6,7 +6,7 @@ import {
   deriveKpiTrend,
 } from "@/lib/utils/derive";
 
-// Formula from docs/data.md: LTV = userId*1250 + userAge*300, rounded. The values themselves carry no real business meaning (synthetic demo data) — these tests exist to catch the formula silently drifting away from the documented constants, not to validate "realistic" numbers.
+// Formula from docs/data.md: LTV = userId*1250 + userAge*300, rounded. The values themselves carry no real business meaning (synthetic demo data); these tests exist to catch the formula silently drifting away from the documented constants, not to validate "realistic" numbers.
 
 describe("deriveLtv", () => {
   it("matches the documented formula for id=1, age=25", () => {
@@ -28,9 +28,6 @@ describe("deriveLtv", () => {
   });
 });
 
-// deriveTrend looks at the last changing segment (oldest -> newest), and
-// falls back to earlier segments when the tail is flat; an all-flat series
-// defaults to false (docs: comment above the function in derive.ts).
 describe("deriveTrend", () => {
   it("returns true when the last segment is rising", () => {
     expect(deriveTrend([1, 2, 3])).toBe(true);
@@ -58,9 +55,6 @@ describe("deriveTrend", () => {
   });
 });
 
-// Compares the sum of the first half of a series against the second half,
-// as a %. older===0 is a documented special case since you can't divide by
-// zero (comment above the function in derive.ts).
 describe("deriveHalfWindowDeltaPercent", () => {
   it("returns 0 when both halves sum to zero", () => {
     expect(deriveHalfWindowDeltaPercent([0, 0, 0, 0])).toBe(0);
@@ -81,19 +75,9 @@ describe("deriveHalfWindowDeltaPercent", () => {
   });
 });
 
-// Builds a 10-point synthetic sparkline with a per-point wobble (~4%), and
-// documents a guarantee that the resulting deltaPercent is always >= 2
-// (comment above the function in derive.ts) — this demo never shows a
-// declining "active clients" KPI. We test the guarantee itself, not one
-// magic value for one seed.
+// Builds a 10-point synthetic sparkline with a per-point wobble (~4%), and documents a guarantee that the resulting deltaPercent is always >= 2 (see the comment above the function in derive.ts): this demo never shows a declining "active clients" KPI. We test the guarantee itself, not one magic value for one seed.
 //
-// currentValue is grounded in the real caller's domain (dashboard.ts:
-// usersCount = 90 + (seed % 31) -> 90-120), since it's a real KPI value
-// with realistic bounds. seed, by contrast, is purely an internal
-// determinism mechanism with no domain meaning — the guarantee is
-// explicitly claimed to hold for ANY seed, so testing it across an
-// arbitrary range (0..50) is the correct way to exercise that promise,
-// not a shortcut.
+// currentValue is grounded in the real caller's domain (dashboard.ts's usersCount, a seeded value with realistic bounds), not an arbitrary number. seed, by contrast, is purely an internal determinism mechanism with no domain meaning; the guarantee is explicitly claimed to hold for ANY seed, so testing it across an arbitrary range (0..50) is the correct way to exercise that promise, not a shortcut.
 describe("deriveKpiTrend", () => {
   it("always returns a 10-point spark array", () => {
     const { spark } = deriveKpiTrend(100, 42);

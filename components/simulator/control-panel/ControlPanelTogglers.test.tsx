@@ -22,21 +22,14 @@ beforeEach(() => {
   });
 });
 
-// The Switch and its label span are siblings, not wired via <label>/
-// aria-labelledby, so getByRole with a `name` won't find them — scope to
-// the row via its data-case-key instead (ControlPanelTogglers.tsx puts it
-// on the same <div> as the Switch, one per SIMULATOR_CASES item).
+// The Switch and its label span are siblings, not wired via <label>/aria-labelledby, so getByRole with a `name` won't find them; scope to the row via its data-case-key instead (ControlPanelTogglers.tsx puts it on the same <div> as the Switch, one per SIMULATOR_CASES item).
 function getSwitchByCaseKey(key: CaseKey): HTMLElement {
   const row = document.querySelector(`[data-case-key="${key}"]`);
   if (!row) throw new Error(`row not found for case key "${key}"`);
   return within(row as HTMLElement).getByRole("switch");
 }
 
-// ControlPanelTogglers wires clicks to useToggleCase (already fully tested
-// at hook level in hooks/useToggleCase.test.ts, including the cookie+reload
-// side effect). What's untested is the wiring itself: does clicking a given
-// case's Switch actually call it with that case's key, and does the Switch
-// reflect the store's current value back as `checked`.
+// ControlPanelTogglers wires clicks to useToggleCase (already fully tested at hook level in hooks/useToggleCase.test.ts, including the cookie+reload side effect). What's untested is the wiring itself: does clicking a given case's Switch actually call it with that case's key, and does the Switch reflect the store's current value back as `checked`.
 describe("ControlPanelTogglers", () => {
   it("clicking an SSR_COOKIE_CASES toggle (layoutShift) updates the store and reloads once", async () => {
     render(<ControlPanelTogglers />);

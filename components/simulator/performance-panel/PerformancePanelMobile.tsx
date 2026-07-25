@@ -34,8 +34,7 @@ function RatingDot({ rating }: { rating: VitalRating | null }) {
   );
 }
 
-// "Chart-free" metric for the expanded grid — a coloured number, no gauge
-// ring (no room for SVG rings at this width).
+// "Chart-free" metric for the expanded grid: a coloured number, no gauge ring (no room for SVG rings at this width).
 function VitalReadout({ label, display, rating, href }: MetricPreview) {
   const labelClass =
     "text-[15px] font-semibold underline tracking-wide text-brand-muted";
@@ -84,11 +83,7 @@ function StatTile({ label, display, rating }: MetricPreview) {
   );
 }
 
-// Bottom panel — mobile counterpart to PerformancePanelDesktop's floating
-// corner widget, per docs/ui.md "Floating Performance Panel" → Mobile.
-// Receives the metrics PerformancePanel computed once for both branches;
-// owns only its own mobile-only UI state (expanded/collapsed, panel height
-// for positioning the alert lane above it).
+// Bottom panel, mobile counterpart to PerformancePanelDesktop's floating corner widget. Receives the metrics PerformancePanel computed once for both branches; owns only its own mobile-only UI state (expanded/collapsed, panel height for positioning the alert lane above it).
 export default function PerformancePanelMobile({
   alerts,
   vitals,
@@ -112,33 +107,22 @@ export default function PerformancePanelMobile({
     (state) => state.setMobilePanelHeight,
   );
 
-  // Case 2 (Layout Shift) mobile branch point — see PanelAnchor.tsx.
+  // Case 2 (Layout Shift) mobile branch point, see PanelAnchor.tsx.
   const { expanded, setExpanded } = usePanelExpanded(
     isLayoutShiftOn,
     initialExpanded,
   );
 
-  // Forced open while the simulator controls sheet is open, so a reader can
-  // never lose sight of the metrics they're about to toggle.
+  // Forced open while the simulator controls sheet is open, so a reader can never lose sight of the metrics they're about to toggle.
   const open = expanded || controlsOpen;
 
-  // Measures the panel's own height into the store — the alert lane below
-  // floats its fixed bottom offset just above it, and MobileControlDrawer
-  // reserves the same amount of bottom padding in its own scroll area, so
-  // there's a single source of truth for "how tall is the panel right now"
-  // instead of two separate measurements. A ResizeObserver (not a
-  // open/alerts.length dependency list) catches every cause of a height
-  // change, including the stat-tile row wrapping to a second line on a
-  // narrower viewport, not just the two we'd otherwise have to enumerate.
+  // Measures the panel's own height into the store: the alert lane below floats its fixed bottom offset just above it, and MobileControlDrawer reserves the same amount of bottom padding in its own scroll area, giving a single source of truth for "how tall is the panel right now". A ResizeObserver catches every cause of a height change: open/alerts.length toggling, but also less obvious ones like the stat-tile row wrapping to a second line on a narrower viewport.
   const panelRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = panelRef.current;
     if (!el) return;
 
-    // Mirrors the same measurement into a CSS var on the document root —
-    // `main` (app/(shell)/layout.tsx) reads it to reserve bottom padding
-    // for this now fixed-position panel, without needing its own spacer
-    // element or a second store subscription.
+    // Mirrors the same measurement into a CSS var on the document root, which `main` (app/(shell)/layout.tsx) reads directly to reserve bottom padding for this now fixed-position panel.
     const observer = new ResizeObserver(() => {
       setMobilePanelHeight(el.offsetHeight);
       document.documentElement.style.setProperty(
@@ -147,10 +131,7 @@ export default function PerformancePanelMobile({
       );
     });
     observer.observe(el);
-    // Zero it back out on unmount (e.g. switching to desktop, where
-    // PerformancePanelDesktop takes over instead) — otherwise consumers
-    // like MobileDrawer keep reserving space for a panel that's no longer
-    // in the DOM, going by whatever height this one last measured.
+    // Zero it back out on unmount (e.g. switching to desktop, where PerformancePanelDesktop takes over instead); otherwise consumers like MobileDrawer keep reserving space for a panel that's no longer in the DOM, going by whatever height this one last measured.
     return () => {
       observer.disconnect();
       setMobilePanelHeight(0);

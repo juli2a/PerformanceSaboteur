@@ -39,8 +39,7 @@ beforeEach(() => {
   );
 });
 
-// Changes the middle card's (index 1, product id=2) status via the real
-// StatusChangeDrawer UI: open -> pick a different status -> confirm.
+// Changes the middle card's (index 1, product id=2) status via the real StatusChangeDrawer UI: open -> pick a different status -> confirm.
 async function changeMiddleCardStatus() {
   const triggers = screen.getAllByRole("button", { name: "Change status" });
   await userEvent.click(triggers[1]);
@@ -48,17 +47,7 @@ async function changeMiddleCardStatus() {
   await userEvent.click(screen.getByRole("button", { name: "Change" }));
 }
 
-// Case 7 (contextOverhead) mobile branch — lib/simulator-cases.ts mobileTip:
-// unlike the desktop story (row selection via checkbox), the mobile trigger
-// is changing a product's status. ProductCard (good path) reads/writes
-// useInventoryStatusStore via a per-id selector; ProductCardUnoptimized (bad
-// path) reads/writes context/RowStatusContext.tsx, whose Provider hands out
-// a brand-new Map to every consumer on each change. Both wrap ProductCardView
-// in FlashOnUpdate caseKey="contextOverhead" (components/inventory/ProductCardView.tsx),
-// the same ready-made counter already used for the desktop story in
-// components/inventory/ProductTableRow.test.tsx. Interacts through the real
-// StatusChangeDrawer (not a direct onChangeStatus call) so the actual
-// Card->View->Drawer chain this case demonstrates is what's exercised.
+// Case 7 (contextOverhead) mobile branch, per lib/simulator-cases.ts mobileTip: unlike the desktop story (row selection via checkbox), the mobile trigger is changing a product's status. ProductCard (good path) reads/writes useInventoryStatusStore via a per-id selector; ProductCardUnoptimized (bad path) reads/writes context/RowStatusContext.tsx, whose Provider hands out a brand-new Map to every consumer on each change. Both wrap ProductCardView in FlashOnUpdate caseKey="contextOverhead" (components/inventory/ProductCardView.tsx), the same ready-made counter already used for the desktop story in components/inventory/ProductTableRow.test.tsx. Interacts through the real StatusChangeDrawer (not a direct onChangeStatus call) so the actual Card->View->Drawer chain this case demonstrates is what's exercised.
 describe("ProductCard vs ProductCardUnoptimized (Case 7, mobile)", () => {
   it("good path (Zustand selector): changing one card's status re-renders only that card", async () => {
     render(

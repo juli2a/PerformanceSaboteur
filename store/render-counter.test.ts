@@ -5,11 +5,7 @@ beforeEach(() => {
   useRenderCounterStore.setState({ counters: {} });
 });
 
-// store/render-counter.ts:19-26. startTracking always resets to a fresh
-// burst — correct when the tracked action is self-contained (Case 7: one
-// checkbox click). startTrackingIfIdle only resets when the key isn't
-// already tracking, so a continuous stream of ticks (Case 8: a slider
-// drag) accumulates into one burst instead of each tick wiping the count.
+// See startTracking/startTrackingIfIdle in store/render-counter.ts: startTracking always resets to a fresh burst (correct when the tracked action is self-contained, Case 7: one checkbox click); startTrackingIfIdle only resets when the key isn't already tracking, so a continuous stream of ticks (Case 8: a slider drag) accumulates into one burst instead of each tick wiping the count.
 describe("startTracking vs startTrackingIfIdle", () => {
   it("startTracking always resets to {count:0, isTracking:true}, even over an in-progress count>0", () => {
     useRenderCounterStore.getState().startTracking("contextOverhead");
@@ -31,7 +27,7 @@ describe("startTracking vs startTrackingIfIdle", () => {
     ).toEqual({ count: 0, isTracking: true });
   });
 
-  it("startTrackingIfIdle leaves an in-progress count untouched when already tracking — the burst-accumulation guarantee", () => {
+  it("startTrackingIfIdle leaves an in-progress count untouched when already tracking, the burst-accumulation guarantee", () => {
     useRenderCounterStore.getState().startTrackingIfIdle("brokenMemoization");
     useRenderCounterStore.getState().increment("brokenMemoization");
     useRenderCounterStore.getState().increment("brokenMemoization");
@@ -92,7 +88,7 @@ describe("stopTracking", () => {
     );
   });
 
-  it("is a no-op for a key that was never started — does not create a phantom entry", () => {
+  it("is a no-op for a key that was never started, does not create a phantom entry", () => {
     useRenderCounterStore.getState().stopTracking("contextOverhead");
 
     expect(

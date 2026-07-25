@@ -7,13 +7,11 @@ import {
 } from "@/lib/utils/sparkline-processing";
 import { deriveRawHistory } from "@/lib/utils/derive";
 
-// Comment in the source: "repeatedly clamps points outside 1.5x IQR to the
-// nearest fence boundary they crossed, stopping once a pass changes nothing
-// (capped at maxPasses)."
+// See removeOutliersIterative in sparkline-processing.ts for why clamping stops early.
 describe("removeOutliersIterative", () => {
   it("leaves data unchanged when nothing is outside the IQR fence", () => {
     // sorted = same; Q1=sorted[1]=11, Q3=sorted[4]=14, IQR=3,
-    // fence=[6.5,18.5] — every value here is inside it.
+    // fence=[6.5,18.5], every value here is inside it.
     const data = [10, 11, 12, 13, 14, 15];
     expect(removeOutliersIterative(data)).toEqual(data);
   });
@@ -29,24 +27,14 @@ describe("removeOutliersIterative", () => {
     ]);
   });
 
-  it("respects maxPasses — 0 passes leaves even an obvious outlier untouched", () => {
-    // Deviation from the plan: the plan's original idea (maxPasses=1 on
-    // data that needs 2 real rounds) turned out hard to hand-construct —
-    // IQR fences built from a handful of clean values aren't perturbed
-    // much by 1-2 large outliers, so a single pass already fully cleans
-    // most constructible examples, making a 1-vs-5-pass comparison
-    // indistinguishable. maxPasses=0 proves the same guarantee (the loop
-    // is genuinely gated by the parameter, not just "runs until settled")
-    // more directly: the for-loop condition `pass < maxPasses` is false
-    // immediately, so not even one clamp happens.
+  it("respects maxPasses: 0 passes leaves even an obvious outlier untouched", () => {
+    // Testing maxPasses=1 on data that needs 2 real rounds turned out hard to hand-construct: IQR fences built from a handful of clean values aren't perturbed much by 1-2 large outliers, so a single pass already fully cleans most constructible examples, making a 1-vs-5-pass comparison indistinguishable. maxPasses=0 proves the same guarantee (the loop is genuinely gated by the parameter, not just "runs until settled") more directly: the for-loop condition `pass < maxPasses` is false immediately, so not even one clamp happens.
     const data = [10, 11, 12, 13, 14, 100];
     expect(removeOutliersIterative(data, 0)).toEqual(data);
   });
 });
 
-// "Trailing moving average over `window` points" — at index i, average of
-// up to `window` points ending at i; near the start of the array, before a
-// full window exists yet, it averages whatever is available (0..i).
+// Trailing moving average over `window` points: at index i, average of up to `window` points ending at i; near the start of the array, before a full window exists yet, it averages whatever is available (0..i).
 describe("movingAverage", () => {
   it("warms up at the start of the array, then uses the full window", () => {
     // i0: [1] -> 1
@@ -63,8 +51,7 @@ describe("movingAverage", () => {
   });
 });
 
-// Splits data into targetPoints equal buckets via floor(i*bucketSize) ..
-// floor((i+1)*bucketSize), averages and rounds each bucket.
+// Splits data into targetPoints equal buckets via floor(i*bucketSize) .. floor((i+1)*bucketSize), averages and rounds each bucket.
 describe("downsampleTo", () => {
   it("averages evenly-sized buckets and rounds with Math.round", () => {
     // bucketSize=2 exactly: [1,2]->1.5->2, [3,4]->3.5->4, [5,6]->5.5->6,
@@ -74,10 +61,7 @@ describe("downsampleTo", () => {
   });
 
   it("splits unevenly (fractional bucketSize) without losing or duplicating points", () => {
-    // bucketSize=10/7≈1.4286. Bucket sizes by index: [1,1,2,1,2,1,2] — sum
-    // 10, every point counted exactly once. This is not a hypothetical edge
-    // case: the real pipeline hits 365→7 every time, which is just as
-    // uneven.
+    // bucketSize=10/7≈1.4286. Bucket sizes by index: [1,1,2,1,2,1,2], sum 10, every point counted exactly once. This is not a hypothetical edge case: the real pipeline hits 365→7 every time, which is just as uneven.
     const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     // buckets: [1]->1, [2]->2, [3,4]->3.5->4, [5]->5, [6,7]->6.5->7,
     // [8]->8, [9,10]->9.5->10
@@ -85,12 +69,7 @@ describe("downsampleTo", () => {
   });
 });
 
-// Full pipeline: cleaned -> smoothed -> downsampled to 7 points. Each stage
-// is already unit-tested above with its own formula; here we only check the
-// contract the whole pipeline promises — a year of raw daily readings
-// always collapses to exactly 7 points for the mini sparkline — not
-// re-derive exact numbers that no independent doc specifies for the
-// composition as a whole.
+// Full pipeline: cleaned -> smoothed -> downsampled to 7 points. Each stage is already unit-tested above with its own formula; here we only check the contract the whole pipeline promises, that a year of raw daily readings always collapses to exactly 7 points for the mini sparkline, not re-derive exact numbers that no independent doc specifies for the composition as a whole.
 describe("processSparklineHistory", () => {
   it("always returns exactly 7 points for a full year of raw daily readings", () => {
     const raw = deriveRawHistory(1, 100, 365);

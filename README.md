@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend Anti-Patterns & Performance Sandbox 🚀
 
-## Getting Started
+An interactive educational demo B2B analytics dashboard (Dashboard + Inventory Control) designed to visualize and measure the real-time impact of common frontend anti-patterns.
 
-First, run the development server:
+**Fully optimized for both desktop and mobile viewports — see how performance degrades on different form factors and hardware.**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**Stop talking about performance in theory — see it in action with live metrics.**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+👉 [**Live Demo Link**](https://performance-saboteur.vercel.app/)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ⚡ What is this?
 
-## Learn More
+This project looks and feels like a real, working production interface. However, it allows you to deliberately toggle well-known frontend performance bottlenecks to observe exactly how they affect core web vitals and user experience.
 
-To learn more about Next.js, take a look at the following resources:
+Instead of reading dry documentation, you can watch how the UI stutters, identify where the LCP/CLS hits come from, and examine side-by-side code comparisons.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Features & Capabilities
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Interactive Control Panel:** Toggle anti-patterns across three categories: Network, Rendering, and Computing.
+- **Effect Stacking:** Combine multiple toggles to see how performance issues compound.
+- **Live Metrics Tracker:** Watch LCP, CLS, INP, and other vital metrics update instantly at the bottom of the screen.
+- **Flash on Update:** Visualize component re-renders in real-time under stress.
+- **Case Guides:** Each toggle includes a short breakdown, reproduction steps, and a bad vs. good code comparison.
 
-## Deploy on Vercel
+## 🧰 Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Frontend:** Next.js 16 (App Router, TypeScript), React 19
+- **Styling:** Tailwind CSS v4 + shadcn/ui
+- **State Management:** Zustand
+- **Metrics tracking:** Custom performance observers / Web Vitals API
+- **Data:** DummyJSON (real HTTP calls, no local mocks)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ⚙️ Local Development (Optional)
+
+If you want to run this project locally:
+
+1. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+2. Run the development server:
+   ```bash
+   pnpm dev
+   ```
+3. Run tests:
+   ```bash
+   pnpm test
+   pnpm test:e2e
+   ```
+
+---
+
+💡 _Note: Blocking Time and Interaction Latency only update when a new qualifying event happens (e.g., a Long Task over 50ms). They represent the metric doing its job, not the current live state of the app._
+
+💡 _Note: Fast CPUs, CDNs, and production build optimizations can sometimes mask these anti-patterns — the same toggle may look far less dramatic on strong hardware than on an average device. See the in-app **About** section for more on this._

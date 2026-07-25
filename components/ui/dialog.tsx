@@ -44,9 +44,7 @@ const dialogSizeClass = {
   md: "sm:max-w-200",
 } as const;
 
-// "default" is the app's own dark surface; "brand" matches the case guide
-// panel's surface (CaseDetailPanel.tsx) for popups that belong to the
-// simulator brand rather than the app UI.
+// "default" is the app's own dark surface; "brand" matches the case guide panel's surface (CaseDetailPanel.tsx) for popups that belong to the simulator brand rather than the app UI.
 const dialogVariantClass = {
   default: "bg-card text-card-foreground ring-1 ring-foreground/10",
   brand: "border border-brand-border bg-brand-bg",

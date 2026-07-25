@@ -27,8 +27,7 @@ export function formatCompactCurrency(value: number, currency = "USD"): string {
   }).format(value);
 }
 
-// DummyJSON category slugs are kebab-case ("mens-shirts") — title-case them
-// for display. Filtering still matches against the raw slug.
+// DummyJSON category slugs are kebab-case ("mens-shirts"), title-case them for display. Filtering still matches against the raw slug.
 export function formatCategoryLabel(slug: string): string {
   return slug
     .split("-")

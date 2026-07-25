@@ -22,11 +22,7 @@ export function MicroCardsGridClient({ products }: Props) {
     (state) => state.startTrackingIfIdle,
   );
 
-  // Cleans, smooths and downsamples each product's year of raw daily
-  // readings once — `products` is a stable reference (a prop from the
-  // server, unaffected by the threshold slider), so this never reruns while
-  // the user drags "Min GM%". Contrast with MicroCardUnoptimized's bad-path
-  // version of this same pipeline, which reruns per card on every tick.
+  // Cleans, smooths and downsamples each product's year of raw daily readings once, `products` is a stable reference (a prop from the server, unaffected by the threshold slider), so this never reruns while the user drags "Min GM%". Contrast with MicroCardUnoptimized's bad-path version of this same pipeline, which reruns per card on every tick.
   const sparklines = useMemo(
     () => products.map((p) => processSparklineHistory(p.rawHistory)),
     [products],
@@ -66,11 +62,7 @@ export function MicroCardsGridClient({ products }: Props) {
 
       <div className="grid grid-cols-1 gap-3 @min-[640px]:grid-cols-2 @min-[1024px]:grid-cols-4 @min-[1280px]:grid-cols-5">
         {isBrokenMemoizationOn
-          ? // Case 8 bad path: `card` is spread into a brand-new object on
-            // every render of this component — MicroCardUnoptimized's
-            // React.memo can never see it as unchanged, so every slider tick
-            // still fully re-renders all 100 cards, plus 100 wasted prop
-            // comparisons.
+          ? // Case 8 bad path: `card` is spread into a brand-new object on every render of this component, MicroCardUnoptimized's React.memo can never see it as unchanged, so every slider tick still fully re-renders all 100 cards, plus 100 wasted prop comparisons.
             products.map((product) => (
               <MicroCardUnoptimized
                 key={product.id}

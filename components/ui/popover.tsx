@@ -71,9 +71,7 @@ const popoverContentVariants = cva(
       },
       size: {
         default: "min-w-56 p-4",
-        // 500px wide, 24px/32px padding, 14px base text — used by content
-        // with several labeled sections (e.g. CaseTipContent) that needs
-        // more room than the default compact popover.
+        // Used by content with several labeled sections (e.g. CaseTipContent) that needs more room than the default compact popover.
         lg: "w-175 px-8 py-6",
       },
     },
