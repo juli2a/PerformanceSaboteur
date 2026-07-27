@@ -48,7 +48,7 @@
     transition: grid-template-rows 0.3s ease-out;
     overflow: hidden;
   }
-  .sim-panel-mobile-content[data-open] {
+  .sim-panel-mobile-content[data-panel-open] {
     grid-template-rows: 1fr;
   }
   .sim-panel-mobile-content[data-instant] {
