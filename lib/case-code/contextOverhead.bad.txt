@@ -26,9 +26,9 @@ const isSelected = selected.has(product.id);
 
 // Every time toggleRow runs, the Provider re-renders
 // (its own `selected` state changed) and builds a
-// brand-new `value` object for its Provider — a fresh
+// brand-new `value` object for its Provider (a fresh
 // object reference, every time, whether or not it's
-// memoized. React re-renders *every* component that
+// memoized). React re-renders every component that
 // calls useContext on that Provider whenever
 // `value`'s reference changes, regardless of which
 // field a given row actually reads. So one row's

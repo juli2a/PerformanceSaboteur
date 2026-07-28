@@ -1,19 +1,30 @@
 "use client";
 
+import { useContext } from "react";
 import About from "@/components/layout/About";
 import MainNav from "@/components/layout/MainNav";
+import { MediaContext } from "@/context/MediaContext";
 import { useSimPerformanceStore } from "@/store/simulator-performance";
 
 interface Props {
   open: boolean;
   onClose: () => void;
+  initialIsMobile?: boolean;
 }
 
-export default function MobileDrawer({ open, onClose }: Props) {
+export default function MobileDrawer({
+  open,
+  onClose,
+  initialIsMobile,
+}: Props) {
   // The mobile Performance Panel floats fixed at the bottom of the viewport (above this drawer, z-60 vs z-41); stopping the drawer's own bottom edge at the panel's current height (collapsed or expanded, via the same store MobileControlDrawer reads for its bottomOffset) keeps About reachable instead of hidden behind it.
   const mobilePanelHeight = useSimPerformanceStore(
     (state) => state.mobilePanelHeight,
   );
+
+  // Desktop-hidden used to mean CSS-transformed off-canvas, still mounted and still in the tab order. Real unmount (mirroring CaseDetailPanel's desktop-only gate, inverted) keeps its nav links/About out of reach entirely once the breakpoint says desktop.
+  const isMobile = useContext(MediaContext) ?? initialIsMobile;
+  if (isMobile !== true) return null;
 
   return (
     <>

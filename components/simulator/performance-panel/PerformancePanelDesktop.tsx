@@ -2,6 +2,7 @@ import {
   CLS_POOR,
   INP_POOR,
   LCP_POOR,
+  METRIC_TOOLTIPS,
   VITAL_DOCS_URL,
 } from "@/lib/simulator-thresholds";
 import { formatNumber } from "@/lib/utils/format";
@@ -69,16 +70,19 @@ export default function PerformancePanelDesktop({
             <MetricStat
               label="DOM nodes"
               value={domNodes === null ? "—" : formatNumber(domNodes)}
+              tooltip={METRIC_TOOLTIPS.domNodes}
             />
             <MetricStat
               label="Blocking Time"
               value={`${blockingTime}ms`}
               rating={blockingTimeRating}
+              tooltip={METRIC_TOOLTIPS.blockingTime}
             />
             <MetricStat
               label="Interaction Latency"
               value={`${interactionLatency}ms`}
               rating={interactionLatencyRating}
+              tooltip={METRIC_TOOLTIPS.interactionLatency}
             />
           </div>
         </div>

@@ -7,8 +7,8 @@
 ## Summary
 `React.memo` on its own isn't the problem. There are two independent mistakes here that are easy to mistake for one:
 
-1. A component is wrapped in `memo`, but receives an unstable reference as a prop (a fresh object on every parent render) — the prop comparison always fails, and React fully re-renders the component anyway: overhead with no benefit at all.
-2. Separately and independently — an expensive function that computes sparkline data is called **inside the card**, even though its only real dependency (the product's `rawHistory`) has nothing to do with why the card re-renders in the first place (the slider's `threshold`). Even a perfectly memoized `card` wouldn't save you from this — the computation simply lives in the wrong place relative to its dependency.
+1. A component is wrapped in `memo`, but that alone is not enough: every prop reaching it also has to stay reference-stable across renders. That can break in more than one way, an object rebuilt fresh every time (a spread copy of the product), or a raw, frequently-changing value handed straight through instead of a derived, per-card result (the slider's `threshold`, instead of a `lowMargin` flag). Either one alone is enough to fail the prop comparison, so React fully re-renders the component anyway, overhead with no benefit at all.
+2. Separately and independently, an expensive function that computes sparkline data is called **inside the card**, even though its only real dependency (the product's `rawHistory`) has nothing to do with why the card re-renders in the first place (the slider's `threshold`). Even a perfectly memoized `card` wouldn't save you from this, the computation simply lives in the wrong place relative to its dependency.
 
 The good variant fixes both: props are genuinely stable (memo actually skips the re-render) **and** the sparkline is computed once for the whole grid, not inside each card.
 
@@ -116,9 +116,10 @@ const MicroCardUnoptimized = memo(function MicroCardUnoptimized({ card, threshol
 });
 ```
 
-**Two independent mistakes:**
-1. `card={{ ...p }}` — a new object reference on every render of `MicroCardsGridClient` (the `products` array isn't memoized at this call site). `React.memo` compares `prevProps !== nextProps` → always `true` → the card fully re-renders anyway, despite `memo`.
-2. The sparkline computation (`processSparklineHistory`) is called **inside every card**, even though it only depends on `card.rawHistory` (i.e. on `products`), not on `threshold`. Even if `card` were stable and `React.memo` worked — that wouldn't matter for each card's first render, and wouldn't fix the architectural mistake: the expensive computation simply sits at the wrong level.
+**Three things stacked here:**
+1. `card={{ ...p }}`: a new object reference on every render of `MicroCardsGridClient` (the `products` array isn't memoized at this call site). `React.memo` compares `prevProps !== nextProps`, always `true`, so the card fully re-renders anyway, despite `memo`.
+2. `threshold={threshold}`: the raw slider value is passed straight through to every card, instead of a derived per-card flag the way the good path does (`lowMargin`). Even if `card` were perfectly stable, this alone still fails `memo`'s comparison for all 100 cards on every tick, since the same changed number reaches every card, regardless of whether that particular card's visual state actually changed.
+3. The sparkline computation (`processSparklineHistory`) is called **inside every card**, even though it only depends on `card.rawHistory` (i.e. on `products`), not on `threshold`. Even if `card` were stable and `React.memo` worked, that wouldn't matter for each card's first render, and wouldn't fix the architectural mistake: the expensive computation simply sits at the wrong level.
 
 **Why this is slow (with no artificial simulation):**
 - On every slider tick: all 100 cards go through a prop comparison in `React.memo` (always failing) + all 100 fully re-render + all 100 redo the clean → smooth → downsample pass over 365 "raw" points.

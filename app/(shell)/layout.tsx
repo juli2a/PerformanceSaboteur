@@ -41,6 +41,7 @@ export default async function ShellLayout({
         caseTipContent={mobileCaseTipContent}
         isLayoutShiftOn={isLayoutShiftOn}
         initialCollapsed={initialSidebarCollapsed}
+        initialIsMobile={initialIsMobile}
       />
       <div className="flex flex-1 lg:overflow-hidden">
         <Sidebar

@@ -33,26 +33,20 @@ const sparklines = useMemo(
 // array reference every render. lowMargin is the only
 // prop that actually changes, and only for the
 // handful of cards whose marginality sits at the
-// current threshold — so memo's comparison skips
+// current threshold, so memo's comparison skips
 // re-rendering everything else.
+
 export default memo(function MicroCard(props: Props) {
   return <MicroCardView {...props} />;
 });
 
 // lib/utils/sparkline-processing.ts
+// Cleaning + smoothing + downsampling a year of daily
+// readings
 export function processSparklineHistory(
   raw: number[],
 ): number[] {
-  // IQR trim, up to 5 passes
   const cleaned = removeOutliersIterative(raw);
-  // 7-day trailing average
   const smoothed = movingAverage(cleaned, 7);
-  // → the 7 points the sparkline shows
   return downsampleTo(smoothed, 7);
 }
-
-// Cleaning + smoothing + downsampling a year of daily
-// readings is real work (~24ms across all 100 cards)
-// — but it only needs to happen once, since the 365
-// raw points behind each card never change while the
-// user drags the threshold slider.

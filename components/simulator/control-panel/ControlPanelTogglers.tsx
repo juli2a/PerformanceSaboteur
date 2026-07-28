@@ -32,7 +32,7 @@ function GuideButton({ caseKey, label }: GuideButtonProps) {
       aria-label={`${isActive ? "Hide" : "Show"} guide: ${label}`}
       aria-expanded={isActive}
       className={cn(
-        "inline-flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-xs border border-transparent outline-none transition-colors",
+        "inline-flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-xs border border-transparent outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
         isActive
           ? "border-brand-accent bg-brand-accent text-brand-bg"
           : "text-brand-muted hover:border-brand-border hover:bg-brand-accent-dim hover:text-brand-accent",

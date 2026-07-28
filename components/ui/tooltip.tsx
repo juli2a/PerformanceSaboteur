@@ -10,12 +10,17 @@ function Tooltip({ ...props }: TooltipPrimitive.Root.Props) {
   return <TooltipPrimitive.Root data-slot="tooltip" {...props} />;
 }
 
-function TooltipTrigger({ ...props }: TooltipPrimitive.Trigger.Props) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
+function TooltipTrigger({
+  delay = 100,
+  ...props
+}: TooltipPrimitive.Trigger.Props) {
+  return (
+    <TooltipPrimitive.Trigger data-slot="tooltip-trigger" delay={delay} {...props} />
+  );
 }
 
 const tooltipInfoTriggerVariants = cva(
-  "inline-flex shrink-0 cursor-help items-center justify-center border-0 bg-transparent p-0 outline-none transition-colors",
+  "inline-flex shrink-0 cursor-help items-center justify-center gap-1 border-0 bg-transparent p-0 outline-none transition-colors",
   {
     variants: {
       color: {
@@ -35,10 +40,13 @@ function TooltipInfoTrigger({
   color,
   className,
   label,
+  iconSize = 14,
+  children,
   ...props
 }: TooltipPrimitive.Trigger.Props &
   VariantProps<typeof tooltipInfoTriggerVariants> & {
     label: string;
+    iconSize?: number;
   }) {
   return (
     <TooltipTrigger
@@ -46,13 +54,14 @@ function TooltipInfoTrigger({
       className={cn(tooltipInfoTriggerVariants({ color, className }))}
       {...props}
     >
-      <InfoIcon size={13} />
+      {children}
+      <InfoIcon size={iconSize} />
     </TooltipTrigger>
   );
 }
 
 const tooltipContentVariants = cva(
-  "tooltip-glow z-50 max-w-60 rounded px-3 py-2.5 text-xs leading-relaxed whitespace-normal outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+  "tooltip-glow z-65 max-w-60 rounded px-3 py-2.5 text-sm leading-relaxed whitespace-normal outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
   {
     variants: {
       color: {
@@ -83,7 +92,7 @@ function TooltipContent({
   return (
     <TooltipPrimitive.Portal>
       <TooltipPrimitive.Positioner
-        className="z-50"
+        className="z-65"
         align={align}
         alignOffset={alignOffset}
         side={side}

@@ -6,11 +6,16 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { formatNumber } from "@/lib/utils/format";
 import { getRatingPresentation } from "@/lib/utils/gauge";
-import { VITAL_DOCS_URL } from "@/lib/simulator-thresholds";
+import { METRIC_TOOLTIPS, VITAL_DOCS_URL } from "@/lib/simulator-thresholds";
 import { usePanelExpanded } from "@/hooks/usePanelExpanded";
 import { useSimControlStore } from "@/store/simulator-control";
 import { useSimPerformanceStore } from "@/store/simulator-performance";
 import OverallRatingBadge from "@/components/simulator/performance-panel/OverallRatingBadge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipInfoTrigger,
+} from "@/components/ui/tooltip";
 import type { PerformancePanelMetrics } from "@/components/simulator/performance-panel/panel-metrics";
 import type { VitalRating } from "@/types/simulator";
 
@@ -19,6 +24,8 @@ interface MetricPreview {
   display: string;
   rating: VitalRating | null;
   href?: string;
+  // Short explainer shown via an info icon next to the label, only the three custom metrics (DOM nodes, Blocking Time, Interaction Latency) have one, see METRIC_TOOLTIPS in lib/simulator-thresholds.ts.
+  tooltip?: string;
 }
 
 function RatingDot({ rating }: { rating: VitalRating | null }) {
@@ -65,11 +72,24 @@ function VitalReadout({ label, display, rating, href }: MetricPreview) {
   );
 }
 
-function StatTile({ label, display, rating }: MetricPreview) {
+function StatTile({ label, display, rating, tooltip }: MetricPreview) {
   return (
     <div className="flex flex-1 items-center justify-between gap-2 rounded-xs border border-brand-border bg-brand-bg-2 px-2.75 py-1">
       <span className="whitespace-nowrap text-sm text-brand-muted">
-        {label}
+        {tooltip ? (
+          <Tooltip>
+            <TooltipInfoTrigger
+              label={`What is ${label}?`}
+              color="brand"
+              iconSize={18}
+            >
+              {label}
+            </TooltipInfoTrigger>
+            <TooltipContent color="brand">{tooltip}</TooltipContent>
+          </Tooltip>
+        ) : (
+          label
+        )}
       </span>
       <span
         className={cn(
@@ -227,16 +247,19 @@ export default function PerformancePanelMobile({
                 label="DOM nodes"
                 display={domNodes === null ? "—" : formatNumber(domNodes)}
                 rating={null}
+                tooltip={METRIC_TOOLTIPS.domNodes}
               />
               <StatTile
                 label="Blocking Time"
                 display={`${blockingTime}ms`}
                 rating={blockingTimeRating}
+                tooltip={METRIC_TOOLTIPS.blockingTime}
               />
               <StatTile
                 label="Interaction Latency"
                 display={`${interactionLatency}ms`}
                 rating={interactionLatencyRating}
+                tooltip={METRIC_TOOLTIPS.interactionLatency}
               />
             </div>
           </div>

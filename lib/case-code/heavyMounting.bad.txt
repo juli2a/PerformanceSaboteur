@@ -10,13 +10,8 @@ const rows = table.getRowModel().rows;
   />
 ))}
 
-// No windowing at all — every one of the 2000+ rows
-// in the dataset mounts at once, each one a full
-// shadcn row (checkbox, image, badge). React's own
-// concurrent scheduler keeps a single click from
-// freezing the tab outright, but it can't make 2000
-// real DOM subtrees free to build: DOM Elements
-// balloons past 30000, and any click that lands
-// mid-mount waits behind the backlog instead of
-// painting on the next frame — that wait is exactly
-// what INP measures.
+// No windowing (virtualization) at all: all 2000+
+// rows mount at once. React's concurrent scheduler
+// keeps a single click from freezing the tab
+// outright, but it can't make that many real DOM
+// subtrees free to build.

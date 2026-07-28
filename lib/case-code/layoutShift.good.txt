@@ -4,7 +4,7 @@ const initialCollapsed =
   cookieStore.get("sidebarCollapsed")?.value === "on";
 // ...passed down as a prop to <Header> and <Sidebar>
 
-// store/sidebar.ts — plain state, no side effects
+// store/sidebar.ts – plain state, no side effects
 export const useSidebarStore = create<SidebarState>()(
   (set) => ({
     collapsed: false,
@@ -45,5 +45,5 @@ export function useSidebarCollapsed(
 }
 
 // The server reads the same cookie the client writes,
-// so the very first render already agrees — nothing
+// so the very first render already agrees, nothing
 // to correct after mount.

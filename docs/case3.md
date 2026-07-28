@@ -5,7 +5,7 @@
 **Metric:** INP, DOM Elements
 
 ## Summary
-A page-transition freeze caused by synchronously mounting all 2000+ Inventory table rows into real DOM at once, instead of windowing just the ~15 visible rows.
+A page-transition freeze caused by synchronously mounting all 2000+ Inventory table rows into real DOM at once, instead of windowing just the up to 10 visible rows.
 
 ---
 

@@ -4,7 +4,7 @@ const initialExpanded =
   cookieStore.get("panelExpanded")?.value === "on";
 // ...passed down as a prop to <PerformancePanel>
 
-// store/panel-expanded.ts — plain state, no side
+// store/panel-expanded.ts – plain state, no side
 // effects
 export const usePanelExpandedStore =
   create<PanelExpandedState>()((set) => ({
@@ -12,7 +12,7 @@ export const usePanelExpandedStore =
     setExpanded: (expanded) => set({ expanded }),
   }));
 
-// hooks/usePanelExpanded.ts — reads through
+// hooks/usePanelExpanded.ts – reads through
 // useSyncExternalStore, passing initialExpanded (from
 // the cookie) as the server snapshot, so the first
 // client render always agrees with what the server
@@ -37,7 +37,7 @@ function useStableExpanded(initialExpanded: boolean) {
   return expanded;
 }
 
-// hooks/usePanelExpanded.ts — the cookie write lives
+// hooks/usePanelExpanded.ts – the cookie write lives
 // here, not in the store
 const setExpanded = (expanded: boolean) => {
   usePanelExpandedStore
@@ -49,6 +49,6 @@ const setExpanded = (expanded: boolean) => {
 };
 
 // The server reads the same cookie the client writes,
-// so the very first render already agrees — nothing
+// so the very first render already agrees, nothing
 // to correct after mount, no delay needed anywhere to
 // make the restore animation play correctly.
