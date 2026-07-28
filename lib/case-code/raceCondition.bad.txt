@@ -1,5 +1,5 @@
 useEffect(() => {
-  // Fires on every keystroke — no debounce, no
+  // Fires on every keystroke: no debounce, no
   // cancellation.
   fetch(
     `/api/inventory-search?q=${

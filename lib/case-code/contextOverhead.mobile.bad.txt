@@ -29,7 +29,7 @@ const logisticStatus =
 // Every time setStatuses runs, the Provider
 // re-renders (its own `statuses` state changed) and
 // builds a brand-new `value` object for its Provider
-// — a fresh object reference, every time. React
+// (a fresh object reference, every time). React
 // re-renders *every* component that calls useContext
 // on that Provider whenever `value`'s reference
 // changes, regardless of which product a given card

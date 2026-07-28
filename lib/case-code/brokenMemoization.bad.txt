@@ -3,7 +3,9 @@
   <MicroCard
     key={product.id}
     card={{ ..product }}  //new object every render
-    threshold={threshold}
+    threshold={threshold} //changes on nearly every
+    // render, since dragging the slider is what
+    // triggers them
   />
 ))}
 
@@ -11,28 +13,36 @@
 const MicroCard = memo(function MicroCard({
   card,
   threshold,
-  onCardClick,
 }: Props) {
   const sparklineData = useMemo(
     () => processSparklineHistory(card.rawHistory),
-    // card is a new object every render — this cache
+    // card is a new object every render, this cache
     // never hits
     [card],
   );
   return (
     <MicroCardView
-      sparklineData={sparklineData} /* ... */
-      onClick={onCardClick}
+      sparklineData={sparklineData}
+      id={card.id}
+      title={card.meta.title}
+      sku={card.meta.sku}
+      marginality={card.marginality}
+      value={formatCurrency(card.metrics.currentValue)}
+      rating={card.metrics.rating}
+      sparklineData={sparklineData}
+      lowMargin={card.marginality < threshold}
     />
   );
 });
 export default MicroCard;
 
-// `card` being rebuilt fresh every render means this
-// useMemo's dependency never matches the previous
-// one, so the factory always reruns: the same clean →
-// smooth → downsample pass over 365 raw points reruns
-// for all 100 cards on every single slider tick
-// (~24ms of otherwise-avoidable work per tick) — on
-// top of a memo comparison that never actually skips
-// a render, for the same reason.
+// lib/utils/sparkline-processing.ts
+// Cleaning + smoothing + downsampling a year of daily
+// readings
+export function processSparklineHistory(
+  raw: number[],
+): number[] {
+  const cleaned = removeOutliersIterative(raw);
+  const smoothed = movingAverage(cleaned, 7);
+  return downsampleTo(smoothed, 7);
+}

@@ -1,4 +1,4 @@
-// store/inventory-selection.ts — plain Zustand,
+// store/inventory-selection.ts – plain Zustand,
 // atomic per-row reads
 export const useInventorySelectionStore =
   create<InventorySelectionState>((set) => ({
@@ -22,9 +22,9 @@ const toggleRow = useInventorySelectionStore(
 );
 
 // Each row subscribes only to
-// `state.selected.has(product.id)` — Zustand
-// re-renders a component only when the *value its own
-// selector returns* changes. Toggling one row flips
+// `state.selected.has(product.id)`. Zustand
+// re-renders a component only when the value its own
+// selector returns changes. Toggling one row flips
 // that boolean for one id, so only the matching row's
 // selector re-evaluates to a different value; every
 // other row's selector still returns the same boolean

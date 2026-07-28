@@ -10,7 +10,7 @@ export const usePanelExpandedStore =
     ),
   );
 
-// Server has no idea what the user picked last time —
+// Server has no idea what the user picked last time,
 // it always renders expanded=false, and
 // localStorage's real value only lands after mount.
 
@@ -43,7 +43,7 @@ export function usePanelExpanded(
   };
 }
 
-// The restore animation looked a bit off on reload —
+// The restore animation looked a bit off on reload:
 // sometimes it'd start a beat late, or stutter
 // instead of running smoothly from the collapsed
 // state. Giving things a moment before applying the

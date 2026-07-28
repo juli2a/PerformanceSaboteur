@@ -1,4 +1,4 @@
-// store/inventory-status.ts — plain Zustand, atomic
+// store/inventory-status.ts – plain Zustand, atomic
 // per-product reads
 export const useInventoryStatusStore =
   create<InventoryStatusState>((set) => ({
@@ -22,7 +22,7 @@ const setStatuses = useInventoryStatusStore(
 );
 
 // Each card subscribes only to
-// `state.statuses.get(product.id)` — Zustand
+// `state.statuses.get(product.id)`. Zustand
 // re-renders a component only when the *value its own
 // selector returns* changes. Changing one product's
 // status updates that one map entry, so only the

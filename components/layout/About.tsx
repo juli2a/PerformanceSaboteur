@@ -26,7 +26,7 @@ function AboutSection({ title, children }: AboutSectionProps) {
       <p className="mb-1.75 text-[15px] font-semibold text-foreground">
         {title}
       </p>
-      {children}
+      <div className="text-brand-muted leading-[1.6]">{children}</div>
     </div>
   );
 }
@@ -50,13 +50,13 @@ export default function About({ collapsed = false }: AboutProps) {
           <span className="animate-in fade-in-10 duration-600">About</span>
         )}
       </DialogTrigger>
-      <DialogContent size="md" variant="brand">
+      <DialogContent size="md" variant="brand" initialFocus={false}>
         <DialogHeader icon={<Info className="size-5" />} iconTone="brand">
           <DialogTitle>About</DialogTitle>
         </DialogHeader>
         <div className="-mr-3 flex max-h-[70vh] flex-col gap-heading-gap overflow-y-auto pr-3 text-base">
           <AboutSection title="Welcome!">
-            <p className="leading-[1.6] text-brand-muted">
+            <p>
               Have you ever tried to explain to a stakeholder or a team member
               exactly why a specific code architecture decision matters, only to
               watch their eyes glaze over? This project was born out of a simple
@@ -66,19 +66,19 @@ export default function About({ collapsed = false }: AboutProps) {
           </AboutSection>
 
           <AboutSection title="What is this?">
-            <p className="leading-[1.6] text-brand-muted">
+            <p>
               This is a demo B2B analytics dashboard (complete with Inventory
               Control) that looks and feels like a real, working production
               interface. The twist? You can deliberately turn on well-known
               frontend anti-patterns and watch them degrade performance in
-              real-tim. Instead of reading dry documentation, you get to see
-              exactly where the LCP/CLS hit comes from and why the UI stutters —
+              real-time. Instead of reading dry documentation, you get to see
+              exactly where the LCP/CLS hit comes from and why the UI stutters,
               with live numbers and immediate visual effects.
             </p>
           </AboutSection>
 
           <AboutSection title="What can you do here?">
-            <ul className="list-disc space-y-1 pl-heading-gap leading-[1.6] text-brand-muted">
+            <ul className="list-disc space-y-1 pl-heading-gap">
               <li>
                 Flip toggles in the control panel (Network / Rendering /
                 Computing) to simulate specific frontend problems.
@@ -104,7 +104,7 @@ export default function About({ collapsed = false }: AboutProps) {
           </AboutSection>
 
           <AboutSection title="How to use it?">
-            <ol className="list-decimal space-y-1 pl-heading-gap leading-[1.6] text-brand-muted">
+            <ol className="list-decimal space-y-1 pl-heading-gap">
               <li>Open the control panel.</li>
               <li>Turn on any anti-pattern toggle.</li>
               <li>
@@ -118,8 +118,8 @@ export default function About({ collapsed = false }: AboutProps) {
             </ol>
           </AboutSection>
 
-          <AboutSection title="A honest note on metric behavior">
-            <p className="leading-[1.6] text-brand-muted">
+          <AboutSection title="A note on metric behavior">
+            <p>
               Blocking Time and Interaction Latency only update when a new
               qualifying event happens (like a Long Task over 50ms or a slow
               click). They are not a &quot;current state&quot; gauge. If you
@@ -132,12 +132,12 @@ export default function About({ collapsed = false }: AboutProps) {
 
           <div className="border-t border-brand-border pt-heading-gap">
             <AboutSection title="Behind the Scenes & Insights">
-              <p className="mb-2.5 leading-[1.6] text-brand-muted">
+              <p className="mb-2.5">
                 Hi, I&apos;m Julia Strelkova, a frontend developer at Invirial.
                 This is my personal project exploring how engineering choices
                 translate into hard data.
               </p>
-              <p className="mb-2.5 leading-[1.6] text-brand-muted">
+              <p className="mb-2.5">
                 Developing a perfectly controlled, measurable anti-pattern that
                 breaks the user interface exactly where and how you want it to
                 is surprisingly difficult. Writing clean code is a habit, but
@@ -147,7 +147,7 @@ export default function About({ collapsed = false }: AboutProps) {
                 these bugs, meaning the effects won&apos;t always look equally
                 dramatic on every device.
               </p>
-              <p className="mb-2.5 leading-[1.6] text-brand-muted">
+              <p className="mb-2.5">
                 This dashboard was built using a modern Human-in-the-Loop AI
                 workflow. Working alongside AI agents as co-pilots allowed me to
                 efficiently handle the boilerplate and heavy lifting, while I
@@ -156,7 +156,7 @@ export default function About({ collapsed = false }: AboutProps) {
                 majority of cases, you can actually &quot;feel&quot; and
                 experiment with the real-world impact of these anti-patterns.
               </p>
-              <p className="mb-2.5 leading-[1.6] text-brand-muted">
+              <p className="mb-2.5">
                 Feel free to break the dashboard, explore the metrics, and
                 hopefully take some useful insights back to your own production
                 codebase!
