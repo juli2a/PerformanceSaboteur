@@ -16,3 +16,13 @@ export const VITAL_DOCS_URL = {
   cls: "https://web.dev/articles/cls",
   inp: "https://web.dev/articles/inp",
 } as const;
+
+// Short explainers for the three custom metrics, shown via TooltipInfoTrigger next to each stat's label (unlike LCP/CLS/INP, which link out to their own web.dev page instead).
+export const METRIC_TOOLTIPS = {
+  domNodes:
+    "Total DOM elements on the page right now. There's no universal good number, it depends on the page, but a sudden spike usually means something mounted far more than what's visible.",
+  blockingTime:
+    "Duration of the most recent Long Task, a stretch of uninterrupted JS over 50ms that froze the main thread. The same signal behind Lighthouse's Total Blocking Time.",
+  interactionLatency:
+    "How long the last click, tap, or key press took to get a response, from input to the next painted frame. Built from the same signal as INP, but unlike INP, this number updates live on every interaction over ~16ms and can rise or fall, added here for easy real-time tracking.",
+} as const;

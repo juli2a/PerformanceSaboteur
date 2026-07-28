@@ -19,12 +19,14 @@ interface HeaderProps {
   caseTipContent: Partial<Record<CaseKey, React.ReactNode>>;
   isLayoutShiftOn: boolean;
   initialCollapsed: boolean;
+  initialIsMobile?: boolean;
 }
 
 export default function Header({
   caseTipContent,
   isLayoutShiftOn,
   initialCollapsed,
+  initialIsMobile,
 }: HeaderProps) {
   useSyncControlsAcrossBreakpoint();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -53,7 +55,7 @@ export default function Header({
         <Link
           href="/dashboard"
           className={cn(
-            "hidden shrink-0 items-center pl-heading-gap transition-[width] duration-280 lg:flex",
+            "hidden shrink-0 items-center pl-heading-gap outline-none transition-[width] duration-280 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset lg:flex",
             sidebarCollapsed ? "w-[76px]" : "w-[248px]",
           )}
         >
@@ -110,7 +112,11 @@ export default function Header({
         </Button>
       </header>
 
-      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <MobileDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        initialIsMobile={initialIsMobile}
+      />
       <MobileControlDrawer
         open={controlsOpen}
         onOpenChange={setControlsOpen}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CodeXml } from "lucide-react";
 
 import { cn } from "@/lib/utils/cn";
@@ -22,7 +22,17 @@ export default function CaseCodeSection({
   tone,
 }: CaseCodeSectionProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const codeBlockRef = useRef<HTMLDivElement>(null);
   const isAnti = tone === "anti";
+
+  useEffect(() => {
+    if (isOpen) {
+      codeBlockRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [isOpen]);
 
   return (
     <div
@@ -47,14 +57,14 @@ export default function CaseCodeSection({
             onClick={() => setIsOpen((value) => !value)}
             aria-label={`${isOpen ? "Hide" : "Show"} ${label} code`}
             aria-expanded={isOpen}
-            className="shrink-0 cursor-pointer text-brand-muted opacity-65 transition-opacity hover:opacity-100"
+            className="-m-1 shrink-0 cursor-pointer p-1 text-brand-muted opacity-65 transition-opacity hover:opacity-100"
           >
-            <CodeXml className="size-3.75" />
+            <CodeXml className="size-4.25" />
           </button>
         )}
       </div>
       <p className="leading-[1.55] text-brand-muted">{description}</p>
-      {isOpen && codeBlock}
+      {isOpen && codeBlock && <div ref={codeBlockRef}>{codeBlock}</div>}
     </div>
   );
 }
