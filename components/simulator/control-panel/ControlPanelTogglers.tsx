@@ -7,8 +7,9 @@ import EdgeScroller from "@/components/ui/edge-scroller";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils/cn";
-import { SIMULATOR_CASES } from "@/lib/simulator-cases";
+import { SIMULATOR_CASES, FIRST_CASE_KEY } from "@/lib/simulator-cases";
 import { useSimControlStore } from "@/store/simulator-control";
+import { useOnboardingStore } from "@/store/onboarding";
 import { useToggleCase } from "@/hooks/useToggleCase";
 import { useResetAllToggles } from "@/hooks/useResetAllToggles";
 import type { CaseKey } from "@/types/simulator";
@@ -24,11 +25,21 @@ function GuideButton({ caseKey, label }: GuideButtonProps) {
     (state) => state.activeGuideKey === caseKey,
   );
   const setActiveGuide = useSimControlStore((state) => state.setActiveGuide);
+  const guideSeen = useOnboardingStore((state) => state.guideSeen);
+  const markGuideSeen = useOnboardingStore((state) => state.markGuideSeen);
+  const isOnboardingTarget = caseKey === FIRST_CASE_KEY && !guideSeen;
 
   return (
     <button
       type="button"
-      onClick={() => setActiveGuide(isActive ? null : caseKey)}
+      onClick={() => {
+        if (isActive) {
+          setActiveGuide(null);
+        } else {
+          markGuideSeen();
+          setActiveGuide(caseKey);
+        }
+      }}
       aria-label={`${isActive ? "Hide" : "Show"} guide: ${label}`}
       aria-expanded={isActive}
       className={cn(
@@ -36,6 +47,7 @@ function GuideButton({ caseKey, label }: GuideButtonProps) {
         isActive
           ? "border-brand-accent bg-brand-accent text-brand-bg"
           : "text-brand-muted hover:border-brand-border hover:bg-brand-accent-dim hover:text-brand-accent",
+        isOnboardingTarget && "toggle-cta-border-pulse",
       )}
     >
       <FileText size={13} />

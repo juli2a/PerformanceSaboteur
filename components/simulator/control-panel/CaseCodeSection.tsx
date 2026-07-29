@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { CodeXml } from "lucide-react";
 
 import { cn } from "@/lib/utils/cn";
+import { useOnboardingStore } from "@/store/onboarding";
 
 interface CaseCodeSectionProps {
   icon: React.ReactNode;
@@ -24,6 +25,9 @@ export default function CaseCodeSection({
   const [isOpen, setIsOpen] = useState(false);
   const codeBlockRef = useRef<HTMLDivElement>(null);
   const isAnti = tone === "anti";
+  const codeSeen = useOnboardingStore((state) => state.codeSeen);
+  const markCodeSeen = useOnboardingStore((state) => state.markCodeSeen);
+  const isOnboardingTarget = isAnti && !codeSeen;
 
   useEffect(() => {
     if (isOpen) {
@@ -54,10 +58,20 @@ export default function CaseCodeSection({
         {codeBlock && (
           <button
             type="button"
-            onClick={() => setIsOpen((value) => !value)}
+            onClick={() => {
+              if (isOpen) {
+                setIsOpen(false);
+              } else {
+                markCodeSeen();
+                setIsOpen(true);
+              }
+            }}
             aria-label={`${isOpen ? "Hide" : "Show"} ${label} code`}
             aria-expanded={isOpen}
-            className="-m-1 shrink-0 cursor-pointer p-1 text-brand-muted opacity-65 transition-opacity hover:opacity-100"
+            className={cn(
+              "-m-1 shrink-0 cursor-pointer rounded-xs p-1 text-brand-muted opacity-65 transition-opacity hover:opacity-100",
+              isOnboardingTarget && "toggle-cta-border-pulse",
+            )}
           >
             <CodeXml className="size-4.25" />
           </button>
