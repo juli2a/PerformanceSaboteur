@@ -1,10 +1,10 @@
 import { getRatingPresentation } from "@/lib/utils/gauge";
 import { cn } from "@/lib/utils/cn";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipInfoTrigger,
-} from "@/components/ui/tooltip";
+  Popover,
+  PopoverContent,
+  PopoverInfoTrigger,
+} from "@/components/ui/popover";
 import type { VitalRating } from "@/types/simulator";
 
 interface MetricStatProps {
@@ -26,12 +26,19 @@ export default function MetricStat({
     <div>
       <p className="text-sm text-text-3 whitespace-nowrap">
         {tooltip ? (
-          <Tooltip>
-            <TooltipInfoTrigger label={`What is ${label}?`} color="brand">
+          <Popover>
+            <PopoverInfoTrigger
+              label={`What is ${label}?`}
+              color="brand"
+              openOnHover
+              delay={100}
+            >
               {label}
-            </TooltipInfoTrigger>
-            <TooltipContent color="brand">{tooltip}</TooltipContent>
-          </Tooltip>
+            </PopoverInfoTrigger>
+            <PopoverContent color="brand" size="hint">
+              {tooltip}
+            </PopoverContent>
+          </Popover>
         ) : (
           label
         )}

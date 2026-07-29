@@ -11,7 +11,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-4.5 px-4 py-4.5 @min-[1024px]:space-y-5.5 @min-[1024px]:p-7.5">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between @max-[340px]:flex-col @max-[340px]:items-start @max-[340px]:gap-1">
         <div>
           <h1 className="heading-1">Dashboard</h1>
           <p className="mt-heading-subtitle-gap hidden text-sm text-text-2 @min-[1024px]:block">

@@ -12,10 +12,10 @@ import { useSimControlStore } from "@/store/simulator-control";
 import { useSimPerformanceStore } from "@/store/simulator-performance";
 import OverallRatingBadge from "@/components/simulator/performance-panel/OverallRatingBadge";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipInfoTrigger,
-} from "@/components/ui/tooltip";
+  Popover,
+  PopoverContent,
+  PopoverInfoTrigger,
+} from "@/components/ui/popover";
 import type { PerformancePanelMetrics } from "@/components/simulator/performance-panel/panel-metrics";
 import type { VitalRating } from "@/types/simulator";
 
@@ -77,16 +77,20 @@ function StatTile({ label, display, rating, tooltip }: MetricPreview) {
     <div className="flex flex-1 items-center justify-between gap-2 rounded-xs border border-brand-border bg-brand-bg-2 px-2.75 py-1">
       <span className="whitespace-nowrap text-sm text-brand-muted">
         {tooltip ? (
-          <Tooltip>
-            <TooltipInfoTrigger
+          <Popover>
+            <PopoverInfoTrigger
               label={`What is ${label}?`}
               color="brand"
               iconSize={18}
+              openOnHover
+              delay={100}
             >
               {label}
-            </TooltipInfoTrigger>
-            <TooltipContent color="brand">{tooltip}</TooltipContent>
-          </Tooltip>
+            </PopoverInfoTrigger>
+            <PopoverContent color="brand" size="hint">
+              {tooltip}
+            </PopoverContent>
+          </Popover>
         ) : (
           label
         )}

@@ -59,7 +59,7 @@ export default function MicroCardView({
 
           <div className="mt-2.5 flex items-end justify-between gap-2.5">
             <div>
-              <p className="tabular-nums text-lg font-semibold tracking-tight text-foreground">
+              <p className="tabular-nums text-lg font-semibold tracking-tight text-foreground @max-[340px]:text-sm">
                 {value}
               </p>
               <div className="mt-1.5 flex items-center gap-1">

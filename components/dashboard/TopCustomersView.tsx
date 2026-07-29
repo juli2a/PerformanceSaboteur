@@ -25,7 +25,7 @@ export function TopCustomersView({ customers }: Props) {
             <li
               key={c.id}
               className={cn(
-                "flex items-center gap-3 py-2.5 @min-[1024px]:gap-3.5 @min-[1024px]:py-3",
+                "flex items-center gap-3 py-2.5 @max-[340px]:flex-wrap @min-[1024px]:gap-3.5 @min-[1024px]:py-3",
                 i < customers.length - 1 && "border-b border-border",
               )}
             >
@@ -43,7 +43,7 @@ export function TopCustomersView({ customers }: Props) {
                 </p>
                 <p className="truncate text-sm text-text-3">{c.company}</p>
               </div>
-              <div className="text-right">
+              <div className="text-right @max-[340px]:mt-1 @max-[340px]:w-full @max-[340px]:text-left">
                 <p className="tabular-nums font-semibold text-foreground text-sm md:text-base">
                   {formatCurrency(c.ltv)}
                 </p>

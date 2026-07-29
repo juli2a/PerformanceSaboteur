@@ -23,7 +23,7 @@ export default function PerformancePanelDesktop({
   overallRating,
 }: PerformancePanelMetrics) {
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex w-[470px] flex-col gap-2.5">
+    <div className="fixed bottom-4 right-4 z-50 flex w-[480px] flex-col gap-2.5">
       {alerts}
       <aside className="sim-card h-36.5 flex-col items-stretch justify-between gap-3 text-brand-text">
         <div className="flex items-center justify-between gap-2.5">

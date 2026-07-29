@@ -16,7 +16,7 @@ function PopoverTrigger({ ...props }: PopoverPrimitive.Trigger.Props) {
 }
 
 const popoverInfoTriggerVariants = cva(
-  "inline-flex shrink-0 cursor-pointer items-center justify-center border-0 bg-transparent p-0 outline-none transition-colors",
+  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-1 border-0 bg-transparent p-0 outline-none transition-colors",
   {
     variants: {
       color: {
@@ -36,10 +36,13 @@ function PopoverInfoTrigger({
   color,
   className,
   label,
+  iconSize = 13,
+  children,
   ...props
 }: PopoverPrimitive.Trigger.Props &
   VariantProps<typeof popoverInfoTriggerVariants> & {
     label: string;
+    iconSize?: number;
   }) {
   return (
     <PopoverTrigger
@@ -47,7 +50,8 @@ function PopoverInfoTrigger({
       className={cn(popoverInfoTriggerVariants({ color, className }))}
       {...props}
     >
-      <InfoIcon size={13} />
+      {children}
+      <InfoIcon size={iconSize} />
     </PopoverTrigger>
   );
 }
@@ -61,18 +65,21 @@ function PopoverClose({ ...props }: PopoverPrimitive.Close.Props) {
 }
 
 const popoverContentVariants = cva(
-  "z-50 max-h-(--available-height) origin-(--transform-origin) overflow-y-auto rounded-lg duration-100 outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 text-sm",
+  // z-65: above PerformancePanelMobile's fixed bottom panel (z-60), see StatTile's "hint" size below.
+  "z-65 max-h-(--available-height) origin-(--transform-origin) overflow-y-auto rounded-lg duration-100 outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 text-sm",
   {
     variants: {
       color: {
         product:
           "bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10",
-        brand: "border border-brand-border bg-brand-bg-3 text-text-2 shadow-md",
+        brand: "border border-brand-border bg-brand-bg-2 text-brand-text shadow-md",
       },
       size: {
         default: "min-w-56 p-4",
         // Used by content with several labeled sections (e.g. CaseTipContent) that needs more room than the default compact popover.
         lg: "w-175 px-8 py-6",
+        // Compact explainer bubble (e.g. "What is Blocking Time?"), same footprint as the old Tooltip it replaced, see MetricStat/StatTile. The shadow (was .tooltip-glow in the removed tooltip.css) overrides the color variant's shadow-md.
+        hint: "shadow-[0_4px_14px_rgba(0,0,0,0.35),0_0_21px_rgba(255,255,255,0.15)] max-w-60 rounded px-3 py-2.5 text-sm leading-relaxed",
       },
     },
     defaultVariants: {
@@ -100,7 +107,7 @@ function PopoverContent({
   return (
     <PopoverPortal>
       <PopoverPrimitive.Positioner
-        className="isolate z-50 outline-none"
+        className="isolate z-65 outline-none"
         align={align}
         alignOffset={alignOffset}
         side={side}
