@@ -13,6 +13,7 @@ import { MediaContext } from "@/context/MediaContext";
 import { useSyncControlsAcrossBreakpoint } from "@/hooks/useSyncControlsAcrossBreakpoint";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 import { useSimControlStore } from "@/store/simulator-control";
+import { useOnboardingStore } from "@/store/onboarding";
 import type { CaseKey } from "@/types/simulator";
 
 interface HeaderProps {
@@ -43,6 +44,9 @@ export default function Header({
   const setControlsOpen = useSimControlStore((state) => state.setControlsOpen);
   const toggles = useSimControlStore((state) => state.toggles);
   const hasActiveAntiPattern = Object.values(toggles).some(Boolean);
+  const controlSeen = useOnboardingStore((state) => state.controlSeen);
+  const markControlSeen = useOnboardingStore((state) => state.markControlSeen);
+  const isOnboardingTarget = !controlSeen;
   const { collapsed: sidebarCollapsed } = useSidebarCollapsed(
     isLayoutShiftOn,
     initialCollapsed,
@@ -96,9 +100,15 @@ export default function Header({
         <Button
           variant="brand"
           size="sm"
-          onClick={() => setControlsOpen(true)}
+          onClick={() => {
+            markControlSeen();
+            setControlsOpen(true);
+          }}
           aria-label="Open simulator controls"
-          className="relative z-10 ml-auto mr-4 lg:hidden"
+          className={cn(
+            "relative z-10 ml-auto mr-4 lg:hidden",
+            isOnboardingTarget && "toggle-cta-border-pulse",
+          )}
         >
           <span
             className={cn(

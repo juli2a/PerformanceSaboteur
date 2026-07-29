@@ -241,6 +241,10 @@ export const SIMULATOR_CASES: { title: string; items: ToggleItem[] }[] = [
   },
 ];
 
+// The very first toggle in the very first zone, the one the onboarding pulse points at until its guide gets opened (see store/onboarding.ts).
+export const FIRST_CASE_KEY: CaseKey = SIMULATOR_CASES[0].items[0].key;
+export const SECOND_CASE_KEY: CaseKey = SIMULATOR_CASES[1].items[0].key;
+
 // Looks up a single case's definition by key, plus the zone (Network / Rendering / Computing) it belongs to, e.g. so PerformancePanel can show a case's authored `alert` text, and the right-hand guide panel can show its zone as a subtitle, without scanning SIMULATOR_CASES twice.
 export function getSimulatorCase(
   key: CaseKey,

@@ -43,6 +43,16 @@ export interface SimControlState {
   clearAlerts: () => void;
 }
 
+// Tracks which of the three first-visit onboarding pulses (Control, Guide, Code, see components/layout/Header.tsx, ControlPanelTogglers.tsx, MobileControlDrawer.tsx, CaseCodeSection.tsx) a first-time visitor has already triggered. Each flag flips once, permanently. Persisted, since the whole point is to never show a given pulse again once its step is done.
+export interface OnboardingState {
+  controlSeen: boolean;
+  guideSeen: boolean;
+  codeSeen: boolean;
+  markControlSeen: () => void;
+  markGuideSeen: () => void;
+  markCodeSeen: () => void;
+}
+
 // Live measurements reported by the simulator's PerformanceObserver-based reporters, read by the floating Performance Panel, never persisted.
 export interface SimPerformanceState {
   vitals: {

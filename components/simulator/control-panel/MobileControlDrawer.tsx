@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/drawer";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils/cn";
-import { SIMULATOR_CASES } from "@/lib/simulator-cases";
+import { SIMULATOR_CASES, FIRST_CASE_KEY } from "@/lib/simulator-cases";
 import { useSimControlStore } from "@/store/simulator-control";
 import { useSimPerformanceStore } from "@/store/simulator-performance";
+import { useOnboardingStore } from "@/store/onboarding";
 import { useToggleCase } from "@/hooks/useToggleCase";
 import { useResetAllToggles } from "@/hooks/useResetAllToggles";
 import type { CaseKey } from "@/types/simulator";
@@ -42,10 +43,13 @@ function ToggleRow({
   checked,
   onCheckedChange,
 }: ToggleRowProps) {
-  const isInfoOpen = useSimControlStore(
+  const isGuideOpen = useSimControlStore(
     (state) => state.activeGuideKey === caseKey,
   );
   const setActiveGuide = useSimControlStore((state) => state.setActiveGuide);
+  const guideSeen = useOnboardingStore((state) => state.guideSeen);
+  const markGuideSeen = useOnboardingStore((state) => state.markGuideSeen);
+  const isOnboardingTarget = caseKey === FIRST_CASE_KEY && !guideSeen;
 
   return (
     <div
@@ -61,14 +65,22 @@ function ToggleRow({
         <span className="flex-1 font-semibold text-foreground">{label}</span>
         <button
           type="button"
-          onClick={() => setActiveGuide(isInfoOpen ? null : caseKey)}
+          onClick={() => {
+            if (isGuideOpen) {
+              setActiveGuide(null);
+            } else {
+              markGuideSeen();
+              setActiveGuide(caseKey);
+            }
+          }}
           aria-label={`${label} info`}
-          aria-expanded={isInfoOpen}
+          aria-expanded={isGuideOpen}
           className={cn(
             "grid size-7 shrink-0 place-items-center rounded-xs border p-0 transition-colors",
-            isInfoOpen
+            isGuideOpen
               ? "border-brand-accent bg-brand-accent text-brand-bg"
               : "border-border text-brand-muted",
+            isOnboardingTarget && "toggle-cta-border-pulse",
           )}
         >
           <FileText className="size-4" />
@@ -79,7 +91,7 @@ function ToggleRow({
           onCheckedChange={onCheckedChange}
         />
       </label>
-      {isInfoOpen && (
+      {isGuideOpen && (
         <div className="px-3.5 pb-3 text-[15px] leading-[1.4] text-text-2">
           {tipContent}
         </div>
