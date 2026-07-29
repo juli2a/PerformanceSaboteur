@@ -120,13 +120,12 @@ export default function About({ collapsed = false }: AboutProps) {
 
           <AboutSection title="A note on metric behavior">
             <p>
-              Blocking Time and Interaction Latency only update when a new
-              qualifying event happens (like a Long Task over 50ms or a slow
-              click). They are not a &quot;current state&quot; gauge. If you
-              turn a case off and click around quickly, the metric might still
-              show the last bad reading until a new event updates it.
-              That&apos;s just the metric doing its job, not the app staying
-              broken!
+              Blocking Time only updates when a new qualifying event happens
+              (a Long Task over 50ms). It&apos;s not a &quot;current
+              state&quot; gauge. If you turn a case off, the metric might
+              still show the last bad reading until a new Long Task updates
+              it. That&apos;s just the metric doing its job, not the app
+              staying broken!
             </p>
           </AboutSection>
 

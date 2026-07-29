@@ -17,7 +17,7 @@ export const VITAL_DOCS_URL = {
   inp: "https://web.dev/articles/inp",
 } as const;
 
-// Short explainers for the three custom metrics, shown via TooltipInfoTrigger next to each stat's label (unlike LCP/CLS/INP, which link out to their own web.dev page instead).
+// Short explainers for the three custom metrics, shown via PopoverInfoTrigger next to each stat's label (unlike LCP/CLS/INP, which link out to their own web.dev page instead).
 export const METRIC_TOOLTIPS = {
   domNodes:
     "Total DOM elements on the page right now. There's no universal good number, it depends on the page, but a sudden spike usually means something mounted far more than what's visible.",
