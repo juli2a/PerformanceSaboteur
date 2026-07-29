@@ -29,6 +29,16 @@
     padding: 15px;
   }
 
+  @container (width < 340px) {
+    .card-global {
+      padding-inline: 8px;
+    }
+
+    .card-global[data-size="kpi"] {
+      padding-inline: 8px;
+    }
+  }
+
   @container (width >= 40rem) {
     .card-global {
       padding: 22px;

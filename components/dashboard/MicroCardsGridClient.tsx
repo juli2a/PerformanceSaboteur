@@ -37,7 +37,7 @@ export function MicroCardsGridClient({ products }: Props) {
   return (
     <Card variant="global" data-section="analytics-grid">
       <div className="mb-heading-gap flex flex-col gap-3 @min-[640px]:flex-row @min-[640px]:items-center">
-        <div className="flex items-center justify-between @min-[640px]:contents">
+        <div className="flex items-center justify-between @max-[340px]:flex-col @max-[340px]:items-start @max-[340px]:gap-1 @min-[640px]:contents">
           <h2 className="heading-2">Analytics Grid</h2>
           <span className="tabular-nums text-text-3 @min-[640px]:ml-auto">
             <span className="font-semibold text-foreground">{activeCount}</span>
@@ -54,7 +54,7 @@ export function MicroCardsGridClient({ products }: Props) {
               startTrackingIfIdle("brokenMemoization");
               setThreshold(value);
             }}
-            className="w-32"
+            className="w-32 @max-[340px]:w-[calc(100cqw-164px)]"
           />
           <span className="w-8 text-right">{threshold}%</span>
         </div>
