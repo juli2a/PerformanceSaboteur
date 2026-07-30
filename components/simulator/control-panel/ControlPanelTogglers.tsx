@@ -71,8 +71,9 @@ export default function ControlPanelTogglers() {
           <Fragment key={zone.title}>
             {index > 0 && (
               <>
-                <span className="min-w-5 flex-1 shrink-0" />
-                <span className="mr-4 w-px shrink-0 self-stretch bg-brand-border" />
+                <span className="w-17 min-w-4" />
+                <span className="w-px shrink-0 self-stretch bg-brand-border" />
+                <span className="w-17 min-w-4" />
               </>
             )}
             <fieldset className="m-0 shrink-0 border-0 p-0">
@@ -104,20 +105,21 @@ export default function ControlPanelTogglers() {
             </fieldset>
           </Fragment>
         ))}
-        <span className="min-w-5 flex-1 shrink-0" />
       </EdgeScroller>
       <span className="mx-4 w-px shrink-0 self-stretch bg-brand-border" />
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={allOff}
-        onClick={resetAllToggles}
-        aria-label="Turn all simulator toggles off"
-        className="shrink-0"
-      >
-        <Power size={13} />
-        All off
-      </Button>
+      <div className="flex grow shrink-0 items-center justify-center self-stretch">
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={allOff}
+          onClick={resetAllToggles}
+          aria-label="Turn all simulator toggles off"
+          className="shrink-0"
+        >
+          <Power size={13} />
+          All off
+        </Button>
+      </div>
     </>
   );
 }

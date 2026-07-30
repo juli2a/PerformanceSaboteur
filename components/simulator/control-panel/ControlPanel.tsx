@@ -6,7 +6,7 @@ import SimulatorKicker from "@/components/simulator/control-panel/SimulatorKicke
 export default function ControlPanel() {
   return (
     <div className="sim-card min-w-0 flex-1">
-      <div className="mr-heading-gap flex shrink-0 items-center self-stretch border-r border-brand-border pr-4">
+      <div className="mr-heading-gap flex grow shrink-0 items-center justify-center self-stretch border-r border-brand-border pr-4">
         <SimulatorKicker />
       </div>
 
