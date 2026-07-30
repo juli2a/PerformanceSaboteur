@@ -73,7 +73,7 @@ export default function EdgeScroller({
   };
 
   return (
-    <div className="flex min-w-0 flex-1 items-center">
+    <div className="relative flex min-w-0 items-center px-13">
       {hasOverflow && (
         <Button
           variant="outline"
@@ -81,7 +81,7 @@ export default function EdgeScroller({
           onClick={scrollToStart}
           disabled={!canScrollLeft}
           aria-label={scrollLeftLabel}
-          className="mr-4 shrink-0"
+          className="absolute top-1/2 left-0 -translate-y-1/2"
         >
           <ChevronLeft size={16} />
         </Button>
@@ -103,7 +103,7 @@ export default function EdgeScroller({
           onClick={scrollToEnd}
           disabled={!canScrollRight}
           aria-label={scrollRightLabel}
-          className="ml-4 shrink-0"
+          className="absolute top-1/2 right-0 -translate-y-1/2"
         >
           <ChevronRight size={16} />
         </Button>
