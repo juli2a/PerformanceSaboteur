@@ -140,7 +140,7 @@ export default function ProductTable({ products }: ProductTableProps) {
   const flatRowLimit = isHeavyMountingOn ? rows.length : FLAT_ROW_LIMIT;
 
   const flatRows = (
-    <div role="rowgroup">
+    <div role={isMobile ? undefined : "rowgroup"}>
       {rows.slice(0, flatRowLimit).map((row) => {
         const product = row.original;
         if (isMobile) {
@@ -149,7 +149,7 @@ export default function ProductTable({ products }: ProductTableProps) {
             ? ProductCardUnoptimized
             : ProductCard;
           return (
-            <div key={product.id} className="pb-2">
+            <div key={product.id} role="listitem" className="pb-2">
               <ProductCardComponent product={product} />
             </div>
           );
@@ -173,7 +173,7 @@ export default function ProductTable({ products }: ProductTableProps) {
     <div className="flex flex-1 flex-col overflow-hidden rounded-xl border-t">
       <div
         ref={scrollRef}
-        role="table"
+        role={isMobile ? "list" : "table"}
         aria-label="Product inventory"
         className={cn(
           "flex-1 overflow-auto",
@@ -201,7 +201,7 @@ export default function ProductTable({ products }: ProductTableProps) {
           flatRows
         ) : (
           <div
-            role="rowgroup"
+            role={isMobile ? undefined : "rowgroup"}
             className="relative"
             style={{ height: virtualizer.getTotalSize() }}
           >
@@ -212,6 +212,7 @@ export default function ProductTable({ products }: ProductTableProps) {
                   key={virtualItem.key}
                   data-index={virtualItem.index}
                   ref={virtualizer.measureElement}
+                  role={isMobile ? "listitem" : undefined}
                   className={cn(
                     "absolute top-0 left-0 w-full",
                     isMobile && "pb-2",
