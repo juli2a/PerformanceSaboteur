@@ -54,6 +54,7 @@ export function MicroCardsGridClient({ products }: Props) {
               startTrackingIfIdle("brokenMemoization");
               setThreshold(value);
             }}
+            aria-label="Min GM%"
             className="w-32 @max-[340px]:w-[calc(100cqw-164px)]"
           />
           <span className="w-8 text-right">{threshold}%</span>

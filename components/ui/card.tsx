@@ -7,14 +7,16 @@ function Card({
   variant = "default",
   size = "default",
   disabled,
+  as: Component = "section",
   ...props
 }: React.ComponentProps<"div"> & {
   variant?: "global" | "default";
   size?: "default" | "kpi";
   disabled?: boolean;
+  as?: "section" | "div";
 }) {
   return (
-    <section
+    <Component
       data-slot="card"
       data-size={variant === "global" ? size : undefined}
       className={cn(

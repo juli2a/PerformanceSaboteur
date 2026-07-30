@@ -130,6 +130,8 @@ export default function ProductTable({ products }: ProductTableProps) {
     getScrollElement: () => scrollRef.current,
     estimateSize: () => (isMobile ? CARD_HEIGHT_PX : ROW_HEIGHT_PX),
     overscan: isMobile ? 6 : 10,
+    // Without this, getVirtualItems() returns no rows until ResizeObserver measures the real viewport, leaving the rowgroup empty when accessibility audits like PageSpeed scan it.
+    initialRect: { width: 0, height: 600 },
   });
 
   if (isMobile === undefined) return null;
@@ -171,6 +173,8 @@ export default function ProductTable({ products }: ProductTableProps) {
     <div className="flex flex-1 flex-col overflow-hidden rounded-xl border-t">
       <div
         ref={scrollRef}
+        role="table"
+        aria-label="Product inventory"
         className={cn(
           "flex-1 overflow-auto",
           isMobile ? "p-3" : "card-surface-bg",

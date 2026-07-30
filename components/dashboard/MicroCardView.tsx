@@ -39,6 +39,7 @@ export default function MicroCardView({
           nativeButton={false}
           render={
             <Card
+              as="div"
               disabled={lowMargin}
               data-low-margin={lowMargin}
               className={cn(
