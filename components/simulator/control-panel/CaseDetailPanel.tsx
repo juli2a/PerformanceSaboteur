@@ -38,7 +38,7 @@ export default function CaseDetailPanel({
 
   return (
     <div
-      aria-hidden={!isOpen}
+      inert={!isOpen}
       className={cn(
         "shrink-0 overflow-hidden transition-[width] duration-340",
         isOpen ? PANEL_WIDTH_CLASS : "w-0",

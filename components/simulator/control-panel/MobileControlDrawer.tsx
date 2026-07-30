@@ -89,6 +89,7 @@ function ToggleRow({
           color="brand"
           checked={checked}
           onCheckedChange={onCheckedChange}
+          aria-label={label}
         />
       </label>
       {isGuideOpen && (

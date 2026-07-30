@@ -81,7 +81,7 @@ export default function BannerCarousel({ slides }: BannerCarouselProps) {
         <ChevronRight size={16} />
       </Button>
 
-      <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
+      <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-4">
         {slides.map((slide, i) => (
           <button
             key={slide.id}
@@ -89,7 +89,7 @@ export default function BannerCarousel({ slides }: BannerCarouselProps) {
             onClick={() => scrollTo(i)}
             aria-label={`Go to slide ${i + 1}`}
             className={cn(
-              "size-1.5 rounded-full transition-colors",
+              "size-2.25 rounded-full transition-colors",
               i === selectedIndex
                 ? "bg-white"
                 : "bg-white/40 hover:bg-white/60",

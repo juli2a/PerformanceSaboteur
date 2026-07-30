@@ -94,6 +94,7 @@ export default function ControlPanelTogglers() {
                       onCheckedChange={(checked) =>
                         toggleCase(item.key, checked)
                       }
+                      aria-label={item.label}
                     />
                     <span className="whitespace-nowrap text-[15px] font-medium text-text-2">
                       {item.label}
