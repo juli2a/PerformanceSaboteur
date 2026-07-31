@@ -12,8 +12,19 @@ const chakraPetch = Chakra_Petch({
 });
 
 export const metadata: Metadata = {
-  title: "PerfSaboteur",
+  title: "PerformanceSaboteur",
   description: "B2B Merchant Analytics — frontend anti-pattern simulator",
+  openGraph: {
+    title: "PerformanceSaboteur",
+    description: "B2B Merchant Analytics — frontend anti-pattern simulator",
+    images: [{ url: "/meta.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PerformanceSaboteur",
+    description: "B2B Merchant Analytics — frontend anti-pattern simulator",
+    images: ["/meta.png"],
+  },
 };
 
 export default function RootLayout({
