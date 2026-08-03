@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext, useOptimistic, useState, useTransition } from "react";
 import { ChevronDown, RefreshCw } from "lucide-react";
 
 import { LOGISTIC_STATUSES, type LogisticStatus } from "@/types/inventory";
@@ -66,22 +66,33 @@ export default function BulkActions() {
   const [panelOpen, setPanelOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [status, setStatus] = useState<LogisticStatus>(LOGISTIC_STATUSES[0]);
-  const [pending, setPending] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const hasSelection = selected.size > 0;
   const selectedProducts = [...selected.values()];
+  const [optimisticProducts, setOptimisticStatus] = useOptimistic(
+    selectedProducts,
+    (products, nextStatus: LogisticStatus) =>
+      products.map((product) => ({ ...product, logisticStatus: nextStatus })),
+  );
   const noopChange =
     selectedProducts.length > 0 &&
     selectedProducts.every((product) => product.logisticStatus === status);
 
-  const handleConfirm = async () => {
-    setPending(true);
-    const ids = [...selected.keys()];
-    await updateLogisticStatus(ids, status);
-    setStatuses(ids, status);
-    clearSelection();
-    setPending(false);
-    setConfirmOpen(false);
+  const handleConfirm = () => {
+    startTransition(async () => {
+      setOptimisticStatus(status);
+      const ids = [...selected.keys()];
+      try {
+        await updateLogisticStatus(ids, status);
+      } catch (error) {
+        console.error("Bulk status update failed:", error);
+        return;
+      }
+      setStatuses(ids, status);
+      clearSelection();
+      setConfirmOpen(false);
+    });
   };
 
   return (
@@ -158,7 +169,7 @@ export default function BulkActions() {
           </div>
 
           <div className="mb-6 max-h-60 overflow-y-auto rounded-xs border border-border bg-surface-2 p-1.5">
-            {selectedProducts.map((product) => (
+            {optimisticProducts.map((product) => (
               <div
                 key={product.id}
                 className="flex items-center justify-between gap-3.5 border-b border-border px-2.75 py-2.5 last:border-b-0"
@@ -190,7 +201,7 @@ export default function BulkActions() {
             </Button>
             <Button
               className="px-7.5"
-              disabled={pending || noopChange}
+              disabled={isPending || noopChange}
               onClick={handleConfirm}
             >
               Ok
