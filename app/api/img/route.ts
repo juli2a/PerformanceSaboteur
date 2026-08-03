@@ -42,8 +42,7 @@ export async function GET(request: NextRequest) {
   return new Response(body, {
     headers: {
       "Content-Type": contentType,
-      // No caching — every load fetches fresh so the LCP impact is always
-      // measurable and never hidden by the browser cache.
+      // No caching — every load fetches fresh so the LCP impact is always measurable and never hidden by the browser cache.
       "Cache-Control": "no-store",
     },
   });

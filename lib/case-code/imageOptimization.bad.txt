@@ -1,7 +1,10 @@
-<img
-  src={slide.imageUrl}
-  alt={slide.title}
-  width={300}
-  height={300}
-  className="absolute inset-0 h-full w-full object-contain"
-/>
+{slides.map((slide) => (
+  <img
+    src={slide.imageUrl}
+    alt={slide.title}
+    width={300}
+    height={300}
+    className="absolute inset-0 h-full w-full
+    object-contain"
+  />
+))}
