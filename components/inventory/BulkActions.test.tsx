@@ -12,7 +12,10 @@ import { useInventorySelectionStore } from "@/store/inventory-selection";
 import { useInventoryStatusStore } from "@/store/inventory-status";
 import { useSimControlStore } from "@/store/simulator-control";
 
-function makeSelected(id: number, logisticStatus: SelectedProduct["logisticStatus"]): SelectedProduct {
+function makeSelected(
+  id: number,
+  logisticStatus: SelectedProduct["logisticStatus"],
+): SelectedProduct {
   return { id, title: `Product ${id}`, sku: `SKU-${id}`, logisticStatus };
 }
 
@@ -70,10 +73,13 @@ describe("BulkActions", () => {
   it("full flow: confirming PATCHes every selected product, applies the optimistic overlay, and clears the selection", async () => {
     const patched: { id: string; body: unknown }[] = [];
     server.use(
-      http.patch("https://dummyjson.com/products/:id", async ({ params, request }) => {
-        patched.push({ id: params.id as string, body: await request.json() });
-        return HttpResponse.json({ id: Number(params.id) });
-      }),
+      http.patch(
+        "https://dummyjson.com/products/:id",
+        async ({ params, request }) => {
+          patched.push({ id: params.id as string, body: await request.json() });
+          return HttpResponse.json({ id: Number(params.id) });
+        },
+      ),
     );
     useInventorySelectionStore.setState({
       selected: new Map([
@@ -96,16 +102,20 @@ describe("BulkActions", () => {
       [2, "In Transit"],
     ]);
     expect(patched.map((p) => p.id).sort()).toEqual(["1", "2"]);
-    patched.forEach((p) => expect(p.body).toEqual({ logisticStatus: "In Transit" }));
+    patched.forEach((p) =>
+      expect(p.body).toEqual({ logisticStatus: "In Transit" }),
+    );
   });
 
-  it("optimistic rendering: the confirm dialog shows the new status before the PATCH resolves", async () => {
+  it("optimistic write: applies the new status, clears the selection, and closes the dialog before the PATCH resolves", async () => {
     let resolvePatch!: () => void;
     const patchGate = new Promise<void>((resolve) => {
       resolvePatch = resolve;
     });
+    const patchedIds: string[] = [];
     server.use(
       http.patch("https://dummyjson.com/products/:id", async ({ params }) => {
+        patchedIds.push(params.id as string);
         await patchGate;
         return HttpResponse.json({ id: Number(params.id) });
       }),
@@ -118,38 +128,49 @@ describe("BulkActions", () => {
     await openConfirmDialog("In Transit");
     await userEvent.click(screen.getByRole("button", { name: "Ok" }));
 
-    // The PATCH is still gated open at this point, so the store hasn't been
-    // written to yet — any status update visible in the dialog right now can
-    // only be useOptimistic's guessed value, not the real overlay committing.
-    await waitFor(() => {
-      expect(screen.queryByText("To Order")).not.toBeInTheDocument();
-    });
-    expect(useInventoryStatusStore.getState().statuses.size).toBe(0);
-    expect(screen.getByRole("button", { name: "Ok" })).toBeDisabled();
+    // The PATCH is still gated open here (patchGate unresolved), yet the store, the selection, and the dialog have already settled — proving none of them waited on the request.
+    expect(useInventoryStatusStore.getState().statuses.get(1)).toBe(
+      "In Transit",
+    );
+    expect(useInventorySelectionStore.getState().selected.size).toBe(0);
+    expect(screen.queryByText("Confirm status change")).not.toBeInTheDocument();
 
     resolvePatch();
     await waitFor(() => {
-      expect(useInventorySelectionStore.getState().selected.size).toBe(0);
+      expect(patchedIds).toEqual(["1"]);
     });
   });
 
-  it("rollback on failure: reverts the optimistic badge and keeps the selection when the PATCH fails", async () => {
+  it("rollback on failure: restores each product's own original status, grouped by what it was before the change", async () => {
     server.use(
-      http.patch("https://dummyjson.com/products/:id", () => HttpResponse.error()),
+      http.patch("https://dummyjson.com/products/:id", () =>
+        HttpResponse.error(),
+      ),
     );
     useInventorySelectionStore.setState({
-      selected: new Map([[1, makeSelected(1, "To Order")]]),
+      selected: new Map([
+        [1, makeSelected(1, "To Order")],
+        [2, makeSelected(2, "In Stock")],
+      ]),
     });
 
     renderBulkActions();
     await openConfirmDialog("In Transit");
     await userEvent.click(screen.getByRole("button", { name: "Ok" }));
 
+    expect(useInventoryStatusStore.getState().statuses.get(1)).toBe(
+      "In Transit",
+    );
+    expect(useInventoryStatusStore.getState().statuses.get(2)).toBe(
+      "In Transit",
+    );
+
     await waitFor(() => {
-      expect(screen.getByText("To Order")).toBeInTheDocument();
+      expect(useInventoryStatusStore.getState().statuses.get(1)).toBe(
+        "To Order",
+      );
     });
-    expect(screen.getByRole("button", { name: "Ok" })).toBeEnabled();
-    expect(useInventorySelectionStore.getState().selected.size).toBe(1);
-    expect(useInventoryStatusStore.getState().statuses.size).toBe(0);
+    expect(useInventoryStatusStore.getState().statuses.get(2)).toBe("In Stock");
+    expect(useInventorySelectionStore.getState().selected.size).toBe(0);
   });
 });

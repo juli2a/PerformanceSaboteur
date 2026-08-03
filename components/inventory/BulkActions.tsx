@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useOptimistic, useState, useTransition } from "react";
+import { useContext, useState } from "react";
 import { ChevronDown, RefreshCw } from "lucide-react";
 
 import { LOGISTIC_STATUSES, type LogisticStatus } from "@/types/inventory";
@@ -50,7 +50,7 @@ function StatusDotLabel({ status }: { status: LogisticStatus }) {
 
 // Toolbar's "Bulk Actions" panel, a Select + a button, not a list of menu actions, so it's a Popover rather than a DropdownMenu (Menu semantics expect menuitem children, and nesting a Select's own listbox inside one fights it for keyboard focus). base-ui's `alignItemWithTrigger` defaults to on, mimicking native <select> by overlapping the trigger so the selected item lines up with it; disabled in components/ui/select.tsx so it behaves like the rest of this app's dropdowns.
 //
-// Pick a status, confirm in a modal, then PATCH every selected product. DummyJSON doesn't persist writes, so the new status is also applied via inventory-status's optimistic overlay, otherwise the table would have no way to show the result of the demo.
+// Pick a status, confirm in a modal, then PATCH every selected product. The overlay (setStatuses), selection clear, and dialog close all happen immediately on confirm, not after the PATCH resolves, DummyJSON doesn't persist writes anyway, so waiting on it would only add latency without adding correctness. If the PATCH rejects, the previous per-product statuses are restored (grouped by their original status, since a mixed selection can carry more than one).
 //
 // Case 7 (Context Overhead): reads/writes whichever selection source is currently active (Zustand or the isolated Context, see context/TableSelectionContext.tsx), same reasoning as SelectAllCheckbox.
 export default function BulkActions() {
@@ -66,32 +66,31 @@ export default function BulkActions() {
   const [panelOpen, setPanelOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [status, setStatus] = useState<LogisticStatus>(LOGISTIC_STATUSES[0]);
-  const [isPending, startTransition] = useTransition();
 
   const hasSelection = selected.size > 0;
   const selectedProducts = [...selected.values()];
-  const [optimisticProducts, setOptimisticStatus] = useOptimistic(
-    selectedProducts,
-    (products, nextStatus: LogisticStatus) =>
-      products.map((product) => ({ ...product, logisticStatus: nextStatus })),
-  );
   const noopChange =
     selectedProducts.length > 0 &&
     selectedProducts.every((product) => product.logisticStatus === status);
 
   const handleConfirm = () => {
-    startTransition(async () => {
-      setOptimisticStatus(status);
-      const ids = [...selected.keys()];
-      try {
-        await updateLogisticStatus(ids, status);
-      } catch (error) {
-        console.error("Bulk status update failed:", error);
-        return;
+    const ids = [...selected.keys()];
+    const previousByStatus = new Map<LogisticStatus, number[]>();
+    for (const product of selectedProducts) {
+      const idsForStatus = previousByStatus.get(product.logisticStatus) ?? [];
+      idsForStatus.push(product.id);
+      previousByStatus.set(product.logisticStatus, idsForStatus);
+    }
+
+    setStatuses(ids, status);
+    clearSelection();
+    setConfirmOpen(false);
+
+    updateLogisticStatus(ids, status).catch((error) => {
+      console.error("Bulk status update failed:", error);
+      for (const [previousStatus, idsForStatus] of previousByStatus) {
+        setStatuses(idsForStatus, previousStatus);
       }
-      setStatuses(ids, status);
-      clearSelection();
-      setConfirmOpen(false);
     });
   };
 
@@ -169,7 +168,7 @@ export default function BulkActions() {
           </div>
 
           <div className="mb-6 max-h-60 overflow-y-auto rounded-xs border border-border bg-surface-2 p-1.5">
-            {optimisticProducts.map((product) => (
+            {selectedProducts.map((product) => (
               <div
                 key={product.id}
                 className="flex items-center justify-between gap-3.5 border-b border-border px-2.75 py-2.5 last:border-b-0"
@@ -201,7 +200,7 @@ export default function BulkActions() {
             </Button>
             <Button
               className="px-7.5"
-              disabled={isPending || noopChange}
+              disabled={noopChange}
               onClick={handleConfirm}
             >
               Ok
