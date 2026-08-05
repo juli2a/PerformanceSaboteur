@@ -50,7 +50,7 @@ function StatusDotLabel({ status }: { status: LogisticStatus }) {
 
 // Toolbar's "Bulk Actions" panel, a Select + a button, not a list of menu actions, so it's a Popover rather than a DropdownMenu (Menu semantics expect menuitem children, and nesting a Select's own listbox inside one fights it for keyboard focus). base-ui's `alignItemWithTrigger` defaults to on, mimicking native <select> by overlapping the trigger so the selected item lines up with it; disabled in components/ui/select.tsx so it behaves like the rest of this app's dropdowns.
 //
-// Pick a status, confirm in a modal, then PATCH every selected product. DummyJSON doesn't persist writes, so the new status is also applied via inventory-status's optimistic overlay, otherwise the table would have no way to show the result of the demo.
+// Pick a status, confirm in a modal, then PATCH every selected product. The overlay (setStatuses), selection clear, and dialog close all happen immediately on confirm, not after the PATCH resolves, DummyJSON doesn't persist writes anyway, so waiting on it would only add latency without adding correctness. If the PATCH rejects, the previous per-product statuses are restored (grouped by their original status, since a mixed selection can carry more than one).
 //
 // Case 7 (Context Overhead): reads/writes whichever selection source is currently active (Zustand or the isolated Context, see context/TableSelectionContext.tsx), same reasoning as SelectAllCheckbox.
 export default function BulkActions() {
@@ -66,7 +66,6 @@ export default function BulkActions() {
   const [panelOpen, setPanelOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [status, setStatus] = useState<LogisticStatus>(LOGISTIC_STATUSES[0]);
-  const [pending, setPending] = useState(false);
 
   const hasSelection = selected.size > 0;
   const selectedProducts = [...selected.values()];
@@ -74,14 +73,25 @@ export default function BulkActions() {
     selectedProducts.length > 0 &&
     selectedProducts.every((product) => product.logisticStatus === status);
 
-  const handleConfirm = async () => {
-    setPending(true);
+  const handleConfirm = () => {
     const ids = [...selected.keys()];
-    await updateLogisticStatus(ids, status);
+    const previousByStatus = new Map<LogisticStatus, number[]>();
+    for (const product of selectedProducts) {
+      const idsForStatus = previousByStatus.get(product.logisticStatus) ?? [];
+      idsForStatus.push(product.id);
+      previousByStatus.set(product.logisticStatus, idsForStatus);
+    }
+
     setStatuses(ids, status);
     clearSelection();
-    setPending(false);
     setConfirmOpen(false);
+
+    updateLogisticStatus(ids, status).catch((error) => {
+      console.error("Bulk status update failed:", error);
+      for (const [previousStatus, idsForStatus] of previousByStatus) {
+        setStatuses(idsForStatus, previousStatus);
+      }
+    });
   };
 
   return (
@@ -190,7 +200,7 @@ export default function BulkActions() {
             </Button>
             <Button
               className="px-7.5"
-              disabled={pending || noopChange}
+              disabled={noopChange}
               onClick={handleConfirm}
             >
               Ok

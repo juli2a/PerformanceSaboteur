@@ -13,15 +13,17 @@ The impact of skipping Next.js Image Optimization (and the priority hint for the
 
 **Implementation:** `components/dashboard/TopProductsBannerClient.tsx`
 ```tsx
-<Image
-  src={slide.imageUrl}
-  alt={slide.title}
-  fill
-  sizes="100vw"
-  style={{ objectFit: "contain" }}
-  loading={i === 0 ? "eager" : undefined}
-  fetchPriority={i === 0 ? "high" : undefined}
-/>
+{slides.map((slide, i) => (
+  <Image
+    src={slide.imageUrl}
+    alt={slide.title}
+    fill
+    sizes="100vw"
+    style={{ objectFit: "contain" }}
+    loading={i === 0 ? "eager" : undefined}
+    fetchPriority={i === 0 ? "high" : undefined}
+  />
+))}
 ```
 `imageUrl` is a direct DummyJSON link (`p.images[0]`), which `next/image` optimizes (resizing, WebP, CDN cache).
 
@@ -35,13 +37,15 @@ The impact of skipping Next.js Image Optimization (and the priority hint for the
 
 **Implementation:** `components/dashboard/TopProductsBannerClient.tsx` + `app/api/img/route.ts`
 ```tsx
-<img
-  src={slide.imageUrl} // /api/img?url=... instead of the direct URL
-  alt={slide.title}
-  width={300}
-  height={300}
-  className="absolute inset-0 h-full w-full object-contain"
-/>
+{slides.map((slide, i) => (
+  <img
+    src={slide.imageUrl} // /api/img?url=... instead of the direct URL
+    alt={slide.title}
+    width={300}
+    height={300}
+    className="absolute inset-0 h-full w-full object-contain"
+  />
+))}
 ```
 `imageUrl` now points to the `/api/img` proxy route, which:
 - is never cached (`Cache-Control: no-store`);

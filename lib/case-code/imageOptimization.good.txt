@@ -1,11 +1,13 @@
 import Image from "next/image";
 ...
-<Image
-  src={slide.imageUrl}
-  alt={slide.title}
-  fill
-  sizes="100vw"
-  style={{ objectFit: "contain" }}
-  loading={i === 0 ? "eager" : undefined}
-  fetchPriority={i === 0 ? "high" : undefined}
-/>
+{slides.map((slide, i) => (
+  <Image
+    src={slide.imageUrl}
+    alt={slide.title}
+    fill
+    sizes="100vw"
+    style={{ objectFit: "contain" }}
+    loading={i === 0 ? "eager" : undefined}
+    fetchPriority={i === 0 ? "high" : undefined}
+  />
+))}
