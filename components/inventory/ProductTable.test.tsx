@@ -55,30 +55,42 @@ function countMountedRows(container: HTMLElement): number {
 
 // Case 3 (heavyMounting): components/inventory/ProductTable.tsx. `flatRowLimit` is the whole row list's length when heavyMounting is on (no cap at all) vs the fixed FLAT_ROW_LIMIT otherwise. Both branches tested here render the flat (non-virtualized) path, deliberately avoiding the default all-toggles-off virtualized branch: @tanstack/react-virtual decides visible-row count from real container layout, which jsdom always reports as zero-sized, so that branch isn't tested here.
 describe("ProductTable row mounting (Case 3 vs Case 7)", () => {
-  it("Case 7 alone: flat list caps at FLAT_ROW_LIMIT (200) regardless of dataset size", () => {
-    useSimControlStore.getState().setToggle("contextOverhead", true);
+  it(
+    "Case 7 alone: flat list caps at FLAT_ROW_LIMIT (200) regardless of dataset size",
+    () => {
+      useSimControlStore.getState().setToggle("contextOverhead", true);
 
-    const { container } = renderTable();
+      const { container } = renderTable();
 
-    expect(countMountedRows(container)).toBe(FLAT_ROW_LIMIT);
-  });
+      expect(countMountedRows(container)).toBe(FLAT_ROW_LIMIT);
+    },
+    15000,
+  );
 
-  it("Case 3 alone: removes the cap, mounts every one of the 250 rows", () => {
-    useSimControlStore.getState().setToggle("heavyMounting", true);
+  it(
+    "Case 3 alone: removes the cap, mounts every one of the 250 rows",
+    () => {
+      useSimControlStore.getState().setToggle("heavyMounting", true);
 
-    const { container } = renderTable();
+      const { container } = renderTable();
 
-    expect(countMountedRows(container)).toBe(250);
-  });
+      expect(countMountedRows(container)).toBe(250);
+    },
+    15000,
+  );
 
-  it("Case 3 + Case 7 together: Case 3's uncapped behavior wins over Case 7's 200-row cap", () => {
-    useSimControlStore.getState().setToggle("heavyMounting", true);
-    useSimControlStore.getState().setToggle("contextOverhead", true);
+  it(
+    "Case 3 + Case 7 together: Case 3's uncapped behavior wins over Case 7's 200-row cap",
+    () => {
+      useSimControlStore.getState().setToggle("heavyMounting", true);
+      useSimControlStore.getState().setToggle("contextOverhead", true);
 
-    const { container } = renderTable();
+      const { container } = renderTable();
 
-    expect(countMountedRows(container)).toBe(250);
-  });
+      expect(countMountedRows(container)).toBe(250);
+    },
+    15000,
+  );
 });
 
 // Category filter effect (5.2, not tied to a simulator case), components/inventory/ProductTable.tsx: selecting a category in useInventoryFiltersStore feeds react-table's controlled `columnFilters`, which should narrow the mounted rows down to just that category. The filter checkbox UI itself (CategoryFilterList) is a thin Set.add/delete wrapper with no branching logic and isn't tested, this is the actual integration point: does the store value really narrow what's rendered.

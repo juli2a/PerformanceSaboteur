@@ -142,10 +142,15 @@ describe("BulkActions", () => {
   });
 
   it("rollback on failure: restores each product's own original status, grouped by what it was before the change", async () => {
+    let failPatch!: () => void;
+    const patchGate = new Promise<void>((resolve) => {
+      failPatch = resolve;
+    });
     server.use(
-      http.patch("https://dummyjson.com/products/:id", () =>
-        HttpResponse.error(),
-      ),
+      http.patch("https://dummyjson.com/products/:id", async () => {
+        await patchGate;
+        return HttpResponse.error();
+      }),
     );
     useInventorySelectionStore.setState({
       selected: new Map([
@@ -158,6 +163,7 @@ describe("BulkActions", () => {
     await openConfirmDialog("In Transit");
     await userEvent.click(screen.getByRole("button", { name: "Ok" }));
 
+    // The PATCH is still gated open here, so the optimistic write is deterministically observable before the rollback fires.
     expect(useInventoryStatusStore.getState().statuses.get(1)).toBe(
       "In Transit",
     );
@@ -165,6 +171,7 @@ describe("BulkActions", () => {
       "In Transit",
     );
 
+    failPatch();
     await waitFor(() => {
       expect(useInventoryStatusStore.getState().statuses.get(1)).toBe(
         "To Order",
