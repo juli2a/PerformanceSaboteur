@@ -7,7 +7,7 @@ import { setSsrCookie } from "./helpers";
 //
 // Both fallback checks fetch the raw HTML directly (context.request, no browser): fallback markup only enters the response if a boundary exists and its child hadn't resolved when the shell was serialized. The on test's browser-based check (below) separately verifies simultaneity, which raw HTML can't show.
 //
-// FALLBACK_SECTIONS excludes the banner: every other section has a real 400-800ms delay (lib/server/dashboard.ts) that reliably outlasts shell construction, but the banner has no artificial delay, so it races shell construction on real network timing alone, confirmed empirically to sometimes resolve before the shell serializes, skipping its fallback entirely. That makes fallback presence non-deterministic for the banner, so it's checked via data-section only.
+// FALLBACK_SECTIONS excludes the banner: every other section has a real 400-800ms delay (lib/server/dal/dashboard.ts) that reliably outlasts shell construction, but the banner has no artificial delay, so it races shell construction on real network timing alone, confirmed empirically to sometimes resolve before the shell serializes, skipping its fallback entirely. That makes fallback presence non-deterministic for the banner, so it's checked via data-section only.
 const SECTIONS = [
   "top-products",
   "kpi-grid",

@@ -24,7 +24,7 @@ import {
 import { getStatusDotClass, getStatusRowClass } from "@/lib/utils/inventory";
 import { formatCurrency } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
-import { updateLogisticStatus } from "@/lib/server/inventory-actions";
+import { updateLogisticStatus } from "@/lib/server/actions/inventory";
 
 interface StatusChangeDrawerProps {
   product: AmplifiedProduct;

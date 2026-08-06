@@ -5,7 +5,7 @@ import { RowStatusProvider } from "@/context/RowStatusContext";
 import {
   getAmplifiedProducts,
   getInventoryCategories,
-} from "@/lib/server/inventory";
+} from "@/lib/server/dal/inventory";
 
 // Server Component — fetches 100 products, amplifies to 2000+ rows server-side
 export default async function InventoryPage() {

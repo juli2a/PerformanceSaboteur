@@ -49,7 +49,7 @@ export function deriveLogisticStatus(
   return STATUS_BY_SHIPPING_SPEED[shippingInformation] ?? "In Stock";
 }
 
-// Inverse of `product.id + batch * BASE_PRODUCT_COUNT`; recovers the real DummyJSON id (1..100) so bulk updates can target an existing resource. Exported for lib/server/inventory-actions.ts.
+// Inverse of `product.id + batch * BASE_PRODUCT_COUNT`; recovers the real DummyJSON id (1..100) so bulk updates can target an existing resource. Exported for lib/server/actions/inventory.ts.
 export function deriveRealProductId(amplifiedId: number): number {
   return ((amplifiedId - 1) % BASE_PRODUCT_COUNT) + 1;
 }
@@ -108,7 +108,7 @@ export const getAmplifiedProducts = cache(
   },
 );
 
-// Category filter options for the Toolbar: distinct slugs, alphabetical. Deliberately not `lib/server/dashboard.ts`'s getCategories(): that one aggregates stockValue/share/productCount and truncates to a top slice by value, neither of which a filter dropdown needs.
+// Category filter options for the Toolbar: distinct slugs, alphabetical. Deliberately not `lib/server/dal/dashboard.ts`'s getCategories(): that one aggregates stockValue/share/productCount and truncates to a top slice by value, neither of which a filter dropdown needs.
 export const getInventoryCategories = cache(async (): Promise<string[]> => {
   const { products } = await apiFetch<{
     products: Pick<DummyProduct, "category">[];

@@ -1,4 +1,4 @@
-import { getUsers } from "@/lib/server/dashboard";
+import { getUsers } from "@/lib/server/dal/dashboard";
 import { TopCustomersView } from "./TopCustomersView";
 
 export default async function TopCustomers() {

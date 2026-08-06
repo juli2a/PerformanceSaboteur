@@ -9,7 +9,7 @@
 
 ## Dashboard — requests and processing
 
-The Dashboard has **4 independent requests** (`lib/server/dashboard.ts`) that demonstrate parallel Suspense streaming vs sequential fetching (Case 5, see `docs/case5.md`). Each `get*` function carries its own artificial delay — not a Route Handler, the functions themselves.
+The Dashboard has **4 independent requests** (`lib/server/dal/dashboard.ts`) that demonstrate parallel Suspense streaming vs sequential fetching (Case 5, see `docs/case5.md`). Each `get*` function carries its own artificial delay — not a Route Handler, the functions themselves.
 
 | Function            | Endpoint                    | Delay | UI section                              |
 | -------------------- | --------------------------- | ----- | ---------------------------------------- |
@@ -54,7 +54,7 @@ Feeds only the Analytics Grid — the data structure and client-side sparkline p
 
 ### Fetching the amplified base (2000+ rows)
 
-**Request:** `GET /products?limit=100` (`lib/server/inventory.ts`, `getAmplifiedProducts`).
+**Request:** `GET /products?limit=100` (`lib/server/dal/inventory.ts`, `getAmplifiedProducts`).
 
 ### Data Amplification (server-side transformation)
 
@@ -76,7 +76,7 @@ for (let batch = 1; batch < 20; batch++) {
 
 ### Bulk Status Update (mutation)
 
-- Implemented as a Next.js **Server Action** (`lib/server/inventory-actions.ts`, `"use server"`).
+- Implemented as a Next.js **Server Action** (`lib/server/actions/inventory.ts`, `"use server"`).
 - For each selected `productId` (mapped back via `deriveRealProductId`), a **real PATCH** is sent to DummyJSON — no artificial delay.
 - DummyJSON doesn't persist the change — the API just echoes the product back.
 - The visible status change in the UI comes from a client-side **optimistic overlay** (`useInventoryStatusStore`), not cache invalidation via `revalidatePath`/`router.refresh()`.

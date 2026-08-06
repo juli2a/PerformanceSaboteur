@@ -13,7 +13,7 @@ import {
   MicroCardsSkeleton,
 } from "@/components/dashboard/skeletons";
 
-// Good path (toggle off): every section streams independently in its own Suspense boundary, see lib/server/dashboard.ts for how React.cache dedupes getCarts() between KpiGrid and SalesChart so they resolve together without a double fetch.
+// Good path (toggle off): every section streams independently in its own Suspense boundary, see lib/server/dal/dashboard.ts for how React.cache dedupes getCarts() between KpiGrid and SalesChart so they resolve together without a double fetch.
 export function DashboardContent() {
   return (
     <>

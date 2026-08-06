@@ -1,4 +1,4 @@
-import { getCarts } from "@/lib/server/dashboard";
+import { getCarts } from "@/lib/server/dal/dashboard";
 import { SalesChartClient } from "./SalesChartClient";
 
 export default async function SalesChart() {

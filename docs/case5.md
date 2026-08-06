@@ -23,7 +23,7 @@ const isWaterfallOn = cookieStore.get("waterfall")?.value === "on";
 {isWaterfallOn ? <DashboardContentUnoptimized /> : <DashboardContent />}
 ```
 
-Each `get*` function in `lib/server/dashboard.ts` has its own artificial delay (`await sleep(N)`, memoized via `React.cache`) to simulate realistic DB queries in a microservice architecture:
+Each `get*` function in `lib/server/dal/dashboard.ts` has its own artificial delay (`await sleep(N)`, memoized via `React.cache`) to simulate realistic DB queries in a microservice architecture:
 
 | Function           | Endpoint                    | Delay |
 | ------------------- | --------------------------- | ----- |
