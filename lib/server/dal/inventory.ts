@@ -2,7 +2,7 @@ import { cache } from "react";
 import { apiFetch } from "@/lib/server/fetcher";
 import type { AmplifiedProduct, LogisticStatus } from "@/types/inventory";
 
-// DummyJSON's product catalog uses exactly these 6 shipping phrases, safe to map exhaustively without a fallback case.
+// DummyJSON's product catalog uses exactly the shipping phrases enumerated below, safe to map exhaustively without a fallback case.
 type ShippingInformation =
   | "Ships overnight"
   | "Ships in 1-2 business days"
@@ -30,6 +30,9 @@ const AMPLIFICATION_BATCHES = 20;
 const BASE_PRODUCT_COUNT = 100;
 const LOW_STOCK_THRESHOLD = 10;
 
+// Total amplified rows (see getAmplifiedProducts below), i.e. the largest selection "Select All" can ever produce. Exported so lib/server/actions/inventory.ts can bound bulk-update payloads to it.
+export const TOTAL_PRODUCT_COUNT = AMPLIFICATION_BATCHES * BASE_PRODUCT_COUNT;
+
 // Shipping speed only determines status for healthy stock levels; low or zero stock overrides it below.
 const STATUS_BY_SHIPPING_SPEED: Record<ShippingInformation, LogisticStatus> = {
   "Ships overnight": "In Stock",
@@ -49,19 +52,19 @@ export function deriveLogisticStatus(
   return STATUS_BY_SHIPPING_SPEED[shippingInformation] ?? "In Stock";
 }
 
-// Inverse of `product.id + batch * BASE_PRODUCT_COUNT`; recovers the real DummyJSON id (1..100) so bulk updates can target an existing resource. Exported for lib/server/actions/inventory.ts.
+// Inverse of `product.id + batch * BASE_PRODUCT_COUNT`, recovers the real DummyJSON id so bulk updates can target an existing resource. Exported for lib/server/actions/inventory.ts.
 export function deriveRealProductId(amplifiedId: number): number {
   return ((amplifiedId - 1) % BASE_PRODUCT_COUNT) + 1;
 }
 
-// Fetches 100 products from DummyJSON and replicates them ×20 → 2000+ rows. logisticStatus is derived from stock + shippingInformation (see deriveLogisticStatus above); sku is DummyJSON's real per-product field, just carried through unmodified. The original 100 keep their plain title; only replicated batches (2+) get the "(Batch N)" suffix so they read as visible copies.
+// Fetches the base products from DummyJSON and replicates them AMPLIFICATION_BATCHES times (see TOTAL_PRODUCT_COUNT above) to reach the table's full row count. logisticStatus is derived from stock + shippingInformation (see deriveLogisticStatus above); sku is DummyJSON's real per-product field, just carried through unmodified. The original batch keeps its plain title; every replicated batch after it gets a "(Batch N)" suffix so they read as visible copies.
 export const getAmplifiedProducts = cache(
   async (): Promise<AmplifiedProduct[]> => {
     const { products } = await apiFetch<{ products: DummyProduct[] }>(
       `/products?limit=${BASE_PRODUCT_COUNT}`,
     );
 
-    // Destructure only the fields the UI needs exactly once, then reuse this lightweight base for every later batch instead of re-picking fields off the full ~22-field object on every batch.
+    // Destructure only the fields the UI needs exactly once off the full DummyProduct shape, then reuse this lightweight base for every later batch instead of re-picking fields on every batch.
     const baseProducts: AmplifiedProduct[] = products.map(
       ({
         id,

@@ -1,6 +1,6 @@
 ---
 name: comment-cleanup
-description: use this skill when tidying up or rewriting code comments in this repo — trims bloated/verbose comments and enforces this project's comment style rules.
+description: use this skill when writing comments, tidying up or rewriting code comments in this repo — trims bloated/verbose comments and enforces this project's comment style rules.
 ---
 
 # Comment Cleanup
