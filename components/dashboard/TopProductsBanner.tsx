@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { getBannerProducts } from "@/lib/server/dashboard";
+import { getBannerProducts } from "@/lib/server/dal/dashboard";
 import TopProductsBannerClient, {
   type BannerSlide,
 } from "./TopProductsBannerClient";

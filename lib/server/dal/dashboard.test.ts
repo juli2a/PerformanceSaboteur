@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeAll } from "vitest";
-import { getCarts, getUsers, getCategories } from "@/lib/server/dashboard";
+import { getCarts, getUsers, getCategories } from "@/lib/server/dal/dashboard";
 
-// Real network calls are mocked at the fetcher boundary, same approach as lib/server/inventory.test.ts.
+// Real network calls are mocked at the fetcher boundary, same approach as lib/server/dal/inventory.test.ts.
 vi.mock("@/lib/server/fetcher", () => ({
   apiFetch: vi.fn(),
 }));

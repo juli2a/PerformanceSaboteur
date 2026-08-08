@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 
-vi.mock("@/lib/server/dashboard", () => ({
+vi.mock("@/lib/server/dal/dashboard", () => ({
   getCarts: vi.fn(),
   getProducts: vi.fn(),
   getUsers: vi.fn(),
@@ -12,7 +12,7 @@ import {
   getProducts,
   getUsers,
   getCategories,
-} from "@/lib/server/dashboard";
+} from "@/lib/server/dal/dashboard";
 import { DashboardContentUnoptimized } from "@/components/dashboard/DashboardContentUnoptimized";
 
 // e2e/case5-waterfall.spec.ts (the "on" test) can only observe the DOM: no Suspense boundary anywhere means the whole component returns its JSX as one atomic unit regardless of whether the awaits inside it are sequential or concurrent (confirmed empirically: swapping the awaits below for a Promise.all still produced a single flush with no fallback, identical from the browser's point of view). So the actual claim Case 5's bad path makes (every request awaited one after another, not fired concurrently) can only be pinned down at the call-order level, deterministically, with no real timers or network involved.

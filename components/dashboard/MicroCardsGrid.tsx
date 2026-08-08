@@ -1,4 +1,4 @@
-import { getProducts } from "@/lib/server/dashboard";
+import { getProducts } from "@/lib/server/dal/dashboard";
 import { MicroCardsGridClient } from "./MicroCardsGridClient";
 
 export default async function MicroCardsGrid() {

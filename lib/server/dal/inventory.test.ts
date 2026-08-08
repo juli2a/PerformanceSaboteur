@@ -3,7 +3,7 @@ import {
   deriveRealProductId,
   deriveLogisticStatus,
   getAmplifiedProducts,
-} from "@/lib/server/inventory";
+} from "@/lib/server/dal/inventory";
 
 // Real network calls are mocked at the fetcher boundary; getAmplifiedProducts is the only piece under test here that touches it.
 vi.mock("@/lib/server/fetcher", () => ({

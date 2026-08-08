@@ -1,4 +1,4 @@
-import { getCategories } from "@/lib/server/dashboard";
+import { getCategories } from "@/lib/server/dal/dashboard";
 import { CategoryAnalyticsView } from "./CategoryAnalyticsView";
 
 export default async function CategoryAnalytics() {

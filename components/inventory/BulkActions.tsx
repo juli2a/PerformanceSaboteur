@@ -8,7 +8,7 @@ import { useInventorySelectionStore } from "@/store/inventory-selection";
 import { useInventoryStatusStore } from "@/store/inventory-status";
 import { TableSelectionContext } from "@/context/TableSelectionContext";
 import { useSimulatorCase } from "@/hooks/useSimulatorCase";
-import { updateLogisticStatus } from "@/lib/server/inventory-actions";
+import { updateLogisticStatus } from "@/lib/server/actions/inventory";
 import { getStatusDotClass, getStatusTone } from "@/lib/utils/inventory";
 import { cn } from "@/lib/utils/cn";
 import { Button, buttonVariants } from "@/components/ui/button";

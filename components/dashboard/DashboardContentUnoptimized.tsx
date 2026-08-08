@@ -3,7 +3,7 @@ import {
   getProducts,
   getUsers,
   getCategories,
-} from "@/lib/server/dashboard";
+} from "@/lib/server/dal/dashboard";
 import TopProductsBanner from "@/components/dashboard/TopProductsBanner";
 import { KpiGridView } from "@/components/dashboard/KpiGridView";
 import { SalesChartClient } from "@/components/dashboard/SalesChartClient";

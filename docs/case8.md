@@ -32,7 +32,7 @@ The good variant fixes both: props are genuinely stable (memo actually skips the
 
 **Request:** `GET /products?limit=100` (no `select` — all fields are fetched, the needed ones are picked locally).
 
-**Transformation:** 100 products → 100 cards (1:1), `lib/server/dashboard.ts`'s `getProducts()`.
+**Transformation:** 100 products → 100 cards (1:1), `lib/server/dal/dashboard.ts`'s `getProducts()`.
 
 **Card structure (`types/analytics.ts`):**
 ```ts

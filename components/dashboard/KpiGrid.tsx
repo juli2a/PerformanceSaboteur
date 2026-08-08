@@ -1,4 +1,4 @@
-import { getCarts } from "@/lib/server/dashboard";
+import { getCarts } from "@/lib/server/dal/dashboard";
 import { KpiGridView } from "./KpiGridView";
 
 export default async function KpiGrid() {

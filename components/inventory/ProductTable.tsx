@@ -82,7 +82,7 @@ export default function ProductTable({ products }: ProductTableProps) {
   );
   const matchedIds = useInventorySearchStore((state) => state.matchedIds);
 
-  // Search matches only base DummyJSON ids (1-100, see Toolbar/Case 4); every batch duplicate beyond the first keeps an id above that range, so this naturally surfaces just the one canonical row per match instead of every near-identical "(Batch N)" duplicate (see AMPLIFICATION_BATCHES in lib/server/inventory.ts). Pre-filtered here (not via columnFilters) since it narrows the underlying dataset rather than a displayed column's value.
+  // Search matches only base DummyJSON ids (1-100, see Toolbar/Case 4); every batch duplicate beyond the first keeps an id above that range, so this naturally surfaces just the one canonical row per match instead of every near-identical "(Batch N)" duplicate (see AMPLIFICATION_BATCHES in lib/server/dal/inventory.ts). Pre-filtered here (not via columnFilters) since it narrows the underlying dataset rather than a displayed column's value.
   const searchedProducts = useMemo(
     () =>
       matchedIds === null
